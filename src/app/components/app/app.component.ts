@@ -1,9 +1,83 @@
 import { Component } from '@angular/core';
 
+declare class DatArchive {
+  static selectArchive(opts: any): Promise<DatArchive>;
+  static create(opts: any): Promise<DatArchive>;
+  constructor(datUrl: String);
+  url: string;
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html'
 })
 export class AppComponent {
-  title = 'app';
+  state: State;
+  StateKind = StateKind;
+
+  newProfileName: string = '';
+
+  constructor() {
+    const profileUrl = localStorage.getItem('profileUrl')
+    if (profileUrl)
+      this.state = { kind: StateKind.ProfileSelected, datArchive: new DatArchive(profileUrl)}
+    else
+      this.state = { kind: StateKind.ProfileNotSelected }
+  }
+
+  async selectProfile() {
+    try {
+      const profile = await DatArchive.selectArchive({
+        title: 'Select an archive to use as your user profile',
+        buttonLabel: 'Select profile',
+        filters: {
+          isOwner: true
+        }
+      })
+      this.state = { kind: StateKind.ProfileSelected, datArchive: profile }
+      localStorage.setItem('profileUrl', profile.url)
+    }
+    catch (e) {
+      // If user clicks 'Cancel', they go here. But can they go here due to other reasons?
+    }
+  }
+
+  async createProfile() {
+    try {
+      const profile = await DatArchive.create({
+        title: `Salary-Transparency Profile: ${this.newProfileName}`,
+        buttonLabel: 'Select profile',
+        filters: {
+          isOwner: true
+        }
+      })
+      this.state = { kind: StateKind.ProfileSelected, datArchive: profile }
+      localStorage.setItem('profileUrl', profile.url)
+    }
+    catch (e) {
+      // If user clicks 'Cancel', they go here. But can they go here due to other reasons?
+    }
+  }
+
+  logout() {
+    this.state = { kind: StateKind.ProfileNotSelected }
+    localStorage.removeItem('profileUrl')
+  }
+}
+
+type State = ProfileNotSelected | ProfileSelected
+
+enum StateKind { ProfileNotSelected, ProfileSelected }
+
+class ProfileNotSelected {
+  constructor(
+    readonly kind: StateKind.ProfileNotSelected
+  ) { }
+}
+
+class ProfileSelected {
+  constructor(
+    readonly kind: StateKind.ProfileSelected,
+    readonly datArchive: DatArchive
+  ) { }
 }
