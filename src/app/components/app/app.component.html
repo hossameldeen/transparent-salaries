@@ -1,15 +1,27 @@
 <ng-container [ngSwitch]="state.kind">
 
-  <ng-container *ngSwitchCase="StateKind.ProfileNotSelected">
-    No profile selected.<br/>
-    <button mat-raised-button color="primary" (click)="selectProfile()">Select profile from Library</button><br/>
-    OR<br/>
-    <input placeholder='New profile name' [value]="newProfileName" (input)="newProfileName = $event.target.value">
-    <button (click)="createProfile()">Create a new profile</button>
-  </ng-container>
-  <ng-container *ngSwitchCase="StateKind.ProfileSelected">
-    Hello, {{state.datArchive.url}}!<br/>
-    <button (click)="logout()">Logout</button>
-  </ng-container>
+  <mat-card>
+    <ng-container *ngSwitchCase="StateKind.ProfileNotSelected">
+      <mat-tab-group>
+        <mat-tab label="Use an existing profile">
+          <br/>
+          <button mat-raised-button color="primary" (click)="selectProfile()">Select profile from Library</button>
+        </mat-tab>
+        <mat-tab label="Create a new profile">
+          <br/>
+          <mat-form-field>
+              <input matInput placeholder='New profile name' [value]="newProfileName" (input)="newProfileName = $event.target.value">
+          </mat-form-field>
+          <br/>
+          <button mat-raised-button color="primary" (click)="createProfile()">Create a new profile</button>
+        </mat-tab>
+      </mat-tab-group>
+    </ng-container>
+    <ng-container *ngSwitchCase="StateKind.ProfileSelected">
+      Hello, {{state.datArchive.url}}!
+      <br/>
+      <button (click)="logout()">Logout</button>
+    </ng-container>
+  </mat-card>
 
 </ng-container>
