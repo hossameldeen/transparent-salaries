@@ -2,7 +2,7 @@
 
   <ng-container *ngSwitchCase="StateKind.ProfileNotSelected">
     No profile selected.<br/>
-    <button (click)="selectProfile()">Select profile from Library</button><br/>
+    <button mat-raised-button color="primary" (click)="selectProfile()">Select profile from Library</button><br/>
     OR<br/>
     <input placeholder='New profile name' [value]="newProfileName" (input)="newProfileName = $event.target.value">
     <button (click)="createProfile()">Create a new profile</button>
