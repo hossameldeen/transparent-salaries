@@ -1,5 +1,10 @@
 <ng-container [ngSwitch]="state.kind">
 
+  <mat-toolbar fxLayoutAlign="start center" color="primary">
+    <span>Salary Transparency</span>
+    <span fxFlex></span>
+    <button mat-raised-button>Create a new profile</button>
+  </mat-toolbar>
   <div fxLayoutAlign="center">
     <mat-card>
       <ng-container *ngSwitchCase="StateKind.ProfileNotSelected">
