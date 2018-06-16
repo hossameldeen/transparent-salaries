@@ -22,6 +22,8 @@ You can have auto build & reload on changes. However, it'll keep whole files bet
 - In Beaker Browser, from the menu: open `Library`. Go to the website you've created. Open its url from the topright.
 - From the 3 dots in the url bar, `Toggle live reloading`.
 
+Note: This doesn't delete unused old output files. But it's okay, that's good enough for now since it doesn't affect the behaviour.
+
 ### Deploy
 
 - In the project root, run `yarn install`.

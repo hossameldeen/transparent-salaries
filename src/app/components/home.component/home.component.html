@@ -1,4 +1,35 @@
 <div fxLayout="column">
   <div fxFlex="3vh"></div>
   <h1>Hello, {{profileDatArchive.url}}!</h1>
+  <mat-card fxLayout="column">
+    <mat-card-title>Add a salary</mat-card-title>
+    <mat-card-subtitle>Make sure the salary's owner has approved!</mat-card-subtitle>
+    <mat-card-content fxLayout="column">
+      <mat-form-field>
+        <input matInput placeholder="Month" type="month">
+        <mat-hint>Any month this salary was paid on.</mat-hint>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Company">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Job">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Net" type="number">
+        <mat-hint>Salary after taxes, ... etc. If you want to amortize for stuff like yearly bonuses, feel free to write whatever best describes the net monetary return for you.</mat-hint>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Currency">
+        <mat-hint>E.g., USD</mat-hint>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Other info">
+        <mat-hint>Any other info you want to include. E.g., years of experience? Other benefits? Any unusual agreements?</mat-hint>
+      </mat-form-field>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary">Add Salary</button>
+    </mat-card-actions>
+  </mat-card>
 </div>
