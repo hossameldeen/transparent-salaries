@@ -13,14 +13,21 @@ A Beaker-browser website for sharing salaries.
 - Create an empty Beaker-browser website.
 - Set its local directory to `<some-path>`.
 
-### Build & Run
+### Auto-reload
+
+You can have auto build & reload on changes. However, it'll keep whole files between each change, so it'll take a lot of disk space. So, use in a throw-away Beaker-browser website.
+
+- In the project root, run `yarn install`.
+- In the project root, run `yarn run watch --output-path=<some-path>`.
+- In Beaker Browser, from the menu: open `Library`. Go to the website you've created. Open its url from the topright.
+- From the 3 dots in the url bar, `Toggle live reloading`.
+
+### Deploy
 
 - In the project root, run `yarn install`.
 - In the project root, run `yarn run build`.
 - Manually copy the build artifacts under `dist/salary-transparency` to `<some-path>`.
 - In Beaker Browser, from the menu: open `Library`. Go to the website you've created. Open its url from the topright.
-
-Yes, unfortunately, it's pretty manual :(. That's because workspace UI is currently being replaced in Beaker Browser.
 
 ## Docs
 
