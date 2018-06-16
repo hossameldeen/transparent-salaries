@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 
+// TODO: Copy-pasted because I couldn't make it in its own type-declaration file
 declare class DatArchive {
   static selectArchive(opts: any): Promise<DatArchive>;
   static create(opts: any): Promise<DatArchive>;
@@ -14,8 +15,6 @@ declare class DatArchive {
 export class AppComponent {
   state: State;
   StateKind = StateKind;
-
-  newProfileName: string = '';
 
   constructor() {
     const profileUrl = localStorage.getItem('profileUrl')
@@ -45,7 +44,7 @@ export class AppComponent {
   async createProfile() {
     try {
       const profile = await DatArchive.create({
-        title: `Salary-Transparency Profile: ${this.newProfileName}`,
+        title: `Salary-Transparency Profile: <Replace this with a name you want to give to the profile>`,
         buttonLabel: 'Select profile',
         filters: {
           isOwner: true

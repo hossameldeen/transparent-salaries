@@ -5,10 +5,12 @@ import { MatButtonModule, MatCardModule, MatTabsModule, MatInputModule, MatFormF
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { AppComponent } from './components/app/app.component';
+import { HomeComponent } from './components/home.component/home.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
