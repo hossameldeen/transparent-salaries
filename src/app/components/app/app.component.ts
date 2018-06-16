@@ -1,13 +1,5 @@
 import { Component } from '@angular/core';
 
-// TODO: Copy-pasted because I couldn't make it in its own type-declaration file
-declare class DatArchive {
-  static selectArchive(opts: any): Promise<DatArchive>;
-  static create(opts: any): Promise<DatArchive>;
-  constructor(datUrl: String);
-  url: string;
-}
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html'
