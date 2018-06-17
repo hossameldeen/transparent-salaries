@@ -4,8 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "watch": "ng build --prod --watch --delete-output-path=false",
-    "build": "ng build --prod",
+    "watch": "ng build --watch --delete-output-path=false",
+    "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

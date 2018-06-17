@@ -27,7 +27,7 @@ Note: This doesn't delete unused old output files. But it's okay, that's good en
 ### Deploy
 
 - In the project root, run `yarn install`.
-- In the project root, run `yarn run build`.
+- In the project root, run `yarn run build --prod`. **Don't forget the `--prod`!**
 - Manually copy the build artifacts under `dist/salary-transparency` to `<some-path>`.
 - In Beaker Browser, from the menu: open `Library`. Go to the website you've created. Open its url from the topright.
 
