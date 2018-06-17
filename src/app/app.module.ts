@@ -5,7 +5,7 @@ import { MatButtonModule, MatCardModule, MatTabsModule, MatInputModule, MatFormF
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { AppComponent } from './components/app/app.component';
-import { HomeComponent } from './components/home.component/home.component';
+import { HomeComponent } from './components/home/home.component';
 
 @NgModule({
   declarations: [
