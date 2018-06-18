@@ -29,7 +29,7 @@ class Salary {
 }
 
 const ELEMENT_DATA = [
-  new Salary("2018-06", "2", "3", "4", "5", "6"),
-  new Salary("1", "2", "3", "4", "5", "6"),
-  new Salary("1", "2", "3", "4", "5", "6")
+  new Salary("2018-06", "Valeo", "Software Engineer - Tooling", "14000", "EGP", "~1 year of experience"),
+  new Salary("2018-06", "Emerge", "Software Engineer", "900", "USD", "~2 years of experience"),
+  new Salary("2018-06", "C3S", "Software Engineer", "1000", "USD", "~1 year of experience http://www.c3s.co/ - no insurance")
 ]
