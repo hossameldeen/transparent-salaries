@@ -1,0 +1,40 @@
+<mat-table [dataSource]="dataSource">
+
+    <ng-container matColumnDef="month">
+      <mat-header-cell *matHeaderCellDef> Month </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <ng-container *ngIf="!row.editing"> {{row.currentData.month}} </ng-container>
+        <mat-form-field *ngIf="row.editing">
+          <input matInput placeholder="Month" [value]="row.currentData.month">
+        </mat-form-field>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="actionsColumn">
+      <mat-header-cell *matHeaderCellDef>
+        <button mat-icon-button color="accent" matTooltip="Add new salary" (click)="dataSource.createNew()"><mat-icon>add</mat-icon></button>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <ng-container *ngIf="!row.editing">
+          <button mat-icon-button color="primary" matTooltip="Edit" focusable="false" (click)="row.startEdit()">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" matTooltip="Delete" focusable="false" (click)="row.delete()">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </ng-container>
+        <ng-container *ngIf="row.editing">
+          <button mat-icon-button color="primary" matTooltip="Confirm" focusable="false" (click)="row.confirmEditCreate()">
+            <mat-icon>check</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" matTooltip="Cancel" focusable="false" (click)="row.cancelOrDelete()">
+            <mat-icon>clear</mat-icon>
+          </button>
+        </ng-container>
+      </mat-cell>
+    </ng-container>
+  
+    <!-- Header and Row Declarations -->
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+  </mat-table>

@@ -1,6 +1,6 @@
-<div fxLayout="column">
-  <div fxFlex="3vh"></div>
+<div fxLayout="column" fxLayoutGap="3vh">
   <h1>Hello, {{profileDatArchive.url}}!</h1>
+  <app-salaries [profileDatArchive]="profileDatArchive"></app-salaries>
   <div fxLayout>
     <mat-card fxLayout="column">
       <mat-card-title>Add a salary</mat-card-title>
