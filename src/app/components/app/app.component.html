@@ -1,6 +1,7 @@
 <div fxLayout="column">
   <mat-toolbar fxLayout="row wrap" fxLayoutAlign="start center" fxLayoutGap="2vw" color="primary">
-    <span>Salary Transparency</span>
+    <!-- TODO: Rename the project to `Transparent Salaries`-->
+    <span>Transparent Salaries</span>
     <span fxFlex></span>
     <ng-container [ngSwitch]="state.kind">
       <ng-container *ngSwitchCase="StateKind.ProfileNotSelected">
@@ -20,9 +21,9 @@
         <mat-card fxLayout="column" fxLayoutAlign="start center">
           <h1 fxFlexAlign="start">Help others share their salaries anonymously.</h1>
           <h1 fxFlexAlign="start">Indicate who is trustworthy.</h1>
-          <h1 fxFlexAlign="start">Earn others' trust.</h1>
+          <h1 fxFlexAlign="start">Be trusted by others.</h1>
           <br/>
-          <h2>Join Salary Transparency now.</h2>
+          <h2>Join Transparent Salaries now.</h2>
           <div fxLayout="column" fxLayoutGap="2vh">
             <button mat-raised-button color="primary" (click)="createProfile()">Create a new profile</button>
             <button mat-stroked-button color="primary" (click)="selectProfile()">Use an existing profile</button>
