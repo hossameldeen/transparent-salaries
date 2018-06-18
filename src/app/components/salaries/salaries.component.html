@@ -1,11 +1,65 @@
-<mat-table [dataSource]="dataSource">
+<mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
     <ng-container matColumnDef="month">
       <mat-header-cell *matHeaderCellDef> Month </mat-header-cell>
       <mat-cell *matCellDef="let row">
         <ng-container *ngIf="!row.editing"> {{row.currentData.month}} </ng-container>
         <mat-form-field *ngIf="row.editing">
-          <input matInput placeholder="Month" [value]="row.currentData.month">
+          <input matInput placeholder="Month" type="month" [value]="row.currentData.month" (input)="row.currentData.month=$event.target.value">
+          <mat-hint>Any month this salary was paid on.</mat-hint>
+        </mat-form-field>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="company">
+      <mat-header-cell *matHeaderCellDef> Company </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <ng-container *ngIf="!row.editing"> {{row.currentData.company}} </ng-container>
+        <mat-form-field *ngIf="row.editing">
+          <input matInput placeholder="Company" [value]="row.currentData.company" (input)="row.currentData.company=$event.target.value">
+        </mat-form-field>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="job">
+      <mat-header-cell *matHeaderCellDef> Job </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <ng-container *ngIf="!row.editing"> {{row.currentData.job}} </ng-container>
+        <mat-form-field *ngIf="row.editing">
+          <input matInput placeholder="Job" [value]="row.currentData.job" (input)="row.currentData.job=$event.target.value">
+        </mat-form-field>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="netSalary">
+      <mat-header-cell *matHeaderCellDef> Net salary </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <ng-container *ngIf="!row.editing"> {{row.currentData.netSalary}} </ng-container>
+        <mat-form-field *ngIf="row.editing">
+          <input matInput placeholder="Net salary" type="number" [value]="row.currentData.netSalary" (input)="row.currentData.netSalary=$event.target.value">
+          <mat-hint>Salary after taxes, ... etc.</mat-hint>
+        </mat-form-field>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="currency">
+      <mat-header-cell *matHeaderCellDef> Currency </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <ng-container *ngIf="!row.editing"> {{row.currentData.currency}} </ng-container>
+        <mat-form-field *ngIf="row.editing">
+          <input matInput placeholder="Currency" [value]="row.currentData.currency" (input)="row.currentData.currency=$event.target.value">
+          <mat-hint>E.g., USD, EGP, ... etc.</mat-hint>
+        </mat-form-field>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="otherInfo">
+      <mat-header-cell *matHeaderCellDef> Other info </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <ng-container *ngIf="!row.editing"> {{row.currentData.otherInfo}} </ng-container>
+        <mat-form-field *ngIf="row.editing">
+          <input matInput placeholder="Other info" [value]="row.currentData.otherInfo" (input)="row.currentData.otherInfo=$event.target.value">
+          <mat-hint>Any other info you want to include.</mat-hint>
         </mat-form-field>
       </mat-cell>
     </ng-container>
