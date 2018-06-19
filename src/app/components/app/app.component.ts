@@ -36,7 +36,7 @@ export class AppComponent {
   async createProfile() {
     try {
       const profile = await DatArchive.create({
-        title: `Salary-Transparency Profile: <Replace this with a name you want to give to the profile>`,
+        title: `Salary-Transparency Profile: <Replace with profile name>`,
         buttonLabel: 'Select profile',
         filters: {
           isOwner: true
