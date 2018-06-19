@@ -1,6 +1,7 @@
 <div fxLayout="column" fxLayoutGap="3vh">
   <div fxFlex="3vh"></div>
+  <app-profile [profileDatArchive]="profileDatArchive"></app-profile>
   <h1>Salaries collected by {{profileDatArchive.url}}:</h1>
-  <app-salaries fxFlexFill [profileDatArchive]="profileDatArchive"></app-salaries>
+  <app-salaries [profileDatArchive]="profileDatArchive"></app-salaries>
   <div fxFlex="3vh"></div>
 </div>

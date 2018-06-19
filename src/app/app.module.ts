@@ -1,17 +1,19 @@
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { MatButtonModule, MatCardModule, MatTabsModule, MatInputModule, MatFormFieldModule, MatToolbarModule, MatTableModule, MatIconModule, MatTooltipModule } from '@angular/material';
+import { MatButtonModule, MatCardModule, MatTabsModule, MatInputModule, MatFormFieldModule, MatToolbarModule, MatTableModule, MatIconModule, MatTooltipModule, MatDividerModule } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { AppComponent } from './components/app/app.component';
 import { HomeComponent } from './components/home/home.component';
+import { ProfileComponent } from './components/profile/profile.component';
 import { SalariesComponent } from './components/salaries/salaries.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
+    ProfileComponent,
     SalariesComponent
   ],
   imports: [
@@ -26,7 +28,8 @@ import { SalariesComponent } from './components/salaries/salaries.component';
     MatToolbarModule,
     MatTableModule,
     MatIconModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatDividerModule
   ],
   providers: [],
   bootstrap: [AppComponent]
