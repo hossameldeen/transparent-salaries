@@ -14,9 +14,40 @@ import { v4 as uuid } from 'uuid';
 export class DBService {
 
   // TODO: Of course, change this to actual PK & version when publishing isA.
-  readonly BASE_DIR: string = "/60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6/version/545";
+  readonly BASE_DIR_COMPONENTS = [
+    '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6',
+    'version',
+    '545'
+  ]
+  readonly BASE_DIR = '/' + this.BASE_DIR_COMPONENTS.join('/');
+  readonly TABLES_NAMES = ['salaries', 'trustees']
 
   constructor() { }
+
+  async isDBInitialized(datArchive: DatArchive): Promise<boolean> {
+    try {
+      const tables = await datArchive.readdir(this.BASE_DIR)
+      if (tables.length !== this.TABLES_NAMES.length)
+        return false
+      for (const tableName of this.TABLES_NAMES)
+        if (!tables.includes(tableName))
+          return false
+      return true
+    }
+    catch (e) {
+      return false;
+    }
+  }
+
+  async initDB(datArchive: DatArchive): Promise<void> {
+    let base = ''
+    for (const baseDirComponent of this.BASE_DIR_COMPONENTS) {
+      base = base + '/' + baseDirComponent;
+      await datArchive.mkdir(base)
+    }
+    for (const tableName of this.TABLES_NAMES)
+      await datArchive.mkdir(base + '/' + tableName)
+  }
 
   /**
    * Will JSON.stringify(...) on whatever jsonStringifiable is sent.

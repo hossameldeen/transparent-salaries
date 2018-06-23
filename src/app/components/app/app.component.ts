@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { UtilService } from 'src/app/services/util.service';
+import { DBService } from 'src/app/services/db.service';
+import { MatSnackBar, MatProgressBarModule } from '@angular/material';
 
 @Component({
   selector: 'app-root',
@@ -7,8 +10,9 @@ import { Component } from '@angular/core';
 export class AppComponent {
   state: State;
   StateKind = StateKind;
+  backgroundProcesses = 0; // TODO: technical debt. What if an exception is thrown?
 
-  constructor() {
+  constructor(private utilService: UtilService, private dbService: DBService, private snackBar: MatSnackBar) {
     const profileUrl = localStorage.getItem('profileUrl')
     if (profileUrl)
       this.state = { kind: StateKind.ProfileSelected, datArchive: new DatArchive(profileUrl)}
@@ -16,38 +20,65 @@ export class AppComponent {
       this.state = { kind: StateKind.ProfileNotSelected }
   }
 
-  async selectProfile() {
+  async createProfile() {
+    const profile = await this.utilService.datArchiveCreate({
+      title: `Salary-Transparency Profile: <Replace with profile name>`,
+      buttonLabel: 'Select profile',
+      filters: {
+        isOwner: true
+      }
+    })
+
+    if (profile === null)
+      return
+    
     try {
-      const profile = await DatArchive.selectArchive({
-        title: 'Select an archive to use as your user profile',
-        buttonLabel: 'Select profile',
-        filters: {
-          isOwner: true
-        }
-      })
+      ++this.backgroundProcesses
+      await this.dbService.initDB(profile)
       this.state = { kind: StateKind.ProfileSelected, datArchive: profile }
       localStorage.setItem('profileUrl', profile.url)
     }
     catch (e) {
-      // If user clicks 'Cancel', they go here. But can they go here due to other reasons?
+      this.snackBar.open("Couldn't initialize your profile and that's all I know :(", "Dismiss")
     }
+    --this.backgroundProcesses
   }
 
-  async createProfile() {
-    try {
-      const profile = await DatArchive.create({
-        title: `Salary-Transparency Profile: <Replace with profile name>`,
-        buttonLabel: 'Select profile',
-        filters: {
-          isOwner: true
-        }
-      })
+  async selectProfile() {
+    const profile = await this.utilService.datArchiveSelectArchive({
+      title: 'Select an archive to use as your user profile',
+      buttonLabel: 'Select profile',
+      filters: {
+        isOwner: true
+      }
+    })
+
+    if (profile === null)
+      return
+
+    ++this.backgroundProcesses
+
+    if (await this.dbService.isDBInitialized(profile)) {
       this.state = { kind: StateKind.ProfileSelected, datArchive: profile }
       localStorage.setItem('profileUrl', profile.url)
+      --this.backgroundProcesses
+      return
     }
-    catch (e) {
-      // If user clicks 'Cancel', they go here. But can they go here due to other reasons?
+
+    if (await this.utilService.isNewArchive(profile)) {
+      await this.dbService.initDB(profile)
+      this.state = { kind: StateKind.ProfileSelected, datArchive: profile }
+      localStorage.setItem('profileUrl', profile.url)
+      --this.backgroundProcesses
+      return
     }
+
+    this.snackBar.open(`The archive you've selected doesn't seem to be a valid Transparent-Salaries profile.
+      Are you sure you've used it as a profile before?
+      If you haven't created a profile, you can create a new one!
+    `, "Dismiss")
+
+    --this.backgroundProcesses
   }
 
   logout() {
