@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { TableDataSource } from 'angular4-material-table';
+import { Salary } from 'src/app/models/salary.model';
 
 @Component({
   selector: 'app-salaries',
@@ -15,17 +16,6 @@ export class SalariesComponent {
   constructor() {
     this.dataSource = new TableDataSource<Salary>(ELEMENT_DATA, undefined, undefined, { prependNewElements: true })
   }
-}
-
-class Salary {
-  constructor(
-    readonly month: string,
-    readonly company: string,
-    readonly job: string,
-    readonly netSalary: string,
-    readonly currency: string,
-    readonly otherInfo: string
-  ) { }
 }
 
 const ELEMENT_DATA = [
