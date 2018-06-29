@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { TableDataSource } from 'angular4-material-table';
 import { Salary } from 'src/app/models/salary.model';
 import { UtilService } from 'src/app/services/util.service';
+import { Lockable } from 'src/app/models/lockable.model';
 
 @Component({
   selector: 'app-salaries',
@@ -11,11 +12,54 @@ export class SalariesComponent {
 
   @Input() profileDatArchive: DatArchive;
 
-  displayedColumns: string[] = ['month', 'company', 'job', 'netSalary', 'currency', 'otherInfo', 'actionsColumn'];
-  dataSource: TableDataSource<Salary>;
+  /**
+   * Pretty much taken from the html.
+   * 
+   * `hintText` can be omitted.
+   */
+  readonly columnsConfigs = [
+    {
+      matColumnDef: 'month', matHeaderCellDef: 'Month',
+      propertyName: 'month',
+      inputPlaceholder: 'Month', inputType: 'month',
+      hintText: 'Any month this salary was paid on.'
+    },
+    {
+      matColumnDef: 'company', matHeaderCellDef: 'Company',
+      propertyName: 'company',
+      inputPlaceholder: 'Company', inputType: 'text'
+    },
+    {
+      matColumnDef: 'job', matHeaderCellDef: 'Job',
+      propertyName: 'job',
+      inputPlaceholder: 'Job', inputType: 'text'
+    },
+    {
+      matColumnDef: 'netSalary', matHeaderCellDef: 'Net salary',
+      propertyName: 'netSalary',
+      inputPlaceholder: 'Net salary', inputType: 'number',
+      hintText: 'Salary after taxes, ... etc.'
+    },
+    {
+      matColumnDef: 'currency', matHeaderCellDef: 'Currency',
+      propertyName: 'currency',
+      inputPlaceholder: 'Currency', inputType: 'text',
+      hintText: 'E.g., USD, EGP, ... etc.'
+    },
+    {
+      matColumnDef: 'otherInfo', matHeaderCellDef: 'Other info',
+      propertyName: 'otherInfo',
+      inputPlaceholder: 'Other info', inputType: 'text',
+      hintText: 'Any other info you want to include.'
+    },
+  ];
+
+  readonly displayedColumns: string[] = this.columnsConfigs.map(cc => cc.matColumnDef).concat('actionsColumn');
+  readonly dataSource: TableDataSource<Lockable<Salary>>;
 
   constructor(private readonly utilService: UtilService) {
-    this.dataSource = new TableDataSource<Salary>(ELEMENT_DATA, undefined, undefined, { prependNewElements: true })
+    const elementData = ELEMENT_DATA.map(e => new Lockable(false, e))
+    this.dataSource = new TableDataSource<Lockable<Salary>>(elementData, undefined, undefined, { prependNewElements: true })
   }
 
   /**
@@ -24,7 +68,7 @@ export class SalariesComponent {
   createNewWithDefaultValues() {
     this.dataSource.createNew()
     const row = this.dataSource.getRow(-1)
-    row.currentData = new Salary(this.utilService.getCurrentMonth(), '', '', '', '', '')
+    row.currentData = new Lockable(false, new Salary(this.utilService.getCurrentMonth(), '', '', '', '', ''))
   }
 }
 
