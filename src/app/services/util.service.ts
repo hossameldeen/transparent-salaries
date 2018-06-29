@@ -35,4 +35,10 @@ export class UtilService {
   async isNewArchive(datArchive: DatArchive): Promise<boolean> {
     return (await datArchive.getInfo()).version === 2
   }
+
+  getCurrentMonth(): string {
+    const year = new Date().getFullYear()
+    const month = new Date().getMonth() + 1
+    return year.toString() + '-' + (month < 10 ? '0' + month.toString() : month.toString())
+  }
 }

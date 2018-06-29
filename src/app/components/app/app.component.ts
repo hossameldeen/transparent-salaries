@@ -12,7 +12,11 @@ export class AppComponent {
   StateKind = StateKind;
   backgroundProcesses = 0; // TODO: technical debt. What if an exception is thrown?
 
-  constructor(private utilService: UtilService, private dbService: DBService, private snackBar: MatSnackBar) {
+  constructor(
+    private readonly utilService: UtilService,
+    private readonly dbService: DBService,
+    private readonly snackBar: MatSnackBar
+  ) {
     const profileUrl = localStorage.getItem('profileUrl')
     if (profileUrl)
       this.state = { kind: StateKind.ProfileSelected, datArchive: new DatArchive(profileUrl)}

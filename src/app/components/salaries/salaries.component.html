@@ -66,7 +66,7 @@
 
     <ng-container matColumnDef="actionsColumn">
       <mat-header-cell *matHeaderCellDef>
-        <button mat-icon-button color="accent" matTooltip="Add new salary" (click)="dataSource.createNew()"><mat-icon>add</mat-icon></button>
+        <button mat-icon-button color="accent" matTooltip="Add new salary" (click)="createNewWithDefaultValues()"><mat-icon>add</mat-icon></button>
       </mat-header-cell>
       <mat-cell *matCellDef="let row">
         <ng-container *ngIf="!row.editing">
