@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { TableDataSource } from 'angular4-material-table';
+import { TableDataSource, TableElement } from 'angular4-material-table';
 import { Salary } from 'src/app/models/salary.model';
 import { UtilService } from 'src/app/services/util.service';
 import { Lockable } from 'src/app/models/lockable.model';
@@ -69,6 +69,18 @@ export class SalariesComponent {
     this.dataSource.createNew()
     const row = this.dataSource.getRow(-1)
     row.currentData = new Lockable(false, new Salary(this.utilService.getCurrentMonth(), '', '', '', '', ''))
+  }
+
+  delete(row: TableElement<Lockable<Salary>>) {
+    // TODO: The if-condition is a temp workaround. Check https://github.com/irossimoline/angular4-material-table/issues/17
+    if (row.currentData !== undefined) {
+      row.currentData = new Lockable(true, row.currentData.data)
+      setTimeout(() => {
+        // same as if-condition above
+        if (row.currentData !== undefined)
+          row.currentData = new Lockable(false, row.currentData.data); row.delete()
+      }, 3000)
+    }
   }
 }
 

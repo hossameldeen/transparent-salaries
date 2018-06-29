@@ -5,7 +5,7 @@
     <mat-cell *matCellDef="let row">
       <ng-container *ngIf="!row.editing"> {{row.currentData.data[cc.propertyName]}} </ng-container>
       <mat-form-field *ngIf="row.editing">
-        <input matInput placeholder="{{cc.placeholder}}" type="cc.type" [value]="row.currentData.data[cc.propertyName]" (input)="row.currentData.data[cc.propertyName]=$event.target.value" [disabled]="row.locked">
+        <input matInput placeholder="{{cc.placeholder}}" type="cc.type" [value]="row.currentData.data[cc.propertyName]" (input)="row.currentData.data[cc.propertyName]=$event.target.value" [disabled]="row.currentData.locked">
         <mat-hint *ngIf="cc.hintText"> {{cc.hintText}} </mat-hint>
       </mat-form-field>
     </mat-cell>
@@ -17,21 +17,22 @@
     </mat-header-cell>
     <mat-cell *matCellDef="let row">
       <ng-container *ngIf="!row.editing">
-        <button mat-icon-button color="primary" matTooltip="Edit" focusable="false" (click)="row.startEdit()">
+        <button mat-icon-button color="primary" matTooltip="Edit" focusable="false" (click)="row.startEdit()" [disabled]="row.currentData.locked">
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button color="primary" matTooltip="Delete" focusable="false" (click)="row.delete()">
+        <button mat-icon-button color="primary" matTooltip="Delete" focusable="false" (click)="delete(row)" [disabled]="row.currentData.locked">
           <mat-icon>delete</mat-icon>
         </button>
       </ng-container>
       <ng-container *ngIf="row.editing">
-        <button mat-icon-button color="primary" matTooltip="Confirm" focusable="false" (click)="row.confirmEditCreate()">
+        <button mat-icon-button color="primary" matTooltip="Confirm" focusable="false" (click)="row.confirmEditCreate()" [disabled]="row.currentData.locked">
           <mat-icon>check</mat-icon>
         </button>
-        <button mat-icon-button color="primary" matTooltip="Cancel" focusable="false" (click)="row.cancelOrDelete()">
+        <button mat-icon-button color="primary" matTooltip="Cancel" focusable="false" (click)="row.cancelOrDelete()" [disabled]="row.currentData.locked">
           <mat-icon>clear</mat-icon>
         </button>
       </ng-container>
+      <mat-spinner *ngIf="row.currentData.locked" [diameter]="24"></mat-spinner>
     </mat-cell>
   </ng-container>
   
