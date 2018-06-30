@@ -41,4 +41,8 @@ export class UtilService {
     const month = new Date().getMonth() + 1
     return year.toString() + '-' + (month < 10 ? '0' + month.toString() : month.toString())
   }
+
+  assertNever(x: never): never {
+    throw new Error("Unexpected object: " + x);
+  }
 }

@@ -2,7 +2,8 @@ import { Component, Input } from '@angular/core';
 import { TableDataSource, TableElement } from 'angular4-material-table';
 import { Salary } from 'src/app/models/salary.model';
 import { UtilService } from 'src/app/services/util.service';
-import { Lockable } from 'src/app/models/lockable.model';
+import { DBRow } from 'src/app/models/db-row.model';
+import { DBService } from 'src/app/services/db.service';
 
 @Component({
   selector: 'app-salaries',
@@ -55,11 +56,24 @@ export class SalariesComponent {
   ];
 
   readonly displayedColumns: string[] = this.columnsConfigs.map(cc => cc.matColumnDef).concat('actionsColumn');
-  readonly dataSource: TableDataSource<Lockable<Salary>>;
+  readonly dataSource: TableDataSource<TableRow>;
 
-  constructor(private readonly utilService: UtilService) {
-    const elementData = ELEMENT_DATA.map(e => new Lockable(false, e))
-    this.dataSource = new TableDataSource<Lockable<Salary>>(elementData, undefined, undefined, { prependNewElements: true })
+  constructor(
+    private readonly dbService: DBService,
+    private readonly utilService: UtilService
+  ) {
+    // this.dataSource = new TableDataSource<TableRow>(ELEMENT_DATA.map(e => new ExistingRow(new DBRow('', e))), undefined, undefined, { prependNewElements: true })
+    // TODO: An ugly hack, adding a row & removing it. Doing that because I don't know how to send a property dataType/constructor.
+    this.dataSource = new TableDataSource<TableRow>([new NewRow(new Salary('', '', '', '', '', ''))], undefined, undefined, { prependNewElements: true })
+    this.dataSource.getRow(0).delete()
+  }
+
+  salary(row: TableRow): Salary {
+    switch (row.kind) {
+      case TableRowKind.ExistingRow: return row.salaryDBRow.dbRowData
+      case TableRowKind.NewRow: return row.salary
+      default: return this.utilService.assertNever(row)
+    }
   }
 
   /**
@@ -68,20 +82,58 @@ export class SalariesComponent {
   createNewWithDefaultValues() {
     this.dataSource.createNew()
     const row = this.dataSource.getRow(-1)
-    row.currentData = new Lockable(false, new Salary(this.utilService.getCurrentMonth(), '', '', '', '', ''))
+    row.currentData = new NewRow(new Salary(this.utilService.getCurrentMonth(), '', '', '', '', ''))
   }
 
-  delete(row: TableElement<Lockable<Salary>>) {
-    // TODO: The if-condition is a temp workaround. Check https://github.com/irossimoline/angular4-material-table/issues/17
-    if (row.currentData !== undefined) {
-      row.currentData = new Lockable(true, row.currentData.lockableData)
-      setTimeout(() => {
-        // same as if-condition above
-        if (row.currentData !== undefined)
-          row.currentData = new Lockable(false, row.currentData.lockableData); row.delete()
-      }, 3000)
-    }
+  delete(row: TableElement<ExistingRow>) {
+    row.currentData = new ExistingRow(row.currentData.salaryDBRow, true)
+    setTimeout(() => {
+      row.currentData = new ExistingRow(row.currentData.salaryDBRow, false);
+      row.delete()
+    }, 3000)
   }
+
+  async confirmEditCreate(row: TableElement<TableRow>) {
+    switch (row.currentData.kind) {
+      case TableRowKind.ExistingRow: {
+        row.currentData = new ExistingRow(row.currentData.salaryDBRow, true)
+        const salaryDBRow = await this.dbService.putRow2<Salary>(this.profileDatArchive, 'salaries', row.currentData.salaryDBRow.dbRowData, row.currentData.salaryDBRow.uuid)
+        row.currentData = new ExistingRow(salaryDBRow, false)
+        break;
+      }
+      case TableRowKind.NewRow: {
+        row.currentData = new NewRow(row.currentData.salary, true)
+        const salaryDBRow = await this.dbService.putRow<Salary>(this.profileDatArchive, 'salaries', row.currentData.salary)
+        row.currentData = new ExistingRow(salaryDBRow, false)
+        break;
+      }
+      default: this.utilService.assertNever(row.currentData)
+    }
+    row.confirmEditCreate()
+  }
+}
+
+/**
+ * Either a new Salary, or a DBRow of an existing salary
+ */
+type TableRow = ExistingRow | NewRow
+
+enum TableRowKind { ExistingRow, NewRow }
+
+class ExistingRow {
+  constructor(
+    readonly salaryDBRow: DBRow<Salary>,
+    readonly locked: boolean = false,
+    readonly kind: TableRowKind.ExistingRow = TableRowKind.ExistingRow
+  ) { }
+}
+
+class NewRow {
+  constructor(
+    readonly salary: Salary,
+    readonly locked: boolean = false,
+    readonly kind: TableRowKind.NewRow = TableRowKind.NewRow
+  ) { }
 }
 
 const ELEMENT_DATA = [

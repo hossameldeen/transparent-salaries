@@ -3,9 +3,9 @@
   <ng-container *ngFor="let cc of columnsConfigs;" matColumnDef="{{cc.matColumnDef}}">
     <mat-header-cell *matHeaderCellDef> {{cc.matHeaderCellDef}} </mat-header-cell>
     <mat-cell *matCellDef="let row">
-      <ng-container *ngIf="!row.editing"> {{row.currentData.lockableData[cc.propertyName]}} </ng-container>
+      <ng-container *ngIf="!row.editing"> {{salary(row.currentData)[cc.propertyName]}} </ng-container>
       <mat-form-field *ngIf="row.editing">
-        <input matInput placeholder="{{cc.placeholder}}" type="cc.type" [value]="row.currentData.lockableData[cc.propertyName]" (input)="row.currentData.lockableData[cc.propertyName]=$event.target.value" [disabled]="row.currentData.locked">
+        <input matInput placeholder="{{cc.placeholder}}" type="{{cc.inputType}}" [value]="salary(row.currentData)[cc.propertyName]" (input)="salary(row.currentData)[cc.propertyName]=$event.target.value" [disabled]="row.currentData.locked">
         <mat-hint *ngIf="cc.hintText"> {{cc.hintText}} </mat-hint>
       </mat-form-field>
     </mat-cell>
@@ -25,7 +25,7 @@
         </button>
       </ng-container>
       <ng-container *ngIf="row.editing">
-        <button mat-icon-button color="primary" matTooltip="Confirm" focusable="false" (click)="row.confirmEditCreate()" [disabled]="row.currentData.locked">
+        <button mat-icon-button color="primary" matTooltip="Confirm" focusable="false" (click)="confirmEditCreate(row)" [disabled]="row.currentData.locked">
           <mat-icon>check</mat-icon>
         </button>
         <button mat-icon-button color="primary" matTooltip="Cancel" focusable="false" (click)="row.cancelOrDelete()" [disabled]="row.currentData.locked">

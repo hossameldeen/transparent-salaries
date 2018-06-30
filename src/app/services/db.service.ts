@@ -63,7 +63,7 @@ export class DBService {
    */
   async putRow2<T>(datArchive: DatArchive, tableName: string, jsonStringifiable: T, uuid: string): Promise<DBRow<T>> {
     const row = new DBRow(uuid, jsonStringifiable)
-    await datArchive.writeFile(this.wp(tableName + "/" + row.uuid + ".json"), row.dbRowData)
+    await datArchive.writeFile(this.wp(tableName + "/" + row.uuid + ".json"), JSON.stringify(row.dbRowData))
     return row
   }
 
