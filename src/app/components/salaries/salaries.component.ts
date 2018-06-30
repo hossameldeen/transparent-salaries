@@ -74,11 +74,11 @@ export class SalariesComponent {
   delete(row: TableElement<Lockable<Salary>>) {
     // TODO: The if-condition is a temp workaround. Check https://github.com/irossimoline/angular4-material-table/issues/17
     if (row.currentData !== undefined) {
-      row.currentData = new Lockable(true, row.currentData.data)
+      row.currentData = new Lockable(true, row.currentData.lockableData)
       setTimeout(() => {
         // same as if-condition above
         if (row.currentData !== undefined)
-          row.currentData = new Lockable(false, row.currentData.data); row.delete()
+          row.currentData = new Lockable(false, row.currentData.lockableData); row.delete()
       }, 3000)
     }
   }
