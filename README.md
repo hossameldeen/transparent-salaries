@@ -38,3 +38,13 @@ You're, obviously, using [Angular Framework](https://angular.io/). You're also u
 The code structure is pretty much by-file-type. For now, one module, with a `components` directory, and if needed, `services` directory, `directives` directory, ... etc.
 
 You haven't decided on the UI yet. The code state is now an example of using Angular Material & Angular Flex-layout.
+
+## TODOs
+
+Next free TODO number: 1
+
+### Not Resolved Yet
+
+1) Log errors caught & suggest the user to check the Console if they are a programmer.
+
+### Resolved
