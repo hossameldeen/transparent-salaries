@@ -14,6 +14,7 @@ import { MatSnackBar } from '@angular/material';
 export class SalariesComponent implements OnInit {
 
   @Input() profileDatArchive: DatArchive;
+  @Input() isOwner: boolean;
 
   /**
    * Pretty much taken from the html.

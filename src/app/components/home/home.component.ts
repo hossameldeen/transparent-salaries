@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
+import { ProfileService, ProfileStateKind } from 'src/app/services/profile.service';
 
 @Component({
   selector: 'app-home',
@@ -6,8 +7,8 @@ import { Component, Input } from '@angular/core';
 })
 export class HomeComponent {
 
-  @Input() profileDatArchive: DatArchive;
+  ProfileStateKind = ProfileStateKind;
 
-  constructor() { }
+  constructor(readonly profileService: ProfileService) { }
 }
 

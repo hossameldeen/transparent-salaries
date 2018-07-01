@@ -12,6 +12,7 @@ A Beaker-browser website for sharing salaries.
 - Install [Beaker Browser](https://beakerbrowser.com/).
 - Create an empty Beaker-browser website.
 - Set its local directory to `<some-path>`.
+- In its `dat.json`, add `"fallback_page": "/index.html"`
 
 ### Auto-reload
 
@@ -35,16 +36,32 @@ Note: This doesn't delete unused old output files. But it's okay, that's good en
 
 You're, obviously, using [Angular Framework](https://angular.io/). You're also using [Angular Material](https://material.angular.io) and [Angular Flex-layout](https://github.com/angular/flex-layout/wiki/Declarative-API-Overview).
 
-The code structure is pretty much by-file-type. For now, one module, with a `components` directory, and if needed, `services` directory, `directives` directory, ... etc.
+- The code structure is pretty much by-file-type. For now, one module, with `components`, `models`, `services`, and `typings` directories.
+
+- Components are either meant as generic components or top-level page/routing components. The latter should only be used in `routes`. Their name end with `-page` and `Page`, and its `selector` could have more words as a reminder it shouldn't be used that way.
 
 You haven't decided on the UI yet. The code state is now an example of using Angular Material & Angular Flex-layout.
 
 ## TODOs
 
-Next free TODO number: 1
+There're TODOs in the code. Beside them, there're TODOs here.
+
+Next free TODO number: 8
 
 ### Not Resolved Yet
 
 1) Log errors caught & suggest the user to check the Console if they are a programmer.
+
+2) On login, try to write a random string in a file & read it to see if the user really has chosen an archive which they own.
+
+3) Automate the step of adding `"fallback_page": "/index.html"` to `dat.json`.
+
+4) Make a `Home` button in the toolbar.
+
+5) Persist & read `Trustees`.
+
+6) Make `Add Trustee` button on profiles not owned by the user.
+
+7) Remove add/edit/delete buttons from profiles not owner by the user.
 
 ### Resolved

@@ -1,4 +1,4 @@
-<mat-progress-bar mode="indeterminate" *ngIf="showProgressBar" style="position: fixed"></mat-progress-bar>
+<mat-progress-bar mode="indeterminate" *ngIf="progressBarService.showProgressBar" style="position: fixed"></mat-progress-bar>
 <div fxLayout="column">
   <h1 fxFlexAlign="center" style="color: red">PLEASE DO NOT SHARE WITH ANYONE YET! Still work in progress...</h1>
   <h1 fxFlexAlign="center">I'd used this domain for another website, but the people to whom I sent this link should find what they want in this one instead.</h1>
@@ -6,37 +6,16 @@
     <!-- TODO: Rename the project to `Transparent Salaries`-->
     <span>Transparent Salaries</span>
     <span fxFlex></span>
-    <ng-container [ngSwitch]="state.kind">
-      <ng-container *ngSwitchCase="StateKind.ProfileNotSelected">
-        <button mat-stroked-button (click)="selectProfile()">Use an existing profile</button>
-        <button mat-raised-button (click)="createProfile()">Create a new profile</button>
+    <ng-container [ngSwitch]="profileService.state.kind">
+      <ng-container *ngSwitchCase="ProfileStateKind.ProfileNotSelected">
+        <button mat-stroked-button (click)="profileService.selectProfile()">Use an existing profile</button>
+        <button mat-raised-button (click)="profileService.createProfile()">Create a new profile</button>
       </ng-container>
-      <ng-container *ngSwitchCase="StateKind.ProfileSelected">
-        <span>{{state.datArchive.url}}</span>
-        <button mat-stroked-button (click)="logout()">Logout</button>
+      <ng-container *ngSwitchCase="ProfileStateKind.ProfileSelected">
+        <span>{{profileService.state.datArchive.url}}</span>
+        <button mat-stroked-button (click)="profileService.logout()">Logout</button>
       </ng-container>
     </ng-container>
   </mat-toolbar>
-  <ng-container [ngSwitch]="state.kind">
-    <ng-container *ngSwitchCase="StateKind.ProfileNotSelected">
-      <div fxFlex="5vw"></div>
-      <div fxLayoutAlign="center">
-        <mat-card fxLayout="column" fxLayoutAlign="start center">
-          <h1 fxFlexAlign="start">Help others share their salaries anonymously.</h1>
-          <h1 fxFlexAlign="start">Indicate who is trustworthy.</h1>
-          <h1 fxFlexAlign="start">Be trusted by others.</h1>
-          <br/>
-          <h2>Join Transparent Salaries now.</h2>
-          <div fxLayout="column" fxLayoutGap="2vh">
-            <button mat-raised-button color="primary" (click)="createProfile()">Create a new profile</button>
-            <button mat-stroked-button color="primary" (click)="selectProfile()">Use an existing profile</button>
-          </div>
-        </mat-card>
-      </div>
-      <div fxFlex="5vw"></div>
-    </ng-container>
-    <ng-container *ngSwitchCase="StateKind.ProfileSelected">
-      <app-home [profileDatArchive]="state.datArchive"></app-home>
-    </ng-container>
-  </ng-container>
+  <router-outlet></router-outlet>
 </div>

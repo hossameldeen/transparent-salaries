@@ -7,6 +7,7 @@ import { Component, Input } from '@angular/core';
 export class ProfileComponent {
 
   @Input() profileDatArchive: DatArchive;
+  @Input() isOwner: boolean;
   
   trusts: DatArchive[];
 

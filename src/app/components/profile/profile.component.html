@@ -1,14 +1,20 @@
-<div fxLayout fxLayoutAlign="center">
-<mat-card>
-  <mat-card-title>{{profileDatArchive.url}}</mat-card-title>
-  <mat-card-subtitle fxLayout fxLayoutAlign="center">
-    <button mat-raised-button color="primary">Add Trustee</button>
-  </mat-card-subtitle>
-  <mat-divider [inset]="true"></mat-divider>
-  <br/>
-  <mat-card-content fxLayout="column">
-    <h2>Trusts:</h2>
-    <a *ngFor="let trustee of trusts" href="/user/{{trustee.url}}">{{trustee.url}}</a>
-  </mat-card-content>
-</mat-card>
+<div fxLayout="column" fxLayoutGap="3vh">
+  <div fxFlex="3vh"></div>
+  <div fxLayout fxLayoutAlign="center">
+  <mat-card>
+    <mat-card-title>{{profileDatArchive.url}}</mat-card-title>
+    <mat-card-subtitle fxLayout fxLayoutAlign="center">
+      <button mat-raised-button color="primary">Add Trustee</button>
+    </mat-card-subtitle>
+    <mat-divider [inset]="true"></mat-divider>
+    <br/>
+    <mat-card-content fxLayout="column">
+      <h2>Trusts:</h2>
+      <a *ngFor="let trustee of trusts" routerLink="/profile/{{trustee.url.slice(6)}}">{{trustee.url}}</a>
+    </mat-card-content>
+  </mat-card>
+  </div>
+  <h1>Salaries collected by {{profileDatArchive.url}}:</h1>
+  <app-salaries [profileDatArchive]="profileDatArchive" [isOwner]="isOwner"></app-salaries>
+  <div fxFlex="3vh"></div>
 </div>
