@@ -43,6 +43,10 @@ export class UtilService {
   }
 
   assertNever(x: never): never {
-    throw new Error("Unexpected object: " + x);
+    throw new Error("Unexpected object: " + x)
+  }
+
+  wait(milliseconds): Promise<void> {
+    return new Promise((resolve, _) => setTimeout(resolve, milliseconds))
   }
 }

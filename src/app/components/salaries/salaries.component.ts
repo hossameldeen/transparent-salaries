@@ -57,6 +57,7 @@ export class SalariesComponent {
 
   readonly displayedColumns: string[] = this.columnsConfigs.map(cc => cc.matColumnDef).concat('actionsColumn');
   readonly dataSource: TableDataSource<TableRow>;
+  persistingNewSalary: boolean = false;
 
   constructor(
     private readonly dbService: DBService,
@@ -102,13 +103,16 @@ export class SalariesComponent {
         break;
       }
       case TableRowKind.NewRow: {
+        this.persistingNewSalary = true;
         row.currentData = new NewRow(row.currentData.salary, true)
         const salaryDBRow = await this.dbService.putRow<Salary>(this.profileDatArchive, 'salaries', row.currentData.salary)
         row.currentData = new ExistingRow(salaryDBRow, false)
+        this.persistingNewSalary = false;
         break;
       }
       default: this.utilService.assertNever(row.currentData)
     }
+    // TODO: If we add validation later on, we need to check on this call's return value first.
     row.confirmEditCreate()
   }
 }
