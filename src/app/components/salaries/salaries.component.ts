@@ -86,12 +86,10 @@ export class SalariesComponent {
     row.currentData = new NewRow(new Salary(this.utilService.getCurrentMonth(), '', '', '', '', ''))
   }
 
-  delete(row: TableElement<ExistingRow>) {
+  async delete(row: TableElement<ExistingRow>) {
     row.currentData = new ExistingRow(row.currentData.salaryDBRow, true)
-    setTimeout(() => {
-      row.currentData = new ExistingRow(row.currentData.salaryDBRow, false);
-      row.delete()
-    }, 3000)
+    await this.dbService.deleteRow(this.profileDatArchive, 'salaries', row.currentData.salaryDBRow.uuid)
+    row.delete()
   }
 
   async confirmEditCreate(row: TableElement<TableRow>) {
