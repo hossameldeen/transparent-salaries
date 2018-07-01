@@ -68,11 +68,18 @@ export class DBService {
   }
 
   async readRow<T>(datArchive: DatArchive, tableName: string, uuid: string): Promise<DBRow<T>> {
-    return JSON.parse(await datArchive.readFile(this.wp(tableName + "/" + uuid + ".json")))
+    return new DBRow<T>(uuid, JSON.parse(await datArchive.readFile(this.wp(tableName + "/" + uuid + ".json"))))
   }
 
   async deleteRow<T>(datArchive: DatArchive, tableName: string, uuid: string): Promise<void> {
     return await datArchive.unlink(this.wp(tableName + "/" + uuid + ".json"))
+  }
+
+  async getRowsUuids(datArchive: DatArchive, tableName: string): Promise<Array<string>> {
+    const filesNames = await datArchive.readdir(this.wp(tableName))
+    // thanks to https://stackoverflow.com/a/45165923/6690391
+    const uuids = filesNames.map(fileName => fileName.slice(0, -5))
+    return uuids
   }
 
   /**

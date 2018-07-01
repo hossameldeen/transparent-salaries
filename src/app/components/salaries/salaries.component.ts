@@ -1,15 +1,17 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { TableDataSource, TableElement } from 'angular4-material-table';
 import { Salary } from 'src/app/models/salary.model';
 import { UtilService } from 'src/app/services/util.service';
 import { DBRow } from 'src/app/models/db-row.model';
 import { DBService } from 'src/app/services/db.service';
+import { ProgressBarService } from 'src/app/services/progress-bar.service';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-salaries',
   templateUrl: './salaries.component.html'
 })
-export class SalariesComponent {
+export class SalariesComponent implements OnInit {
 
   @Input() profileDatArchive: DatArchive;
 
@@ -61,12 +63,35 @@ export class SalariesComponent {
 
   constructor(
     private readonly dbService: DBService,
-    private readonly utilService: UtilService
+    private readonly progressBarService: ProgressBarService,
+    private readonly snackBar: MatSnackBar,
+    private readonly utilService: UtilService,
   ) {
     // this.dataSource = new TableDataSource<TableRow>(ELEMENT_DATA.map(e => new ExistingRow(new DBRow('', e))), undefined, undefined, { prependNewElements: true })
     // TODO: An ugly hack, adding a row & removing it. Doing that because I don't know how to send a property dataType/constructor.
     this.dataSource = new TableDataSource<TableRow>([new NewRow(new Salary('', '', '', '', '', ''))], undefined, undefined, { prependNewElements: true })
     this.dataSource.getRow(0).delete()
+  }
+
+  ngOnInit(): void {
+    this.progressBarService.pushLoading()
+    this.dbService.getRowsUuids(this.profileDatArchive, 'salaries').then(rowsUuids => {
+      const readRowsPromises = rowsUuids.map(rowUuid => this.dbService.readRow<Salary>(this.profileDatArchive, 'salaries', rowUuid))
+      // thanks to https://stackoverflow.com/a/31424853/6690391
+      const readRowsPromisesCaught = readRowsPromises.map(p => p.then(v => ({ vOrE: v, status: "resolved" })/*, e => ({ vOrE: e, status: "rejected" })*/))
+      return Promise.all(readRowsPromisesCaught)
+    })
+    .then(rets => {
+      const succeeded = rets.filter(ret => ret.status === 'resolved').map(ret => ret.vOrE)
+      this.dataSource.updateDatasource(succeeded.map(salaryDBRow => new ExistingRow(salaryDBRow)))
+      this.progressBarService.popLoading()
+      if (rets.findIndex(ret => ret.status === 'reject') !== -1)
+        this.snackBar.open("Couldn't retrieve some salaries from the profile. That's all I know :(", "Dismiss")
+    })
+    .catch(_ => {
+      this.progressBarService.popLoading()
+      this.snackBar.open("Couldn't retrieve salaries from the profile. That's all I know :(", "Dismiss")
+    })
   }
 
   salary(row: TableRow): Salary {
@@ -137,9 +162,3 @@ class NewRow {
     readonly kind: TableRowKind.NewRow = TableRowKind.NewRow
   ) { }
 }
-
-const ELEMENT_DATA = [
-  new Salary("2018-06", "Valeo", "Software Engineer - Tooling", "14000", "EGP", "~1 year of experience"),
-  new Salary("2018-06", "Emerge", "Software Engineer", "900", "USD", "~2 years of experience"),
-  new Salary("2018-06", "C3S", "Software Engineer", "1000", "USD", "~1 year of experience http://www.c3s.co/ - no insurance")
-]

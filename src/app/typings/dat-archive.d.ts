@@ -34,7 +34,7 @@ declare class DatArchive {
    */
   readFile(path: string, opts?: { encoding?: string, timeout?: number }): Promise<ArrayBuffer>;
 
-  readdir(path: string, opts?: { recursive?: boolean, timeout?: number, stat?: boolean }): Promise<Array<String>>;
+  readdir(path: string, opts?: { recursive?: boolean, timeout?: number, stat?: boolean }): Promise<Array<string>>;
 
   /**
    * @param data there're rules on the allowable types of this parameter; check the docs.

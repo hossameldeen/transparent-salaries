@@ -1,27 +1,40 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { UtilService } from 'src/app/services/util.service';
 import { DBService } from 'src/app/services/db.service';
-import { MatSnackBar, MatProgressBarModule } from '@angular/material';
+import { MatSnackBar } from '@angular/material';
+import { ProgressBarService } from 'src/app/services/progress-bar.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html'
 })
-export class AppComponent {
+export class AppComponent implements OnDestroy {
   state: State;
+  showProgressBar: boolean = false;
+  readonly showProgressBarSubscription: Subscription;
   StateKind = StateKind;
-  backgroundProcesses = 0; // TODO: technical debt. What if an exception is thrown?
 
   constructor(
-    private readonly utilService: UtilService,
     private readonly dbService: DBService,
-    private readonly snackBar: MatSnackBar
+    private readonly progressBarService: ProgressBarService,
+    private readonly snackBar: MatSnackBar,
+    private readonly utilService: UtilService
   ) {
     const profileUrl = localStorage.getItem('profileUrl')
     if (profileUrl)
       this.state = { kind: StateKind.ProfileSelected, datArchive: new DatArchive(profileUrl)}
     else
       this.state = { kind: StateKind.ProfileNotSelected }
+    
+    this.showProgressBarSubscription = this.progressBarService.progressBarObservable.subscribe(e =>
+      this.showProgressBar = e.showProgressBar
+    )
+  }
+
+  ngOnDestroy(): void {
+    // Check this if you have many subscriptions one day: https://stackoverflow.com/a/42274637/6690391
+    this.showProgressBarSubscription.unsubscribe()
   }
 
   async createProfile() {
@@ -37,7 +50,7 @@ export class AppComponent {
       return
     
     try {
-      ++this.backgroundProcesses
+      this.progressBarService.pushLoading()
       await this.dbService.initDB(profile)
       this.state = { kind: StateKind.ProfileSelected, datArchive: profile }
       localStorage.setItem('profileUrl', profile.url)
@@ -45,7 +58,7 @@ export class AppComponent {
     catch (e) {
       this.snackBar.open("Couldn't initialize your profile and that's all I know :(", "Dismiss")
     }
-    --this.backgroundProcesses
+    this.progressBarService.popLoading()
   }
 
   async selectProfile() {
@@ -60,12 +73,12 @@ export class AppComponent {
     if (profile === null)
       return
 
-    ++this.backgroundProcesses
+    this.progressBarService.pushLoading()
 
     if (await this.dbService.isDBInitialized(profile)) {
       this.state = { kind: StateKind.ProfileSelected, datArchive: profile }
       localStorage.setItem('profileUrl', profile.url)
-      --this.backgroundProcesses
+      this.progressBarService.popLoading()
       return
     }
 
@@ -73,7 +86,7 @@ export class AppComponent {
       await this.dbService.initDB(profile)
       this.state = { kind: StateKind.ProfileSelected, datArchive: profile }
       localStorage.setItem('profileUrl', profile.url)
-      --this.backgroundProcesses
+      this.progressBarService.popLoading()
       return
     }
 
@@ -82,7 +95,7 @@ export class AppComponent {
       If you haven't created a profile, you can create a new one!
     `, "Dismiss")
 
-    --this.backgroundProcesses
+    this.progressBarService.popLoading()
   }
 
   logout() {
