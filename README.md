@@ -40,7 +40,7 @@ You're, obviously, using [Angular Framework](https://angular.io/). You're also u
 
 - Components are either meant as generic components or top-level page/routing components. The latter should only be used in `routes`. Their name end with `-page` and `Page`, and its `selector` could have more words as a reminder it shouldn't be used that way.
 
-You haven't decided on the UI yet. The code state is now an example of using Angular Material & Angular Flex-layout.
+- Only page components should access the url.
 
 ## TODOs
 
