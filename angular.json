@@ -123,20 +123,20 @@
       }
     },
     "shared-worker": {
-      "root": "projects/shared-worker",
-      "sourceRoot": "projects/shared-worker/src",
+      "root": "shared-worker",
+      "sourceRoot": "shared-worker/src",
       "projectType": "library",
       "prefix": "shared-worker",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/shared-worker/tsconfig.lib.json",
-            "project": "projects/shared-worker/ng-package.json"
+            "tsConfig": "shared-worker/tsconfig.lib.json",
+            "project": "shared-worker/ng-package.json"
           },
           "configurations": {
             "production": {
-              "project": "projects/shared-worker/ng-package.prod.json"
+              "project": "shared-worker/ng-package.prod.json"
             }
           }
         },
@@ -144,7 +144,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/shared-worker/tsconfig.lib.json"
+              "shared-worker/tsconfig.lib.json"
             ],
             "exclude": [
               "**/node_modules/**"
