@@ -2,6 +2,6 @@
   "$schema": "../node_modules/ng-packagr/ng-package.schema.json",
   "dest": "../dist/shared-worker",
   "lib": {
-    "entryFile": "src/abc-xyz.ts"
+    "entryFile": "src/root-actor.ts"
   }
 }

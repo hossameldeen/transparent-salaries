@@ -3,6 +3,6 @@
   "dest": "../dist/shared-worker",
   "deleteDestPath": false,
   "lib": {
-    "entryFile": "src/abc-xyz.ts"
+    "entryFile": "src/root-actor.ts"
   }
 }
