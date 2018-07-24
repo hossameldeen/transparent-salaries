@@ -1,7 +1,9 @@
 /*
- * Public API Surface of shared-worker
+ * This file is used as entrypoint for a shared-worker. However, seems like angular expects it to be a module. So, I'm
+ * adding a dummy export statement in the end.
  */
 
-export * from './lib/shared-worker.service';
-export * from './lib/shared-worker.component';
-export * from './lib/shared-worker.module';
+/**
+ * A
+ */
+export class A { }

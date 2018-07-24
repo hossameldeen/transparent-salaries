@@ -126,7 +126,7 @@
       "root": "shared-worker",
       "sourceRoot": "shared-worker/src",
       "projectType": "library",
-      "prefix": "lib",
+      "prefix": "shared-worker",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
@@ -140,20 +140,11 @@
             }
           }
         },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "shared-worker/src/test.ts",
-            "tsConfig": "shared-worker/tsconfig.spec.json",
-            "karmaConfig": "shared-worker/karma.conf.js"
-          }
-        },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "shared-worker/tsconfig.lib.json",
-              "shared-worker/tsconfig.spec.json"
+              "shared-worker/tsconfig.lib.json"
             ],
             "exclude": [
               "**/node_modules/**"
