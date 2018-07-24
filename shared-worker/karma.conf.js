@@ -16,6 +16,8 @@ module.exports = function (config) {
       clearContext: false // leave Jasmine Spec Runner output visible in browser
     },
     coverageIstanbulReporter: {
+      // TODO: Does this need to be `../coverage` instead of `../../coverage`?
+      // TODO: Probably won't matter since I'm probably deleting it anyway mwahahaha
       dir: require('path').join(__dirname, '../../coverage'),
       reports: ['html', 'lcovonly'],
       fixWebpackSourcePaths: true

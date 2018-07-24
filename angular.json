@@ -123,37 +123,37 @@
       }
     },
     "shared-worker": {
-      "root": "projects/shared-worker",
-      "sourceRoot": "projects/shared-worker/src",
+      "root": "shared-worker",
+      "sourceRoot": "shared-worker/src",
       "projectType": "library",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/shared-worker/tsconfig.lib.json",
-            "project": "projects/shared-worker/ng-package.json"
+            "tsConfig": "shared-worker/tsconfig.lib.json",
+            "project": "shared-worker/ng-package.json"
           },
           "configurations": {
             "production": {
-              "project": "projects/shared-worker/ng-package.prod.json"
+              "project": "shared-worker/ng-package.prod.json"
             }
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/shared-worker/src/test.ts",
-            "tsConfig": "projects/shared-worker/tsconfig.spec.json",
-            "karmaConfig": "projects/shared-worker/karma.conf.js"
+            "main": "shared-worker/src/test.ts",
+            "tsConfig": "shared-worker/tsconfig.spec.json",
+            "karmaConfig": "shared-worker/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/shared-worker/tsconfig.lib.json",
-              "projects/shared-worker/tsconfig.spec.json"
+              "shared-worker/tsconfig.lib.json",
+              "shared-worker/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"
