@@ -46,7 +46,7 @@ You're, obviously, using [Angular Framework](https://angular.io/). You're also u
 
 There're TODOs in the code. Beside them, there're TODOs here.
 
-Next free TODO number: 8
+Next free TODO number: 9
 
 ### Not Resolved Yet
 
@@ -63,5 +63,8 @@ Next free TODO number: 8
 6) Make `Add Trustee` button on profiles not owned by the user.
 
 7) Remove add/edit/delete buttons from profiles not owner by the user.
+
+8) Currently, `shared-worker` is compiled & pasted into assets by hand.  
+Also, to use Angular's compilation/optimization goodness, I may be adding unnecessary stuff.
 
 ### Resolved

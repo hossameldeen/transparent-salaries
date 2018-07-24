@@ -17,6 +17,14 @@
     "lib": [
       "es2017",
       "dom"
-    ]
+    ],
+    "paths": {
+      "shared-worker": [
+        "dist/shared-worker"
+      ],
+      "shared-worker/*": [
+        "dist/shared-worker/*"
+      ]
+    }
   }
 }
