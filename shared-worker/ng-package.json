@@ -3,6 +3,6 @@
   "dest": "../dist/shared-worker",
   "deleteDestPath": false,
   "lib": {
-    "entryFile": "src/public_api.ts"
+    "entryFile": "src/shared-worker.ts"
   }
 }
