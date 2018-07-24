@@ -32,6 +32,10 @@ Note: This doesn't delete unused old output files. But it's okay, that's good en
 - Manually copy the build artifacts under `dist/salary-transparency` to `<some-path>`.
 - In Beaker Browser, from the menu: open `Library`. Go to the website you've created. Open its url from the topright.
 
+### IDE
+
+You can use any IDE, but I'm using Visual Studio Code. I'm also using [Local History extension](https://marketplace.visualstudio.com/items?itemName=xyz.local-history).
+
 ## Docs
 
 You're, obviously, using [Angular Framework](https://angular.io/). You're also using [Angular Material](https://material.angular.io) and [Angular Flex-layout](https://github.com/angular/flex-layout/wiki/Declarative-API-Overview).
