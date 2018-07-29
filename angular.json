@@ -121,6 +121,125 @@
           }
         }
       }
+    },
+    "shared-worker": {
+      "root": "projects/shared-worker/",
+      "sourceRoot": "projects/shared-worker/src",
+      "projectType": "application",
+      "prefix": "app",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/shared-worker",
+            "index": "projects/shared-worker/src/index.html",
+            "main": "projects/shared-worker/src/main.ts",
+            "polyfills": "projects/shared-worker/src/polyfills.ts",
+            "tsConfig": "projects/shared-worker/tsconfig.app.json",
+            "assets": [
+              "projects/shared-worker/src/favicon.ico",
+              "projects/shared-worker/src/assets"
+            ],
+            "styles": [
+              "projects/shared-worker/src/styles.css"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/shared-worker/src/environments/environment.ts",
+                  "with": "projects/shared-worker/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "shared-worker:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "shared-worker:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "shared-worker:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/shared-worker/src/test.ts",
+            "polyfills": "projects/shared-worker/src/polyfills.ts",
+            "tsConfig": "projects/shared-worker/tsconfig.spec.json",
+            "karmaConfig": "projects/shared-worker/karma.conf.js",
+            "styles": [
+              "projects/shared-worker/src/styles.css"
+            ],
+            "scripts": [],
+            "assets": [
+              "projects/shared-worker/src/favicon.ico",
+              "projects/shared-worker/src/assets"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/shared-worker/tsconfig.app.json",
+              "projects/shared-worker/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "shared-worker-e2e": {
+      "root": "projects/shared-worker-e2e/",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/shared-worker-e2e/protractor.conf.js",
+            "devServerTarget": "shared-worker:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "shared-worker:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": "projects/shared-worker-e2e/tsconfig.e2e.json",
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "salary-transparency"
