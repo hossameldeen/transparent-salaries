@@ -121,37 +121,6 @@
           }
         }
       }
-    },
-    "shared-worker": {
-      "root": "shared-worker",
-      "sourceRoot": "shared-worker/src",
-      "projectType": "library",
-      "prefix": "shared-worker",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
-          "options": {
-            "tsConfig": "shared-worker/tsconfig.lib.json",
-            "project": "shared-worker/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "project": "shared-worker/ng-package.prod.json"
-            }
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "shared-worker/tsconfig.lib.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
-        }
-      }
     }
   },
   "defaultProject": "salary-transparency"
