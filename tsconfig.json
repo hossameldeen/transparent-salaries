@@ -24,6 +24,12 @@
       ],
       "shared-worker/*": [
         "dist/shared-worker/*"
+      ],
+      "worker-message": [
+        "dist/worker-message"
+      ],
+      "worker-message/*": [
+        "dist/worker-message/*"
       ]
     }
   }
