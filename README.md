@@ -19,9 +19,11 @@ A Beaker-browser website for sharing salaries.
 You can have auto build & reload on changes. However, it'll keep whole files between each change, so it'll take a lot of disk space. So, use in a throw-away Beaker-browser website.
 
 - In the project root, run `yarn install`.
-- In the project root, run `yarn run watch --output-path=<some-path>`.
+- In the project root, run `yarn run watch:main --output-path=<some-path>`.
+- In the project root, run `yarn run watch:shared-worker --output-path=<some-path>/assets/shared-worker`
 - In Beaker Browser, from the menu: open `Library`. Go to the website you've created. Open its url from the topright.
 - From the 3 dots in the url bar, `Toggle live reloading`.
+- TODO: Sorry, but on every change in shared-worker you'll need to manually remove some lines from `<some-path>/assets/shared-worker/main.js`. Remove lines from the beginning & end such that the code is not wrapper in the webpack function anymore. **Actually, replace lines with blank lines instead of removing them in order to not break the source maps**
 
 Note: This doesn't delete unused old output files. But it's okay, that's good enough for now since it doesn't affect the behaviour.
 
@@ -29,6 +31,7 @@ Note: This doesn't delete unused old output files. But it's okay, that's good en
 
 - In the project root, run `yarn install`.
 - In the project root, run `yarn run build --prod`. **Don't forget the `--prod`!**
+- In the project root, run `yarn run build shared-worker --prod`. TODO: Sorry, but manually edit the main file to remove the wrapping of webpackjsonp & rename the file to be `main.js`. Copy it to the artifacts `assets/shared-worker/main.js`.
 - Manually copy the build artifacts under `dist/salary-transparency` to `<some-path>`.
 - In Beaker Browser, from the menu: open `Library`. Go to the website you've created. Open its url from the topright.
 
