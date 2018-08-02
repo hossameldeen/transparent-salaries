@@ -8,13 +8,29 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "strictNullChecks": true,
     "target": "es5",
     "typeRoots": [
-      "node_modules/@types"
+      "node_modules/@types",
+      "custom-typings"
     ],
     "lib": [
       "es2017",
       "dom"
-    ]
+    ],
+    "paths": {
+      "shared-worker": [
+        "dist/shared-worker"
+      ],
+      "shared-worker/*": [
+        "dist/shared-worker/*"
+      ],
+      "worker-message": [
+        "dist/worker-message"
+      ],
+      "worker-message/*": [
+        "dist/worker-message/*"
+      ]
+    }
   }
 }
