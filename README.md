@@ -53,7 +53,7 @@ You're, obviously, using [Angular Framework](https://angular.io/). You're also u
 
 There're TODOs in the code. Beside them, there're TODOs here.
 
-Next free TODO number: 9
+Next free TODO number: 10
 
 ### Not Resolved Yet
 
@@ -73,5 +73,12 @@ Next free TODO number: 9
 
 8) Currently, `shared-worker` is compiled & pasted into assets by hand.  
 Also, to use Angular's compilation/optimization goodness, I may be adding unnecessary stuff.
+
+9) Shared state & concurrency in one tab.  
+An example problem: A user opens a profile-1 -> SPA/Angular-navigates to profile-2 -> profile-2 loading succeeds -> profile-1 loading fails -> a snack shown "Loading profile failed".  
+The problem is that profile-1 had promises that weren't cancelled in `onDestory()`. Had the effect of these promises been only changing the state of the component, there'd have been no problem (or a slight problem). But the problem that is it changes a _shared state_ which is the snackbar here in this case.  
+There're other sources of shared state: `DatArchive.createArchive`/`selectArchive`, most prominently.  
+Ummm ... as a quick solution: could make a wrapper around `snackBar` that takes a boolean `show` and doesn't show the snack bar if false. And have a boolean `isAlive` in each component that's set to `false` in `onDestroy()` and sent to `snackBar`. Same for DatArchive & any other APIs.
+But very not clean & no guarantee it'll solve all our problems. It's just a temporary hack. The _right_ solution is to make the component aware of its lifecycle & aware of that it may receive an _onDestroy()_ signal while some promise is pending. But this basically means getting rid of `async/await`, and, probably as an advantage, preferably have a single `update` function like Elm or the actor model's `receive`.
 
 ### Resolved
