@@ -1,42 +1,54 @@
+import { v4 as uuid } from 'uuid';
+
 /*
- * Public API Surface of worker-message
+ * Public API Surface of worker-message.
+ * 
+ * For now, it's an RPC interface.
+ * 
+ * TODO: Not consistent in the way union types are used here with elsewhere
+ * 
+ * As a convention: using `t` when the inner type is a discriminated union itself
  */
 
-export type IncomingMessage = string
+export class CorrelatedMessage<Payload> {
+  readonly correlationId: string;
 
-export type OutgoingMessage = string
+  constructor(
+    readonly payload: Payload
+  ) {
+    this.correlationId = uuid();
+  }
+}
 
-//  /**
-//   * TODO: The generic part is not very designed.
-//   * 
-//   * Prefixing with `WM` because of name conflict with built-ins.
-//   */
-// export type WorkerMessage<Payload> = WMRequest<Payload> | WMReply<Payload> | WMMessage<Payload>
+//==============================================================================
+// IncomingMessage & OutgoingMessage
 
-// export enum WorkerMessageKind { Request, Reply, Message }
+export type IncomingMessage
+  = { kind: IncomingMessageKind.SelectProfile, archiveUrl: string }
+  | { kind: IncomingMessageKind.UnselectProfile }
 
-// /**
-//  * TODO: Probably better than id creation is creating a worker. That's what akka does in ask pattern
-//  */
-// export class WMRequest<Payload> {
-//   constructor(
-//     readonly id: string,
-//     readonly payload: Payload,
-//     readonly kind: WorkerMessageKind.Request
-//   ) { }
-// }
+export type OutgoingMessage
+  = { kind: OutgoingMessageKind.SelectProfileReply, t: SelectProfileReply }
+  | { kind: OutgoingMessageKind.UnselectProfileReply, t: UnselectProfileReply }
 
-// export class WMReply<Payload> {
-//   constructor(
-//     readonly id: string,
-//     readonly payload: Payload,
-//     readonly kind: WorkerMessageKind.Reply
-//   ) { }
-// }
+export enum IncomingMessageKind { SelectProfile, UnselectProfile }
 
-// export class WMMessage<Payload> {
-//   constructor(
-//     readonly payload: Payload,
-//     readonly kind: WorkerMessageKind.Message
-//   ) { }
-// }
+export enum OutgoingMessageKind { SelectProfileReply, UnselectProfileReply }
+
+//==============================================================================
+// SelectProfile
+
+export type SelectProfileReply
+  = { kind: SelectProfileReplyKind.Succeeded }
+  | { kind: SelectProfileReplyKind.AlreadyAProfileIsSelected, archiveUrl: string }
+
+export enum SelectProfileReplyKind { Succeeded, AlreadyAProfileIsSelected }
+
+//==============================================================================
+// UnselectProfile
+
+export type UnselectProfileReply
+  = { kind: UnselectProfileReplyKind.Succeeded }
+  | { kind: UnselectProfileReplyKind.NoProfileIsSelected }
+
+export enum UnselectProfileReplyKind { Succeeded, NoProfileIsSelected }

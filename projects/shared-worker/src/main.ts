@@ -1,151 +1,29 @@
 // TODO: Note: you need to have at least one import. Check: https://github.com/Microsoft/TypeScript/issues/14877
-import { v4 as uuid } from 'uuid';
+import { ActorRef, ActorSystem } from './app/actor-model';
 
 // Note: If you have no `import`s, you'll need to wrap this in an immediately-invoked function or something.
 // Check: https://github.com/Microsoft/TypeScript/issues/14877
 // I don't want to wrap in a function, in order to easily remove the webpack lines from the artifacts
 declare const self: SharedWorker.SharedWorkerGlobalScope;
 
+const actorSystem = new ActorSystem()
+
+const mainActor: ActorRef = actorSystem.createActor(MainActor)
+
 self.onconnect = (connectEvent: MessageEvent) => {
   // TODO: I have no idea why it's an array
   const messagePort: MessagePort = connectEvent.ports[0]
   // TODO: Not necessary good to JSON.stringify stuff without thinking.
-  messagePort.onmessage = (msgEvt: MessageEvent) => messagePort.postMessage(`Worker received ${JSON.stringify(msgEvt.data)}`)
-  // Note: onmessage has started the port. Otherwise, you'd have needed to call `port.start()`
-  messagePort.postMessage("You're connected to worker!")
-}
+  messagePort.onmessage = async (msgEvt: MessageEvent) => {
 
-//======================================================================================================================
-// State
-
-type State = ProfileNotSelected | ProfileSelected
-
-enum ProfileStateKind { ProfileNotSelected, ProfileSelected }
-
-class ProfileNotSelected {
-  constructor(
-    readonly kind: ProfileStateKind.ProfileNotSelected = ProfileStateKind.ProfileNotSelected
-  ) { }
-}
-
-class ProfileSelected {
-  constructor(
-    readonly datArchive: DatArchive,
-    readonly kind: ProfileStateKind.ProfileSelected = ProfileStateKind.ProfileSelected
-  ) { }
-}
-
-//======================================================================================================================
-// Actor
-
-interface Actor {
-  receive(msg: any) : Promise<any>;
-}
-
-/**
- * TODO: enhance the type safety. Shouldn't expose ref even for the ActorSystem
- */
-class ActorRef {
-  private readonly ref: string
-  constructor() {
-    this.ref = uuid();
-  }
-  public refOnlyIntentedToBeUsedByActorSystem(): string {
-    return this.ref;
-  }
-}
-
-class ActorSystem {
-  /**
-   * Note: If you make the map key actorRef instead of key, you'll need to think about equality comparison of ActorRef.
-   */
-  private actors: Map<string, ActorWrapper> = new Map();
-  
-  /**
-   * TODO: enhance the type safety of args. 
-   */
-  createActor(clazz: new (...args: any[]) => Actor, ...args: any[]): ActorRef {
-    const actorRef = new ActorRef()
-    this.actors.set(actorRef.refOnlyIntentedToBeUsedByActorSystem(), new ActorWrapper(new clazz(args)))
-    return actorRef
-  }
-
-  /**
-   * If an async exception is thrown, that means it's a failure of ActorSystem, but a rejection is a failure of Actor.
-   */
-  send(actorRef: ActorRef, msg: any): Promise<any> {
-    const actorWrapper = this.actors.get(actorRef.refOnlyIntentedToBeUsedByActorSystem())
-    if (actorWrapper === undefined)
-      throw new Error("ActorRef not found!")
-    return actorWrapper.send(msg)
-  }
-}
-
-class ActorWrapper {
-  private state: ActorState;
-
-  constructor(
-    private readonly actor: Actor
-  ) {
-    this.state = new Idle();
-  }
-
-  send(msg: any): Promise<any> {
-    return new Promise((resolve, reject) => {
-      switch(this.state.kind) {
-        case ActorStateKind.Idle:
-          this.state = new Processing([{ msg: msg, resolve: resolve, reject: reject }])
-          this.runLoopInBackground()  // TODO: Could also write Promise.resolve().then(runLoopInBackground) to make sure it's async
-          break;
-  
-        case ActorStateKind.Processing:
-          this.state.queue.push({ msg: msg, resolve: resolve, reject: reject })
-          break;
-        default: return assertNever(this.state)
-      }
-    })
-  }
-
-  /**
-   * Precondition: state is Processing
-   */
-  private async runLoopInBackground(): Promise<void> {
-    while((this.state as Processing).queue.length > 0) {
-      const { msg, resolve, reject } = (this.state as Processing).queue.shift()!
-      try {
-        resolve(await this.actor.receive(msg))
-      }
-      catch(e) {
-        reject(e) // TODO: Should it be `new Error(e)`?
-      }
+    try {
+      actorSystem.send
     }
-    this.state = new Idle();
+    catch(e) {
+      
+    }
+
+    messagePort.postMessage(`Worker received ${JSON.stringify(msgEvt.data)}`)
   }
-}
-
-type ActorState = Idle | Processing
-
-enum ActorStateKind { Idle, Processing }
-
-class Idle {
-  constructor(
-    readonly kind: ActorStateKind.Idle = ActorStateKind.Idle
-  ) { }
-}
-
-class Processing {
-  constructor(
-    readonly queue: Array<{ msg: any, resolve: ResolveFunction<any>, reject: RejectFunction }>,
-    readonly kind: ActorStateKind.Processing = ActorStateKind.Processing
-  ) { }
-}
-
-//======================================================================================================================
-// Helpers
-
-type ResolveFunction<T> = (value?: T | PromiseLike<T>) => void
-type RejectFunction = (reason?: any) => void
-
-function assertNever(x: never): never {
-  throw new Error("Unexpected object: " + x);
+  // Note: onmessage has started the port. Otherwise, you'd have needed to call `port.start()`
 }
