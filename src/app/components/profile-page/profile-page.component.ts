@@ -12,9 +12,10 @@ export class ProfilePageComponent {
   readonly isOwner: boolean;
 
   constructor(route: ActivatedRoute, profileService: ProfileService, private readonly router: Router) {
-    const datPK = route.snapshot.paramMap.get('datPK')
-    this.profileDatArchive = new DatArchive(`dat://${datPK}`)
-    this.isOwner = (profileService.state.kind === ProfileStateKind.ProfileSelected && this.profileDatArchive.url === profileService.state.datArchive.url)    
+    throw Error('Not implemented yet!')
+    // const datPK = route.snapshot.paramMap.get('datPK')
+    // this.profileDatArchive = new DatArchive(`dat://${datPK}`)
+    // this.isOwner = (profileService.state.kind === ProfileStateKind.ProfileSelected && this.profileDatArchive.url === profileService.state.datArchive.url)    
   }
 }
 

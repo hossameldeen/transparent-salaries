@@ -1,7 +1,9 @@
 import { v4 as uuid } from 'uuid';
 
 export interface Actor {
-  receive(msg: any) : Promise<any>;
+  receive(msg: any): Promise<any>;
+
+  preStart(): Promise<void>;
 }
 
 /**
@@ -49,7 +51,9 @@ class ActorWrapper {
   constructor(
     private readonly actor: Actor
   ) {
-    this.state = new Idle();
+    // TODO: Ugly code. Kind-of breaks the state machine. But correct when written
+    this.state = new Processing([]);
+    actor.preStart().then(() => this.runLoopInBackground()).catch(() => this.runLoopInBackground())
   }
 
   send(msg: any): Promise<any> {

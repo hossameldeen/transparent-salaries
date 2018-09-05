@@ -1,5 +1,11 @@
-import { Actor } from './actor-model';
-import { IncomingMessage } from 'worker-message'; // TODO: You need to rebuild everytime you make a change in worke-message
+/**
+ * Note: Under the assumption shared-worker is the only one manipulating the dat archive & local storage,
+ * I'm free to keep some of the state in memory & to retrieve others from the filesystem directly.
+ */
+
+// TODO: Move the assertNever into a library or something
+import { Actor, assertNever } from './actor-model';
+import { IncomingMessage, IncomingMessageKind, OutgoingMessage, OutgoingMessageKind } from 'worker-message'; // TODO: You need to rebuild everytime you make a change in worker-message
 import * as localForage from 'localforage';
 
 //======================================================================================================================
@@ -25,14 +31,37 @@ class ProfileSelected {
 //======================================================================================================================
 // Main Actor
 
-class MainActor implements Actor {
+export class MainActor implements Actor {
   private state: State;
 
   constructor() {
-    this.state = new ProfileNotSelected();  // TODO. check localforage first. Probably, in a preStart()
   }
 
-  receive(msg: any): Promise<any> {
-    throw new Error("Method not implemented.");
+  async preStart(): Promise<void> {
+    const profileUrl = await localForage.getItem<string>('profileUrl')
+    if (profileUrl)
+      this.state = { kind: ProfileStateKind.ProfileSelected, datArchive: new DatArchive(profileUrl)}
+    else
+      this.state = { kind: ProfileStateKind.ProfileNotSelected }
+  }
+
+  async receive(msg: IncomingMessage): Promise<OutgoingMessage> {
+    const msgAsIncomingMessage: IncomingMessage = msg;
+    switch(msgAsIncomingMessage.kind) {
+      case IncomingMessageKind.GetSelectedProfile:
+        return { kind: OutgoingMessageKind.GetSelectedProfileReply, archiveUrl: this.getSelectedProfile() }
+      default:
+        throw new Error("Not implemented yet.")
+    }
+  }
+
+  getSelectedProfile(): string | null {
+    switch(this.state.kind) {
+      case ProfileStateKind.ProfileSelected:
+        return this.state.datArchive.url;
+      case ProfileStateKind.ProfileNotSelected:
+        return null;
+      default: return assertNever(this.state)
+    }
   }
 }
