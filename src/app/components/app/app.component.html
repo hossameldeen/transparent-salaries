@@ -6,7 +6,6 @@
     <span fxFlex></span>
     <ng-container [ngSwitch]="state.kind">
       <ng-container *ngSwitchCase="StateKind.Loading">
-        Loading...
       </ng-container>
       <ng-container *ngSwitchCase="StateKind.Loaded">
         <ng-container [ngSwitch]="state.profileState.kind">
