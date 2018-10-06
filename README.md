@@ -19,12 +19,12 @@ A Beaker-browser website for sharing salaries.
 You can have auto build & reload on changes. However, it'll keep whole files between each change, so it'll take a lot of disk space. So, use in a throw-away Beaker-browser website.
 
 - In the project root, run `yarn install`.
-- In the project root, run `yarn run watch <some-path>`. (If you exclude it, it'll be `./dist/website-content`. Also, a note: in all cases, there'll be some output in `./dist/worker-message` because we need to compile `worker-message` to `./dist`)
+- In the project root, run `yarn run watch --output-path=<some-path>`.
 - In Beaker Browser, from the menu: open `Library`. Go to the website you've created. Open its url from the topright.
 - From the 3 dots in the url bar, `Toggle live reloading`.
-- **TODO: Caveats:** (1) If you make a change in `worker-message` library, you'll need to re-run, and (2) if you make a change in `shared-worker`, you actually need to edit `<some-path>/assets/shared-worker/main.js` by hand to add this to the beginning of the file: `var window = window || {};importScripts('runtime.js', 'vendor.js');`. **The last semicolon is important here**
 
-Note: This doesn't delete unused old output files. But it's okay, that's good enough for now since it doesn't affect the behaviour.
+Note#1: This doesn't delete unused old output files. But it's okay, that's good enough for now since it doesn't affect the behaviour.  
+Note#2: This doesn't use production mode.
 
 ### Deploy
 
@@ -32,13 +32,14 @@ Note: This doesn't delete unused old output files. But it's okay, that's good en
 
 - In the project root, run `yarn install`.
 - In the project root, run `yarn run build --prod`. **Don't forget the `--prod`!**
-- In the project root, run `yarn run build shared-worker --prod`. TODO: Sorry, but manually edit the main file to remove the wrapping of webpackjsonp & rename the file to be `main.js`. Copy it to the artifacts `assets/shared-worker/main.js`.
 - Manually copy the build artifacts under `dist/salary-transparency` to `<some-path>`.
 - In Beaker Browser, from the menu: open `Library`. Go to the website you've created. Open its url from the topright.
 
 ### IDE
 
 You can use any IDE, but I'm using Visual Studio Code. I'm also using [Local History extension](https://marketplace.visualstudio.com/items?itemName=xyz.local-history).
+
+Update: I'm using WebStorm. Not perfect, but much _much_ better, and I'm happier.
 
 ## Docs
 
@@ -54,7 +55,7 @@ You're, obviously, using [Angular Framework](https://angular.io/). You're also u
 
 There're TODOs in the code. Beside them, there're TODOs here.
 
-Next free TODO number: 11
+Next free TODO number: 12
 
 ### Not Resolved Yet
 
@@ -83,5 +84,7 @@ Ummm ... as a quick solution: could make a wrapper around `snackBar` that takes 
 But very not clean & no guarantee it'll solve all our problems. It's just a temporary hack. The _right_ solution is to make the component aware of its lifecycle & aware of that it may receive an _onDestroy()_ signal while some promise is pending. But this basically means getting rid of `async/await`, and, probably as an advantage, preferably have a single `update` function like Elm or the actor model's `receive`.
 
 10) Probably need something like `ngrx` to handle state consistency between the components. For example, what if 2 components ask about the login status, but the two receive 2 different answers due to change in time?
+
+11) Enable TSLint from Settings -> TSLint -> Enable
 
 ### Resolved

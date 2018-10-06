@@ -1,4 +1,4 @@
-<ng-container [ngSwitch]="profileService.state.kind">
+<ng-container [ngSwitch]="profileService.stateSubject.value.kind">
   <ng-container *ngSwitchCase="ProfileStateKind.ProfileNotSelected">
     <div fxLayout="column">
       <div fxFlex="5vw"></div>
@@ -19,6 +19,6 @@
     </div>
   </ng-container>
   <ng-container *ngSwitchCase="ProfileStateKind.ProfileSelected">
-    <app-profile [profileDatArchive]="profileService.state.datArchive" [isOwner]="true"></app-profile>
+    <app-profile [profileDatArchive]="profileService.stateSubject.value.datArchive" [isOwner]="true"></app-profile>
   </ng-container>
 </ng-container>

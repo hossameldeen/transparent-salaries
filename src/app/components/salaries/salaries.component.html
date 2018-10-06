@@ -13,29 +13,29 @@
 
   <ng-container matColumnDef="actionsColumn">
     <mat-header-cell *matHeaderCellDef>
-      <button mat-icon-button color="accent" matTooltip="Add new salary" (click)="createNewWithDefaultValues()" [disabled]="persistingNewSalary"><mat-icon>add</mat-icon></button>
+      <button mat-icon-button color="accent" matTooltip="Add new salary" (click)="createNewWithDefaultValues()" [disabled]="!isOwner || persistingNewSalary"><mat-icon>add</mat-icon></button>
     </mat-header-cell>
     <mat-cell *matCellDef="let row">
       <ng-container *ngIf="!row.editing">
-        <button mat-icon-button color="primary" matTooltip="Edit" focusable="false" (click)="row.startEdit()" [disabled]="row.currentData.locked">
+        <button mat-icon-button color="primary" matTooltip="Edit" focusable="false" (click)="row.startEdit()" [disabled]="!isOwner || row.currentData.locked">
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button color="primary" matTooltip="Delete" focusable="false" (click)="delete(row)" [disabled]="row.currentData.locked">
+        <button mat-icon-button color="primary" matTooltip="Delete" focusable="false" (click)="delete(row)" [disabled]="!isOwner || row.currentData.locked">
           <mat-icon>delete</mat-icon>
         </button>
       </ng-container>
       <ng-container *ngIf="row.editing">
-        <button mat-icon-button color="primary" matTooltip="Confirm" focusable="false" (click)="confirmEditCreate(row)" [disabled]="row.currentData.locked">
+        <button mat-icon-button color="primary" matTooltip="Confirm" focusable="false" (click)="confirmEditCreate(row)" [disabled]="!isOwner || row.currentData.locked">
           <mat-icon>check</mat-icon>
         </button>
-        <button mat-icon-button color="primary" matTooltip="Cancel" focusable="false" (click)="row.cancelOrDelete()" [disabled]="row.currentData.locked">
+        <button mat-icon-button color="primary" matTooltip="Cancel" focusable="false" (click)="row.cancelOrDelete()" [disabled]="!isOwner || row.currentData.locked">
           <mat-icon>clear</mat-icon>
         </button>
       </ng-container>
       <mat-spinner *ngIf="row.currentData.locked" [diameter]="24"></mat-spinner>
     </mat-cell>
   </ng-container>
-  
+
   <!-- Header and Row Declarations -->
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
   <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>

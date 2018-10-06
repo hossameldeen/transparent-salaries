@@ -3,18 +3,19 @@ import { ProgressBarService } from './progress-bar.service';
 import { MatSnackBar } from '@angular/material';
 import { UtilService } from './util.service';
 import { DBService } from './db.service';
+import {BehaviorSubject} from 'rxjs';
 
 /**
  * Made this service because there's common logic between the toolbar in app-component & home-component in home-page-component
- * 
- * The extraction worked because the common logic uses services. I might would've needed to make a component or something. 
+ *
+ * The extraction worked because the common logic uses services. I might would've needed to make a component or something.
  */
 @Injectable({
   providedIn: 'root'
 })
 export class ProfileService {
 
-  state: ProfileState;
+  stateSubject: BehaviorSubject<ProfileState>;
 
   constructor(
     private readonly dbService: DBService,
@@ -24,9 +25,9 @@ export class ProfileService {
   ) {
     const profileUrl = localStorage.getItem('profileUrl')
     if (profileUrl)
-      this.state = { kind: ProfileStateKind.ProfileSelected, datArchive: new DatArchive(profileUrl)}
+      this.stateSubject = new BehaviorSubject<ProfileState>({ kind: ProfileStateKind.ProfileSelected, datArchive: new DatArchive(profileUrl)})
     else
-      this.state = { kind: ProfileStateKind.ProfileNotSelected }
+      this.stateSubject = new BehaviorSubject<ProfileState>({ kind: ProfileStateKind.ProfileNotSelected })
   }
 
   async createProfile() {
@@ -40,13 +41,12 @@ export class ProfileService {
 
     if (profile === null)
       return
-    
+
     try {
       this.progressBarService.pushLoading()
       await this.dbService.initDB(profile)
-      this.state = { kind: ProfileStateKind.ProfileSelected, datArchive: profile }
+      this.stateSubject.next({ kind: ProfileStateKind.ProfileSelected, datArchive: profile })
       localStorage.setItem('profileUrl', profile.url)
-      location.reload()
     }
     catch (e) {
       this.snackBar.open("Couldn't initialize your profile and that's all I know :(", "Dismiss")
@@ -69,18 +69,16 @@ export class ProfileService {
     this.progressBarService.pushLoading()
 
     if (await this.dbService.isDBInitialized(profile)) {
-      this.state = { kind: ProfileStateKind.ProfileSelected, datArchive: profile }
+      this.stateSubject.next({ kind: ProfileStateKind.ProfileSelected, datArchive: profile })
       localStorage.setItem('profileUrl', profile.url)
-      location.reload()
       this.progressBarService.popLoading()
       return
     }
 
     if (await this.utilService.isNewArchive(profile)) {
       await this.dbService.initDB(profile)
-      this.state = { kind: ProfileStateKind.ProfileSelected, datArchive: profile }
+      this.stateSubject.next({ kind: ProfileStateKind.ProfileSelected, datArchive: profile })
       localStorage.setItem('profileUrl', profile.url)
-      location.reload()
       this.progressBarService.popLoading()
       return
     }
@@ -94,9 +92,8 @@ export class ProfileService {
   }
 
   logout() {
-    this.state = { kind: ProfileStateKind.ProfileNotSelected }
+    this.stateSubject.next({ kind: ProfileStateKind.ProfileNotSelected })
     localStorage.removeItem('profileUrl')
-    location.reload()
   }
 }
 

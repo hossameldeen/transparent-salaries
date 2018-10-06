@@ -24,9 +24,9 @@ export class ActorSystem {
    * Note: If you make the map key actorRef instead of key, you'll need to think about equality comparison of ActorRef.
    */
   private actors: Map<string, ActorWrapper> = new Map();
-  
+
   /**
-   * TODO: enhance the type safety of args. 
+   * TODO: enhance the type safety of args.
    */
   createActor(clazz: new (...args: any[]) => Actor, ...args: any[]): ActorRef {
     const actorRef = new ActorRef()
@@ -63,7 +63,7 @@ class ActorWrapper {
           this.state = new Processing([{ msg: msg, resolve: resolve, reject: reject }])
           this.runLoopInBackground()  // TODO: Could also write Promise.resolve().then(runLoopInBackground) to make sure it's async
           break;
-  
+
         case ActorStateKind.Processing:
           this.state.queue.push({ msg: msg, resolve: resolve, reject: reject })
           break;

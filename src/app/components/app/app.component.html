@@ -4,13 +4,13 @@
     <!-- TODO: Rename the project to `Transparent Salaries`-->
     <span>Transparent Salaries</span>
     <span fxFlex></span>
-    <ng-container [ngSwitch]="profileService.state.kind">
+    <ng-container [ngSwitch]="profileService.stateSubject.value.kind">
       <ng-container *ngSwitchCase="ProfileStateKind.ProfileNotSelected">
         <button mat-stroked-button (click)="profileService.selectProfile()">Use an existing profile</button>
         <button mat-raised-button (click)="profileService.createProfile()">Create a new profile</button>
       </ng-container>
       <ng-container *ngSwitchCase="ProfileStateKind.ProfileSelected">
-        <span>{{profileService.state.datArchive.url}}</span>
+        <span>{{profileService.stateSubject.value.datArchive.url}}</span>
         <button mat-stroked-button (click)="profileService.logout()">Logout</button>
       </ng-container>
     </ng-container>

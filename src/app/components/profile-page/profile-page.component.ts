@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ProfileService, ProfileStateKind } from 'src/app/services/profile.service';
 
@@ -6,15 +6,28 @@ import { ProfileService, ProfileStateKind } from 'src/app/services/profile.servi
   selector: 'app-profile-page-dont-use-selector-check-readme',
   templateUrl: './profile-page.component.html'
 })
-export class ProfilePageComponent {
+export class ProfilePageComponent implements OnDestroy {
 
   readonly profileDatArchive: DatArchive;
-  readonly isOwner: boolean;
+  isOwner: boolean;
 
-  constructor(route: ActivatedRoute, profileService: ProfileService, private readonly router: Router) {
+  constructor(
+    route: ActivatedRoute,
+    private readonly profileService: ProfileService,
+    private readonly router: Router
+  ) {
     const datPK = route.snapshot.paramMap.get('datPK')
     this.profileDatArchive = new DatArchive(`dat://${datPK}`)
-    this.isOwner = (profileService.state.kind === ProfileStateKind.ProfileSelected && this.profileDatArchive.url === profileService.state.datArchive.url)    
+    this.updateIsOwner()
+    this.profileService.stateSubject.subscribe(() => this.updateIsOwner())
+    this.isOwner = (profileService.stateSubject.value.kind === ProfileStateKind.ProfileSelected && this.profileDatArchive.url === profileService.stateSubject.value.datArchive.url)
+  }
+
+  private updateIsOwner(): void {
+    this.isOwner = (this.profileService.stateSubject.value.kind === ProfileStateKind.ProfileSelected && this.profileDatArchive.url === this.profileService.stateSubject.value.datArchive.url)
+  }
+
+  ngOnDestroy(): void {
+    this.profileService.stateSubject.unsubscribe()
   }
 }
-
