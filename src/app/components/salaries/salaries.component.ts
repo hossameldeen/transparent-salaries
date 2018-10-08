@@ -18,7 +18,7 @@ export class SalariesComponent implements OnInit {
 
   /**
    * Pretty much taken from the html.
-   * 
+   *
    * `hintText` can be omitted.
    */
   readonly columnsConfigs = [
@@ -79,7 +79,7 @@ export class SalariesComponent implements OnInit {
     this.dbService.getRowsUuids(this.profileDatArchive, 'salaries').then(rowsUuids => {
       const readRowsPromises = rowsUuids.map(rowUuid => this.dbService.readRow<Salary>(this.profileDatArchive, 'salaries', rowUuid))
       // thanks to https://stackoverflow.com/a/31424853/6690391
-      const readRowsPromisesCaught = readRowsPromises.map(p => p.then(v => ({ vOrE: v, status: "resolved" })/*, e => ({ vOrE: e, status: "rejected" })*/))
+      const readRowsPromisesCaught = readRowsPromises.map(p => p.then(v => ({ vOrE: v, status: "resolved" }), e => ({ vOrE: e, status: "rejected" })))
       return Promise.all(readRowsPromisesCaught)
     })
     .then(rets => {
@@ -89,7 +89,7 @@ export class SalariesComponent implements OnInit {
       if (rets.findIndex(ret => ret.status === 'reject') !== -1)
         this.snackBar.open("Couldn't retrieve some salaries from the profile. That's all I know :(", "Dismiss")
     })
-    .catch(_ => {
+    .catch(() => {
       this.progressBarService.popLoading()
       this.snackBar.open("Couldn't retrieve salaries from the profile. That's all I know :(", "Dismiss")
     })

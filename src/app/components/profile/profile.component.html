@@ -3,8 +3,8 @@
   <div fxLayout fxLayoutAlign="center">
   <mat-card>
     <mat-card-title>{{profileDatArchive.url}}</mat-card-title>
-    <mat-card-subtitle *ngIf="!isOwner" fxLayout fxLayoutAlign="center">
-      <button mat-raised-button color="primary">Add Trustee</button>
+    <mat-card-subtitle *ngIf="profileService.stateSubject.value.kind === ProfileStateKind.ProfileSelected && profileService.stateSubject.value.datArchive.url !== profileDatArchive.url && !alreadyAFriend" fxLayout fxLayoutAlign="center">
+      <button mat-raised-button color="primary" (click)="addTrustee()">Add Trustee</button>
     </mat-card-subtitle>
     <mat-divider [inset]="true"></mat-divider>
     <br/>

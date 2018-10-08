@@ -19,6 +19,6 @@
     </div>
   </ng-container>
   <ng-container *ngSwitchCase="ProfileStateKind.ProfileSelected">
-    <app-profile [profileDatArchive]="profileService.stateSubject.value.datArchive" [isOwner]="true"></app-profile>
+    <app-profile [profileDatArchive]="profileService.stateSubject.value.datArchive"></app-profile>
   </ng-container>
 </ng-container>
