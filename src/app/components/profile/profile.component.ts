@@ -91,7 +91,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   async addTrustee() {
     if (this.profileService.stateSubject.value.kind === ProfileStateKind.ProfileSelected) {
       await this.dbService.putRow<Trustee>(this.profileService.stateSubject.value.datArchive, 'trustees', new Trustee(this.profileDatArchive.url))
-      this.alreadyAFriend = false
+      this.alreadyAFriend = true
     }
     else
       this.snackBar.open("You're adding a trustee but you're not logged in. That's a bug. Please, contact the developers.", "Dismiss")
