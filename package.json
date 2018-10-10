@@ -24,7 +24,7 @@
     "@angular/platform-browser": "^6.0.7",
     "@angular/platform-browser-dynamic": "^6.0.7",
     "@angular/router": "^6.0.7",
-    "@beaker/webdb": "^4.3.0",
+    "@beaker/webdb": "^4.3.1",
     "@types/sharedworker": "^0.0.28",
     "@types/uuid": "^3.4.3",
     "angular4-material-table": "^0.6.6",
