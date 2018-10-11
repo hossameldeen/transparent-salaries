@@ -16,7 +16,7 @@ function acquireNext(lockName) {
     locks.get(lockName).secret = lockSecret
     locks.get(lockName).timeoutHandle = setTimeout(acquireNext, lockTimeout, lockName)
 
-    port.postMessage('acquired')
+    port.postMessage({kind: 'acquired', name: lockName, secret: lockSecret})
   }
 }
 
