@@ -34,11 +34,11 @@ onconnect = function(e) {
         throw Error("At least one of lockName's, lockTimeout's, and lockSecret's types is invalid. Should never happen.")
 
       if (locks.has(lockName)) {
-        locks.set(lockName, {queue: [{port: port, timeout: lockTimeout, secret: lockSecret}]})
-        acquireNext(lockName)
+        locks.get(lockName).queue.push({port: port, timeout: lockTimeout, secret: lockSecret})
       }
       else {
-        locks.get(lockName).queue.push({port: port, timeout: lockTimeout, secret: lockSecret})
+        locks.set(lockName, {queue: [{port: port, timeout: lockTimeout, secret: lockSecret}]})
+        acquireNext(lockName)
       }
     }
     else if (msg.kind === 'release') {

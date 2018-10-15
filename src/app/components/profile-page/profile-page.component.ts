@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import {AppInitStatus, ProfileService} from 'src/app/services/profile.service';
 
 @Component({
   selector: 'app-profile-page-dont-use-selector-check-readme',
@@ -8,8 +9,10 @@ import { Router, ActivatedRoute } from '@angular/router';
 export class ProfilePageComponent {
 
   readonly profileDatArchive: DatArchive;
+  AppInitStatus = AppInitStatus;  // To be available in the html
 
   constructor(
+    readonly profileService: ProfileService,
     route: ActivatedRoute,
     private readonly router: Router
   ) {

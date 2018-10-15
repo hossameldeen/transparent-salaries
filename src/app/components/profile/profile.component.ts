@@ -64,7 +64,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             // thanks to https://stackoverflow.com/a/31424853/6690391
             const readRowsPromisesCaught = readRowsPromises.map(p => p.then(v => ({ vOrE: v, status: "resolved" }), e => ({ vOrE: e, status: "rejected" })))
             return Promise.all(readRowsPromisesCaught)
-          default: return this.utilService.assertNever(this.profileService.stateSubject.value)
+          default: return UtilService.assertNever(this.profileService.stateSubject.value)
         }
       })
         .then(rets => {

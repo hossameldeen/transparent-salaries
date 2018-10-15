@@ -16,22 +16,25 @@ import {BehaviorSubject} from 'rxjs';
 export class ProfileService {
 
   stateSubject: BehaviorSubject<ProfileState>;
+  appInitStatus: AppInitStatus;
 
   constructor(
     private readonly dbService: DBService,
     private readonly progressBarService: ProgressBarService,
-    private readonly snackBar: MatSnackBar,
-    private readonly utilService: UtilService
+    private readonly snackBar: MatSnackBar
   ) {
     const profileUrl = localStorage.getItem('profileUrl')
     if (profileUrl)
-      this.stateSubject = new BehaviorSubject<ProfileState>({ kind: ProfileStateKind.ProfileSelected, datArchive: new DatArchive(profileUrl)})
+      this.stateSubject = new BehaviorSubject<ProfileState>({ kind: ProfileStateKind.ProfileSelected, datArchive: new DatArchive(profileUrl) })
     else
       this.stateSubject = new BehaviorSubject<ProfileState>({ kind: ProfileStateKind.ProfileNotSelected })
+
+    this.appInitStatus = AppInitStatus.Initializing
+    this.init()
   }
 
   async createProfile() {
-    const profile = await this.utilService.datArchiveCreate({
+    const profile = await UtilService.datArchiveCreate({
       title: `Salary-Transparency Profile: <Replace with profile name>`,
       buttonLabel: 'Select profile',
       filters: {
@@ -43,19 +46,15 @@ export class ProfileService {
       return
 
     try {
-      this.progressBarService.pushLoading()
-      await this.dbService.initDB(profile)
-      this.stateSubject.next({ kind: ProfileStateKind.ProfileSelected, datArchive: profile })
-      localStorage.setItem('profileUrl', profile.url)
+      await this.selectAndMigrate(profile)
     }
     catch (e) {
-      this.snackBar.open("Couldn't initialize your profile and that's all I know :(", "Dismiss")
+      this.snackBar.open("Couldn't initialize your profile. That's all I know :(", "Dismiss")
     }
-    this.progressBarService.popLoading()
   }
 
   async selectProfile() {
-    const profile = await this.utilService.datArchiveSelectArchive({
+    const profile = await UtilService.datArchiveSelectArchive({
       title: 'Select an archive to use as your user profile',
       buttonLabel: 'Select profile',
       filters: {
@@ -66,34 +65,54 @@ export class ProfileService {
     if (profile === null)
       return
 
-    this.progressBarService.pushLoading()
-
-    if (await this.dbService.isDBInitialized(profile)) {
-      this.stateSubject.next({ kind: ProfileStateKind.ProfileSelected, datArchive: profile })
-      localStorage.setItem('profileUrl', profile.url)
-      this.progressBarService.popLoading()
-      return
+    try {
+      await this.selectAndMigrate(profile)
     }
-
-    if (await this.utilService.isNewArchive(profile)) {
-      await this.dbService.initDB(profile)
-      this.stateSubject.next({ kind: ProfileStateKind.ProfileSelected, datArchive: profile })
-      localStorage.setItem('profileUrl', profile.url)
-      this.progressBarService.popLoading()
-      return
+    catch (e) {
+      this.snackBar.open(`*Probably*, the archive you've selected isn't a valid Transparent-Salaries profile. Are you sure you've used it as a profile before? If you haven't created a profile, you can create a new one!`,
+        'Dismiss')
     }
-
-    this.snackBar.open(`The archive you've selected doesn't seem to be a valid Transparent-Salaries profile.
-      Are you sure you've used it as a profile before?
-      If you haven't created a profile, you can create a new one!
-    `, "Dismiss")
-
-    this.progressBarService.popLoading()
   }
 
-  logout() {
+  async init(): Promise<void> {
+    switch(this.stateSubject.value.kind) {
+      case ProfileStateKind.ProfileNotSelected:
+        this.appInitStatus = AppInitStatus.Succeeded
+        break;
+      case ProfileStateKind.ProfileSelected:
+        try {
+          this.progressBarService.pushLoading()
+          this.appInitStatus = AppInitStatus.Initializing
+          await this.dbService.migrateDB(this.stateSubject.value.datArchive)
+          this.appInitStatus = AppInitStatus.Succeeded
+        }
+        catch(e) {
+          this.appInitStatus = AppInitStatus.Failed
+          throw e
+        }
+        finally {
+          this.progressBarService.popLoading()
+        }
+        break;
+      default: UtilService.assertNever(this.stateSubject.value)
+    }
+  }
+
+  logout(): void {
     this.stateSubject.next({ kind: ProfileStateKind.ProfileNotSelected })
     localStorage.removeItem('profileUrl')
+  }
+
+  private async selectAndMigrate(profile: DatArchive): Promise<void> {
+    try {
+      this.progressBarService.pushLoading()
+      await this.dbService.migrateDB(profile);
+    }
+    finally {
+      this.stateSubject.next({ kind: ProfileStateKind.ProfileSelected, datArchive: profile })
+      localStorage.setItem('profileUrl', profile.url)
+      this.progressBarService.popLoading()
+    }
   }
 }
 
@@ -113,3 +132,5 @@ export class ProfileSelected {
     readonly kind: ProfileStateKind.ProfileSelected = ProfileStateKind.ProfileSelected
   ) { }
 }
+
+export enum AppInitStatus { Succeeded, Initializing, Failed }

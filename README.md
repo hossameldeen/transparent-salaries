@@ -55,7 +55,7 @@ You're, obviously, using [Angular Framework](https://angular.io/). You're also u
 
 There're TODOs in the code. Beside them, there're TODOs here.
 
-Next free TODO number: 13
+Next free TODO number: 15
 
 ### Not Resolved Yet
 
@@ -87,6 +87,11 @@ But very not clean & no guarantee it'll solve all our problems. It's just a temp
 
 11) Enable TSLint from Settings -> TSLint -> Enable
 
-12) Perhaps allow using an archive that has other data as a Transparent-Salaries archive. Perhaps just show a warning?
+12) Perhaps allow using an archive that has other data as a Transparent-Salaries archive. Perhaps just show a warning?  
+**Update:** Currently, I only care about the files in the public-key (root) folder. Probably should show a warning if detected the archive has files outside of this root folder.
+
+13) Handle reading from profiles that haven't upgraded yet. Will probably handle only when I go live isA & it's worth it. Also, handle making the new structure compatible with the old one or showing a warning somehow to an old reader of a new archive.
+
+14) Perhaps factor out the migration code in DBService if you're gonna stick with the directory & version thing.
 
 ### Resolved

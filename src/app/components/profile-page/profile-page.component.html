@@ -1,1 +1,8 @@
-<app-profile [profileDatArchive]="profileDatArchive"></app-profile>
+<ng-container [ngSwitch]="profileService.appInitStatus">
+  <ng-container
+  <ng-container *ngSwitchCase="AppInitStatus.Succeeded">
+    <app-profile [profileDatArchive]="profileDatArchive"></app-profile>
+  </ng-container>
+  <app-app-init *ngSwitchDefault>
+  </app-app-init>
+</ng-container>

@@ -99,7 +99,7 @@ export class SalariesComponent implements OnInit {
     switch (row.kind) {
       case TableRowKind.ExistingRow: return row.salaryDBRow.dbRowData
       case TableRowKind.NewRow: return row.salary
-      default: return this.utilService.assertNever(row)
+      default: return UtilService.assertNever(row)
     }
   }
 
@@ -109,7 +109,7 @@ export class SalariesComponent implements OnInit {
   createNewWithDefaultValues() {
     this.dataSource.createNew()
     const row = this.dataSource.getRow(-1)
-    row.currentData = new NewRow(new Salary(this.utilService.getCurrentMonth(), '', '', '', '', ''))
+    row.currentData = new NewRow(new Salary(UtilService.getCurrentMonth(), '', '', '', '', ''))
   }
 
   async delete(row: TableElement<ExistingRow>) {
@@ -134,7 +134,7 @@ export class SalariesComponent implements OnInit {
         this.persistingNewSalary = false;
         break;
       }
-      default: this.utilService.assertNever(row.currentData)
+      default: UtilService.assertNever(row.currentData)
     }
     // TODO: If we add validation later on, we need to check on this call's return value first.
     row.confirmEditCreate()

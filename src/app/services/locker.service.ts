@@ -12,9 +12,10 @@ export class LockerService {
   private readonly locker: SharedWorker.SharedWorker;
   private readonly outstanding: Array<{ name: string, secret: string, resolve: ResolveFunction<string> }>;
 
-  constructor(private readonly utilService: UtilService) {
+  constructor() {
     this.locker = new SharedWorker('/assets/locker.js')
     this.locker.port.onmessage = (e: MessageEvent) => this.handleMessage(e)
+    this.outstanding = []
   }
 
   acquireLock(lock: Lock, lockTimeout: number): Promise<string> {
@@ -34,7 +35,7 @@ export class LockerService {
   private lockToString(lock: Lock): string {
     switch (lock) {
       case Lock.MigrateDB: return "MigrateDB"
-      default: return this.utilService.assertNever(lock)
+      default: return UtilService.assertNever(lock)
     }
   }
 

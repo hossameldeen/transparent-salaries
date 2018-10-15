@@ -3,7 +3,6 @@ import {DBRow} from 'src/app/models/db-row.model';
 import {v4 as uuid} from 'uuid';
 import {UtilService} from './util.service';
 import {Lock, LockerService} from './locker.service';
-import {MatSnackBar} from '@angular/material';
 
 /**
  * A wrapper around a profile dat archive that is used as a database.
@@ -30,36 +29,69 @@ export class DBService {
   private readonly migrations = [
     { migrate: async (datArchive: DatArchive) => await this.migrateNewArchiveTo545(datArchive),
       check: async (datArchive: DatArchive) => await this.check545(datArchive)
+    },
+    { migrate: async (datArchive: DatArchive) => await this.migrate545To752(datArchive),
+      check: async (datArchive: DatArchive) => await this.check752(datArchive)
     }
   ]
 
   constructor(
-    private readonly lockerService: LockerService,
-    private readonly snackBar: MatSnackBar,
-    private readonly utilService: UtilService
+    private readonly lockerService: LockerService
   ) { }
 
   private async migrateNewArchiveTo545(datArchive: DatArchive): Promise<void> {
+    const root = '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6'
+    const baseDirComponents = [ root, 'version', '545']
+    const tablesNames = ['salaries', 'trustees']
     let base = ''
-    for (const baseDirComponent of this.BASE_DIR_COMPONENTS) {
+    for (const baseDirComponent of baseDirComponents) {
       base = base + '/' + baseDirComponent;
       await datArchive.mkdir(base)
     }
-    for (const tableName of this.TABLES_NAMES)
+    for (const tableName of tablesNames)
       await datArchive.mkdir(base + '/' + tableName)
   }
 
+  private async migrate545To752(datArchive: DatArchive): Promise<void> {
+    const root = '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6'
+    const baseDirComponents = [ root, 'version', '752']
+    const baseDir = '/' + baseDirComponents.join('/')
+    const oldBaseDir = '/' + [root, 'version', '545'].join('/')
+    await datArchive.rename(oldBaseDir, baseDir)
+    await datArchive.writeFile(baseDir + '/migration-done-752', 'Migration to 752 done.')
+  }
+
   private async check545(datArchive: DatArchive): Promise<boolean> {
+    const root = '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6'
+    const baseDirComponents = [ root, 'version', '545']
+    const tablesNames = ['salaries', 'trustees']
     let base = ''
-    for (const baseDirComponent of this.BASE_DIR_COMPONENTS) {
-      base = base + '/' + baseDirComponent;
-      if (!await this.utilService.directoryExists(datArchive, base))
+    for (const baseDirComponent of baseDirComponents) {
+      base = base + '/' + baseDirComponent
+      if (!await UtilService.directoryExists(datArchive, base))
         return false
     }
-    for (const tableName of this.TABLES_NAMES)
-      if (!await this.utilService.directoryExists(datArchive, base + '/' + tableName))
+    for (const tableName of tablesNames)
+      if (!await UtilService.directoryExists(datArchive, base + '/' + tableName))
         return false
     return true
+  }
+
+  private async check752(datArchive: DatArchive): Promise<boolean> {
+    const root = '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6'
+    const baseDirComponents = [ root, 'version', '752']
+    const baseDir = '/' + baseDirComponents.join('/')
+    const tablesNames = ['salaries', 'trustees']
+    let base = ''
+    for (const baseDirComponent of baseDirComponents) {
+      base = base + '/' + baseDirComponent;
+      if (!await UtilService.directoryExists(datArchive, base))
+        return false
+    }
+    for (const tableName of tablesNames)
+      if (!await UtilService.directoryExists(datArchive, base + '/' + tableName))
+        return false
+    return await UtilService.fileExists(datArchive, baseDir + '/migration-done-752')
   }
 
   async migrateDB(datArchive: DatArchive): Promise<void> {
@@ -69,47 +101,12 @@ export class DBService {
       let i = this.migrations.length - 1
       while(i >= 0 && !await this.migrations[i].check(datArchive))
         --i
-      if (i == 0 && !this.utilService.isNewArchive(datArchive)) {
-        this.snackBar.open(`The archive you've selected doesn't seem to be a valid Transparent-Salaries profile.
-      Are you sure you've used it as a profile before?
-      If you haven't created a profile, you can create a new one!
-    `, 'Dismiss');
-        throw new Error("Database migration failed. Archive isn't new (version == 2 assumption) && doesn't comply to Transparent-Salaries structure.");
-      }
       for (i++; i < this.migrations.length; ++i)
         await this.migrations[i].migrate(datArchive)
-    }
-    catch(e) {
-      throw e
     }
     finally {
       this.lockerService.releaseLock(Lock.MigrateDB, lockSecret)
     }
-  }
-
-  async isDBInitialized(datArchive: DatArchive): Promise<boolean> {
-    try {
-      const tables = await datArchive.readdir(this.BASE_DIR)
-      if (tables.length !== this.TABLES_NAMES.length)
-        return false
-      for (const tableName of this.TABLES_NAMES)
-        if (!tables.includes(tableName))
-          return false
-      return true
-    }
-    catch (e) {
-      return false;
-    }
-  }
-
-  async initDB(datArchive: DatArchive): Promise<void> {
-    let base = ''
-    for (const baseDirComponent of this.BASE_DIR_COMPONENTS) {
-      base = base + '/' + baseDirComponent;
-      await datArchive.mkdir(base)
-    }
-    for (const tableName of this.TABLES_NAMES)
-      await datArchive.mkdir(base + '/' + tableName)
   }
 
   /**

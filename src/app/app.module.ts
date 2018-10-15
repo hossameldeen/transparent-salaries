@@ -12,6 +12,7 @@ import { SalariesComponent } from './components/salaries/salaries.component';
 import { HomePageComponent } from './components/home-page/home-page.component';
 import { ProfilePageComponent } from './components/profile-page/profile-page.component';
 import { NotFoundPageComponent } from './components/not-found-page/not-found-page.component';
+import { AppInitComponent } from './components/app-init/app-init.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -27,7 +28,8 @@ const routes: Routes = [
     ProfilePageComponent,
     HomeComponent,
     ProfileComponent,
-    SalariesComponent
+    SalariesComponent,
+    AppInitComponent
   ],
   imports: [
     BrowserModule,

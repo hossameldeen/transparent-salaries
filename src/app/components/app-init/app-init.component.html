@@ -1,0 +1,16 @@
+<div fxLayout="column">
+  <div fxFlex="5vw"></div>
+  <div fxLayoutAlign="center">
+    <div fxLayout="column">
+      <ng-container [ngSwitch]="profileService.appInitStatus">
+        <ng-container *ngSwitchCase="AppInitStatus.Initializing">
+          <mat-spinner></mat-spinner>
+          <h1>Initializing...</h1>
+        </ng-container>
+        <ng-container *ngSwitchCase="AppInitStatus.Failed">
+          <h1>Failed to initialize. That's all I know :(</h1>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+</div>

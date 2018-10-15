@@ -51,6 +51,13 @@ declare class DatArchive {
   mkdir(path: string): Promise<void>;
 
   unlink(path: string): Promise<void>;
+
+  rmdir(path: string, opts?: { recursive?: boolean }): Promise<void>;
+
+  /**
+   * Works with both files and directories
+   */
+  rename(oldPath: string, newPath: string, opts?: { timeout?: number }): Promise<void>;
 }
 
 /**
