@@ -1,10 +1,12 @@
-import { Injectable } from '@angular/core';
-import { DBRow } from '../models/db-row.model';
-import { v4 as uuid } from 'uuid';
+import {Injectable} from '@angular/core';
+import {DBRow} from 'src/app/models/db-row.model';
+import {v4 as uuid} from 'uuid';
+import {UtilService} from './util.service';
+import {Lock, LockerService} from './locker.service';
 
 /**
  * A wrapper around a profile dat archive that is used as a database.
- * 
+ *
  * For my use-case, I should always be dealing with JSON values. This service will be built on that assumption.
  * // TODO: improve wording of the line above.
  */
@@ -13,16 +15,78 @@ import { v4 as uuid } from 'uuid';
 })
 export class DBService {
 
-  // TODO: Of course, change this to actual PK & version when publishing isA.
-  readonly BASE_DIR_COMPONENTS = [
-    '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6',
-    'version',
-    '545'
-  ]
-  readonly BASE_DIR = '/' + this.BASE_DIR_COMPONENTS.join('/');
-  readonly TABLES_NAMES = ['salaries', 'trustees']
+  /**
+   * This is the only place my application is allowed to edit. I'll consider other places to belong to other apps.
+   *
+   * TODO: Of course, change this to the actual PK when publishing isA
+   */
+  private readonly ROOT = '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6';
 
-  constructor() { }
+  private readonly BASE_DIR_COMPONENTS = [ this.ROOT, 'version', '545']
+  private readonly BASE_DIR = '/' + this.BASE_DIR_COMPONENTS.join('/');
+  private readonly TABLES_NAMES = ['salaries', 'trustees']
+
+  private readonly migrations = [
+    { preCheck: async (datArchive: DatArchive) => await this.preCheckIsNewArchive(datArchive),
+      migrate: async (datArchive: DatArchive) => await this.migrateNewArchiveTo545(datArchive),
+      postCheck: async (datArchive: DatArchive) => await this.postCheck545(datArchive),
+    }
+  ]
+
+  constructor(
+    private readonly lockerService: LockerService,
+    private readonly utilService: UtilService
+  ) { }
+
+  private async preCheckIsNewArchive(datArchive: DatArchive): Promise<boolean> {
+    return await this.utilService.isNewArchive(datArchive)
+  }
+
+  private async migrateNewArchiveTo545(datArchive: DatArchive): Promise<void> {
+    let base = ''
+    for (const baseDirComponent of this.BASE_DIR_COMPONENTS) {
+      base = base + '/' + baseDirComponent;
+      await datArchive.mkdir(base)
+    }
+    for (const tableName of this.TABLES_NAMES)
+      await datArchive.mkdir(base + '/' + tableName)
+  }
+
+  private async postCheck545(datArchive: DatArchive): Promise<boolean> {
+    let base = ''
+    for (const baseDirComponent of this.BASE_DIR_COMPONENTS) {
+      base = base + '/' + baseDirComponent;
+      if (!await this.utilService.directoryExists(datArchive, base))
+        return false
+    }
+    for (const tableName of this.TABLES_NAMES)
+      if (!await this.utilService.directoryExists(datArchive, base + '/' + tableName))
+        return false
+    return true
+  }
+
+  async migrateDB(datArchive: DatArchive): Promise<void> {
+    // TODO: May actually take longer. Perhaps calculate it depends on the number of rows?
+    const lockSecret = await this.lockerService.acquireLock(Lock.MigrateDB, 5 * 60 * 1000)
+    try {
+      let i = this.migrations.length - 1
+      while(i > 0 && !this.migrations[i].postCheck(datArchive))
+        --i
+      while(i < this.migrations.length) {
+        if (this.migrations[i].preCheck(datArchive))
+          throw new Error(`migrations preCheck failed for the ${i} migration. Perhaps the archive has been used by another website?`)
+        this.migrations[i].migrate(datArchive)
+        if (!this.migrations[i].postCheck(datArchive))
+          throw new Error(`migrations postCheck failed for the ${i} migration although the migrations has just been run. That's probably a bug.`)
+      }
+    }
+    catch(e) {
+      throw e
+    }
+    finally {
+      this.lockerService.releaseLock(Lock.MigrateDB, lockSecret)
+    }
+  }
 
   async isDBInitialized(datArchive: DatArchive): Promise<boolean> {
     try {
@@ -51,7 +115,7 @@ export class DBService {
 
   /**
    * Will JSON.stringify(...) on whatever jsonStringifiable is sent.
-   * 
+   *
    * Mainly used for adding a row. There's a tiny, _tiny_ probability of overriding a row due to uuid collision.
    */
   async putRow<T>(datArchive: DatArchive, tableName: string, jsonStringifiable: T): Promise<DBRow<T>> {
@@ -84,10 +148,10 @@ export class DBService {
 
   /**
    * wrap path
-   * 
+   *
    * Note: if `path` doesn't begin with "/", will append it. E.g.,:
    * wp("abc") = wp("/abc") = /60c.../version/545/abc
-   * 
+   *
    * Do NOT think of any relative-url handling at all! If you want `abc` to be a relative path, what will it be
    * relative to?!
    */

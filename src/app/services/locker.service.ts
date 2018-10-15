@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import { v4 as uuid } from 'uuid';
+import {UtilService} from './util.service';
+
+export enum Lock { MigrateDB }
 
 @Injectable({
   providedIn: 'root'
@@ -9,24 +12,33 @@ export class LockerService {
   private readonly locker: SharedWorker.SharedWorker;
   private readonly outstanding: Array<{ name: string, secret: string, resolve: ResolveFunction<string> }>;
 
-  constructor() {
+  constructor(private readonly utilService: UtilService) {
     this.locker = new SharedWorker('/assets/locker.js')
     this.locker.port.onmessage = (e: MessageEvent) => this.handleMessage(e)
   }
 
-  acquireLock(lockName: string, lockTimeout: number): Promise<string> {
+  acquireLock(lock: Lock, lockTimeout: number): Promise<string> {
     return new Promise(resolve => {
+      const lockName = this.lockToString(lock)
       const lockSecret = uuid()
       this.outstanding.push({name: lockName, secret: lockSecret, resolve: resolve})
       this.locker.port.postMessage({kind: 'acquire', name: lockName, timeout: lockTimeout, secret: lockSecret})
     })
   }
 
-  releaseLock(lockName: string, lockSecret: string): void {
+  releaseLock(lock: Lock, lockSecret: string): void {
+    const lockName = this.lockToString(lock)
     this.locker.port.postMessage({kind: 'release', name: lockName, secret: lockSecret})
   }
 
-  private handleMessage(e: MessageEvent) {
+  private lockToString(lock: Lock): string {
+    switch (lock) {
+      case Lock.MigrateDB: return "MigrateDB"
+      default: return this.utilService.assertNever(lock)
+    }
+  }
+
+  private handleMessage(e: MessageEvent): void {
     const msg = e.data
     if (msg.kind !== 'acquired')
       throw Error("Unexpected message. Expected message whose kind is 'acquired'. Should never happen.")
