@@ -55,7 +55,7 @@ You're, obviously, using [Angular Framework](https://angular.io/). You're also u
 
 There're TODOs in the code. Beside them, there're TODOs here.
 
-Next free TODO number: 12
+Next free TODO number: 13
 
 ### Not Resolved Yet
 
@@ -86,5 +86,7 @@ But very not clean & no guarantee it'll solve all our problems. It's just a temp
 10) Probably need something like `ngrx` to handle state consistency between the components. For example, what if 2 components ask about the login status, but the two receive 2 different answers due to change in time?
 
 11) Enable TSLint from Settings -> TSLint -> Enable
+
+12) Perhaps allow using an archive that has other data as a Transparent-Salaries archive. Perhaps just show a warning?
 
 ### Resolved

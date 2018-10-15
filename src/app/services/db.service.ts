@@ -3,6 +3,7 @@ import {DBRow} from 'src/app/models/db-row.model';
 import {v4 as uuid} from 'uuid';
 import {UtilService} from './util.service';
 import {Lock, LockerService} from './locker.service';
+import {MatSnackBar} from '@angular/material';
 
 /**
  * A wrapper around a profile dat archive that is used as a database.
@@ -22,25 +23,21 @@ export class DBService {
    */
   private readonly ROOT = '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6';
 
-  private readonly BASE_DIR_COMPONENTS = [ this.ROOT, 'version', '545']
+  private readonly BASE_DIR_COMPONENTS = [ this.ROOT, 'version', '752']
   private readonly BASE_DIR = '/' + this.BASE_DIR_COMPONENTS.join('/');
   private readonly TABLES_NAMES = ['salaries', 'trustees']
 
   private readonly migrations = [
-    { preCheck: async (datArchive: DatArchive) => await this.preCheckIsNewArchive(datArchive),
-      migrate: async (datArchive: DatArchive) => await this.migrateNewArchiveTo545(datArchive),
-      postCheck: async (datArchive: DatArchive) => await this.postCheck545(datArchive),
+    { migrate: async (datArchive: DatArchive) => await this.migrateNewArchiveTo545(datArchive),
+      check: async (datArchive: DatArchive) => await this.check545(datArchive)
     }
   ]
 
   constructor(
     private readonly lockerService: LockerService,
+    private readonly snackBar: MatSnackBar,
     private readonly utilService: UtilService
   ) { }
-
-  private async preCheckIsNewArchive(datArchive: DatArchive): Promise<boolean> {
-    return await this.utilService.isNewArchive(datArchive)
-  }
 
   private async migrateNewArchiveTo545(datArchive: DatArchive): Promise<void> {
     let base = ''
@@ -52,7 +49,7 @@ export class DBService {
       await datArchive.mkdir(base + '/' + tableName)
   }
 
-  private async postCheck545(datArchive: DatArchive): Promise<boolean> {
+  private async check545(datArchive: DatArchive): Promise<boolean> {
     let base = ''
     for (const baseDirComponent of this.BASE_DIR_COMPONENTS) {
       base = base + '/' + baseDirComponent;
@@ -70,15 +67,17 @@ export class DBService {
     const lockSecret = await this.lockerService.acquireLock(Lock.MigrateDB, 5 * 60 * 1000)
     try {
       let i = this.migrations.length - 1
-      while(i > 0 && !this.migrations[i].postCheck(datArchive))
+      while(i >= 0 && !await this.migrations[i].check(datArchive))
         --i
-      while(i < this.migrations.length) {
-        if (this.migrations[i].preCheck(datArchive))
-          throw new Error(`migrations preCheck failed for the ${i} migration. Perhaps the archive has been used by another website?`)
-        this.migrations[i].migrate(datArchive)
-        if (!this.migrations[i].postCheck(datArchive))
-          throw new Error(`migrations postCheck failed for the ${i} migration although the migrations has just been run. That's probably a bug.`)
+      if (i == 0 && !this.utilService.isNewArchive(datArchive)) {
+        this.snackBar.open(`The archive you've selected doesn't seem to be a valid Transparent-Salaries profile.
+      Are you sure you've used it as a profile before?
+      If you haven't created a profile, you can create a new one!
+    `, 'Dismiss');
+        throw new Error("Database migration failed. Archive isn't new (version == 2 assumption) && doesn't comply to Transparent-Salaries structure.");
       }
+      for (i++; i < this.migrations.length; ++i)
+        await this.migrations[i].migrate(datArchive)
     }
     catch(e) {
       throw e
