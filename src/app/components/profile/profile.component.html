@@ -1,20 +1,25 @@
-<div fxLayout="column" fxLayoutGap="3vh">
+<div fxLayout="column">
   <div fxFlex="3vh"></div>
   <div fxLayout fxLayoutAlign="center">
-  <mat-card>
-    <mat-card-title>{{profileDatArchive.url}}</mat-card-title>
-    <mat-card-subtitle *ngIf="profileService.stateSubject.value.kind === ProfileStateKind.ProfileSelected && profileService.stateSubject.value.datArchive.url !== profileDatArchive.url && !alreadyAFriend" fxLayout fxLayoutAlign="center">
-      <button mat-raised-button color="primary" (click)="addTrustee()">Add Trustee</button>
-    </mat-card-subtitle>
-    <mat-divider [inset]="true"></mat-divider>
-    <br/>
-    <mat-card-content fxLayout="column">
-      <h2>Trusts:</h2>
-      <a *ngFor="let trustee of trusts" routerLink="/profile/{{trustee.url.slice(6)}}">{{trustee.url}}</a>
-    </mat-card-content>
-  </mat-card>
+    <h1>{{profileDatArchive.url}}</h1>
   </div>
-  <h1>Salaries collected by {{profileDatArchive.url}}:</h1>
-  <app-salaries [profileDatArchive]="profileDatArchive" [isOwner]="isOwner"></app-salaries>
+  <ng-container
+    *ngIf="profileService.stateSubject.value.kind === ProfileStateKind.ProfileSelected && profileService.stateSubject.value.datArchive.url !== profileDatArchive.url && !alreadyAFriend">
+    <div fxLayout fxLayoutAlign="center">
+      <button mat-raised-button color="primary" (click)="addTrustee()" fxLayout fxLayoutAlign="center">Add Trustee</button>
+    </div>
+    <div fxFlex="1vh"></div>
+  </ng-container>
+  <mat-divider></mat-divider>
+  <mat-tab-group mat-stretch-tabs>
+    <mat-tab label="Salaries">
+      <app-salaries [profileDatArchive]="profileDatArchive" [isOwner]="isOwner"></app-salaries>
+    </mat-tab>
+    <mat-tab label="Trustees">
+      <div fxLayout="column" fxLayoutAlign="start center">
+        <a *ngFor="let trustee of trusts" routerLink="/profile/{{trustee.url.slice(6)}}">{{trustee.url}}</a>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
   <div fxFlex="3vh"></div>
 </div>
