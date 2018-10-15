@@ -36,6 +36,20 @@ export class UtilService {
     return (await datArchive.getInfo()).version === 2
   }
 
+  /**
+   * TODO: actually not accuare because, for example, it should throw in case of timeout error instead of returning false.
+   * TODO: That may enhance when there's a documented way to differentiate between exception types.
+   * TODO: In the current business logic, the action depends on the presence of file/directory. However, if there's an action that depends
+   * TODO: on the absence, you actually can't depend on this method. Same for directoryExists.
+   */
+  async fileExists(datArchive: DatArchive, path: string): Promise<boolean> {
+    return (await datArchive.getInfo()).version === 2
+  }
+
+  async directoryExists(datArchive: DatArchive, path: string): Promise<boolean> {
+    return (await datArchive.getInfo()).version === 2
+  }
+
   getCurrentMonth(): string {
     const year = new Date().getFullYear()
     const month = new Date().getMonth() + 1

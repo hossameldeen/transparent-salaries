@@ -17,14 +17,16 @@ declare class DatArchive {
 
     title: string,
     description: string,
-  
+
     mtime: number,
     size: number,
   }>;
 
+  stat(path: string, opts?: { timeout?: number }): Promise<Stat>;
+
   /**
    * There're rules for when a string is returned is returned. Check the docs.
-   * 
+   *
    * I wish I could write it using dependent types.
    */
   readFile(path: string, opts?: { encoding?: string, timeout?: number }): Promise<string>;
@@ -49,4 +51,20 @@ declare class DatArchive {
   mkdir(path: string): Promise<void>;
 
   unlink(path: string): Promise<void>;
+}
+
+/**
+ * TODO: Not sure if this will actually work, because pfrazee seems to be creating the Stat class manually by binding to prototype instead
+ * TODO: of using javascript classes syntax.
+ */
+declare class Stat {
+  isDirectory(): boolean
+  isFile(): boolean
+
+  // files only:
+  size: number // (bytes)
+  blocks: number // (number of data blocks in the metadata)
+  downloaded: number // (number of blocks downloaded, if a remote archive)
+  mtime: Date // (last modified time; not reliable)
+  ctime: Date // (creation time; not reliable)
 }
