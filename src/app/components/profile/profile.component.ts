@@ -2,11 +2,13 @@ import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {DBService} from 'src/app/services/db.service';
 import {ProgressBarService} from 'src/app/services/progress-bar.service';
 import {MatSnackBar} from '@angular/material';
-import {Trustee} from 'src/app/models/Trustee.model';
+import {Trustee} from 'src/app/models/trustee.model';
+import {Profile} from 'src/app/models/profile.model';
 import {ProfileSelected, ProfileService, ProfileStateKind} from 'src/app/services/profile.service';
 import {Subscription} from 'rxjs';
 import {UtilService} from 'src/app/services/util.service';
 import {DBRow} from 'src/app/models/db-row.model';
+import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-profile',
@@ -16,6 +18,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   ProfileStateKind = ProfileStateKind;
 
   @Input() profileDatArchive: DatArchive;
+  displayName: string | null;
   isOwner: boolean;
   alreadyAFriend: boolean;
   stateSubjectSubscription: Subscription;
@@ -23,6 +26,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   trusts: DatArchive[];
 
   constructor(
+    readonly sanitizer: DomSanitizer,
     readonly profileService: ProfileService,
     private readonly dbService: DBService,
     private readonly progressBarService: ProgressBarService,
@@ -34,6 +38,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.updateIsOwner()
     this.stateSubjectSubscription = this.profileService.stateSubject.subscribe(() => this.updateIsOwner())
+
+    this.dbService.readRow<Profile>(this.profileDatArchive, 'profiles', this.dbService.PROFILE_ROW_UUID)
+      .then(profileRow => this.displayName = profileRow.dbRowData.displayName)
 
     this.dbService.getRowsUuids(this.profileDatArchive, 'trustees').then(rowsUuids => {
       const readRowsPromises = rowsUuids.map(rowUuid => this.dbService.readRow<Trustee>(this.profileDatArchive, 'trustees', rowUuid))

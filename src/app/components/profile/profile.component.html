@@ -1,7 +1,13 @@
 <div fxLayout="column">
   <div fxFlex="3vh"></div>
-  <div fxLayout fxLayoutAlign="center">
-    <h1>{{profileDatArchive.url}}</h1>
+  <div fxLayout="column" fxLayoutAlign="start center">
+    <div fxLayout fxLayoutAlign="start center">
+      <h1 style="margin-bottom: 0;">{{displayName ? displayName : "Ahmed Mostafa"}}</h1>
+      <button *ngIf="isOwner" mat-icon-button color="primary"> <!-- TODO: implement this -->
+        <mat-icon>edit</mat-icon>
+      </button>
+    </div>
+    <h3>(<a [href]="sanitizer.bypassSecurityTrustUrl(profileDatArchive.url)">{{profileDatArchive.url.slice(0, 12)}}..{{profileDatArchive.url.slice(-6)}}/</a>)</h3>
   </div>
   <ng-container
     *ngIf="profileService.stateSubject.value.kind === ProfileStateKind.ProfileSelected && profileService.stateSubject.value.datArchive.url !== profileDatArchive.url && !alreadyAFriend">

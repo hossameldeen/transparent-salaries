@@ -10,7 +10,7 @@
         <button mat-raised-button (click)="profileService.createProfile()">Create a new profile</button>
       </ng-container>
       <ng-container *ngSwitchCase="ProfileStateKind.ProfileSelected">
-        <span>{{profileService.stateSubject.value.datArchive.url}}</span>
+        <a mat-button [href]="sanitizer.bypassSecurityTrustUrl(profileService.stateSubject.value.datArchive.url)">{{profileService.stateSubject.value.datArchive.url.slice(0, 12)}}..{{profileService.stateSubject.value.datArchive.url.slice(-2)}}/</a>
         <button mat-stroked-button (click)="profileService.logout()">Logout</button>
       </ng-container>
     </ng-container>
