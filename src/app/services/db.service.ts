@@ -3,7 +3,6 @@ import {DBRow} from 'src/app/models/db-row.model';
 import {v4 as uuid} from 'uuid';
 import {UtilService} from './util.service';
 import {Lock, LockerService} from './locker.service';
-import {Profile} from 'src/app/models/profile.model';
 
 /**
  * A wrapper around a profile dat archive that is used as a database.
@@ -41,6 +40,10 @@ export class DBService {
     { migrate: async (datArchive: DatArchive) => await DBService.migrate752To753(datArchive),
       check: async (datArchive: DatArchive) => await DBService.check753(datArchive),
       idempotentCleanup: async (datArchive: DatArchive) => await DBService.idempotentCleanup(datArchive, '753')
+    },
+    { migrate: async (datArchive: DatArchive) => await DBService.migrate753To754(datArchive),
+      check: async (datArchive: DatArchive) => await DBService.check754(datArchive),
+      idempotentCleanup: async (datArchive: DatArchive) => await DBService.idempotentCleanup(datArchive, '754')
     }
   ]
 
@@ -114,9 +117,35 @@ export class DBService {
     await datArchive.unlink(newBaseDir + '/migration-done-752')
 
     await datArchive.mkdir(newBaseDir + '/profiles')
-    await this.putRow2Static<Profile>(datArchive, newBaseDir + '/profiles', new Profile(null), profileRowUuid)
+    await this.putRow2Static<{ displayName: string | null }>(datArchive, newBaseDir + '/profiles', { displayName: null }, profileRowUuid)
 
     await datArchive.writeFile(newBaseDir + '/migration-done-753', 'Migration to 753 done.')
+  }
+
+  static async migrate753To754(datArchive: DatArchive): Promise<void> {
+    const root = '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6'
+    const oldBaseDir = '/' + [root, 'version', '753'].join('/')
+    const newBaseDir = '/' + [root, 'version', '754'].join('/')
+    const profileRowUuid = 'profile'
+
+    // 1- remove previous in-progress migrations
+    try {
+      // just in case a migration had already started and stopped in the middle
+      await datArchive.rmdir(newBaseDir, { recursive: true })
+    }
+    catch (e) {
+      // It's ok if it doesn't exist. TODO: check the error is actually a doesn't-exist error.
+    }
+
+    // 2- migrate
+    await datArchive.copy(oldBaseDir, newBaseDir)
+    await datArchive.unlink(newBaseDir + '/migration-done-753')
+
+    const oldDisplayName = (await this.readRowStatic<{ displayName: string | null }>(datArchive, newBaseDir + '/profiles', profileRowUuid)).dbRowData.displayName
+    const newProfile = { displayName: oldDisplayName ? oldDisplayName : "" }
+    await this.putRow2Static<{ displayName: string }>(datArchive, newBaseDir + '/profiles', newProfile, profileRowUuid)
+
+    await datArchive.writeFile(newBaseDir + '/migration-done-754', 'Migration to 754 done.')
   }
 
   static async check545(datArchive: DatArchive): Promise<boolean> {
@@ -170,6 +199,26 @@ export class DBService {
     if (!await UtilService.fileExists(datArchive, baseDir + '/profiles/' + profileRowUuid + '.json'))
       return false
     return await UtilService.fileExists(datArchive, baseDir + '/migration-done-753')
+  }
+
+  static async check754(datArchive: DatArchive): Promise<boolean> {
+    const root = '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6'
+    const baseDirComponents = [ root, 'version', '754']
+    const baseDir = '/' + baseDirComponents.join('/')
+    const tablesNames = ['salaries', 'trustees', 'profiles']
+    const profileRowUuid = 'profile'
+    let base = ''
+    for (const baseDirComponent of baseDirComponents) {
+      base = base + '/' + baseDirComponent;
+      if (!await UtilService.directoryExists(datArchive, base))
+        return false
+    }
+    for (const tableName of tablesNames)
+      if (!await UtilService.directoryExists(datArchive, base + '/' + tableName))
+        return false
+    if (!await UtilService.fileExists(datArchive, baseDir + '/profiles/' + profileRowUuid + '.json'))
+      return false
+    return await UtilService.fileExists(datArchive, baseDir + '/migration-done-754')
   }
 
   static async idempotentCleanup(datArchive: DatArchive, version: string): Promise<void> {
@@ -248,6 +297,14 @@ export class DBService {
     const row = new DBRow(uuid, jsonStringifiable)
     await datArchive.writeFile(parentPath + "/" + row.uuid + ".json", JSON.stringify(row.dbRowData))
     return row
+  }
+
+  /**
+   * The difference is that this one shouldn't depend on stuff like the version.
+   * TODO: Actually, it could if, e.g., the version was a static property. This needs to be refactored.
+   */
+  static async readRowStatic<T>(datArchive: DatArchive, parentPath: string, uuid: string): Promise<DBRow<T>> {
+    return new DBRow<T>(uuid, JSON.parse(await datArchive.readFile(parentPath + "/" + uuid + ".json")))
   }
 
   /**
