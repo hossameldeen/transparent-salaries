@@ -52,7 +52,18 @@ declare class DatArchive {
 
   unlink(path: string): Promise<void>;
 
-  rmdir(path: string, opts?: { recursive?: boolean }): Promise<void>;
+  /**
+   * opts & opts.recursive should be optional, but making them required because you usually you want it recursive and
+   * to remind you to send it.
+   */
+  rmdir(path: string, opts: { recursive: boolean }): Promise<void>;
+
+  /**
+   * Copies a file or directory to a target path.
+   *
+   * Example: await archive.copy('/images', '/backup-images')
+   */
+  copy(path: string, dstPath: string, opts?: { timeout?: number }): Promise<void>;
 
   /**
    * Works with both files and directories

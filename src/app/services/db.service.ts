@@ -31,13 +31,16 @@ export class DBService {
 
   private readonly migrations = [
     { migrate: async (datArchive: DatArchive) => await DBService.migrateNewArchiveTo545(datArchive),
-      check: async (datArchive: DatArchive) => await DBService.check545(datArchive)
+      check: async (datArchive: DatArchive) => await DBService.check545(datArchive),
+      idempotentCleanup: async (datArchive: DatArchive) => await DBService.idempotentCleanup(datArchive, '545')
     },
     { migrate: async (datArchive: DatArchive) => await DBService.migrate545To752(datArchive),
-      check: async (datArchive: DatArchive) => await DBService.check752(datArchive)
+      check: async (datArchive: DatArchive) => await DBService.check752(datArchive),
+      idempotentCleanup: async (datArchive: DatArchive) => await DBService.idempotentCleanup(datArchive, '752')
     },
     { migrate: async (datArchive: DatArchive) => await DBService.migrate752To753(datArchive),
-      check: async (datArchive: DatArchive) => await DBService.check753(datArchive)
+      check: async (datArchive: DatArchive) => await DBService.check753(datArchive),
+      idempotentCleanup: async (datArchive: DatArchive) => await DBService.idempotentCleanup(datArchive, '753')
     }
   ]
 
@@ -49,11 +52,24 @@ export class DBService {
     const root = '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6'
     const baseDirComponents = [ root, 'version', '545']
     const tablesNames = ['salaries', 'trustees']
+
+    // 1- remove previous in-progress migrations
+    try {
+      // just in case a migration had already started and stopped in the middle
+      await datArchive.rmdir('/' + root, { recursive: true })
+    }
+    catch (e) {
+      // It's ok if it doesn't exist
+    }
+
+    // 2- migrate
+    // create /root/version/545
     let base = ''
     for (const baseDirComponent of baseDirComponents) {
       base = base + '/' + baseDirComponent;
       await datArchive.mkdir(base)
     }
+    // create /root/version/545/salaries and /root/version/545/trustees
     for (const tableName of tablesNames)
       await datArchive.mkdir(base + '/' + tableName)
   }
@@ -61,10 +77,21 @@ export class DBService {
   static async migrate545To752(datArchive: DatArchive): Promise<void> {
     const root = '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6'
     const baseDirComponents = [ root, 'version', '752']
-    const baseDir = '/' + baseDirComponents.join('/')
+    const newBaseDir = '/' + baseDirComponents.join('/')
     const oldBaseDir = '/' + [root, 'version', '545'].join('/')
-    await datArchive.rename(oldBaseDir, baseDir)
-    await datArchive.writeFile(baseDir + '/migration-done-752', 'Migration to 752 done.')
+
+    // 1- remove previous in-progress migrations
+    try {
+      // just in case a migration had already started and stopped in the middle
+      await datArchive.rmdir(newBaseDir, { recursive: true })
+    }
+    catch (e) {
+      // It's ok if it doesn't exist. TODO: check the error is actually a doesn't-exist error.
+    }
+
+    // 2- migrate
+    await datArchive.copy(oldBaseDir, newBaseDir)
+    await datArchive.writeFile(newBaseDir + '/migration-done-752', 'Migration to 752 done.')
   }
 
   static async migrate752To753(datArchive: DatArchive): Promise<void> {
@@ -73,8 +100,17 @@ export class DBService {
     const newBaseDir = '/' + [root, 'version', '753'].join('/')
     const profileRowUuid = 'profile'
 
-    await datArchive.rename(oldBaseDir, newBaseDir)
-    console.log(await datArchive.readdir(newBaseDir))
+    // 1- remove previous in-progress migrations
+    try {
+      // just in case a migration had already started and stopped in the middle
+      await datArchive.rmdir(newBaseDir, { recursive: true })
+    }
+    catch (e) {
+      // It's ok if it doesn't exist. TODO: check the error is actually a doesn't-exist error.
+    }
+
+    // 2- migrate
+    await datArchive.copy(oldBaseDir, newBaseDir)
     await datArchive.unlink(newBaseDir + '/migration-done-752')
 
     await datArchive.mkdir(newBaseDir + '/profiles')
@@ -136,15 +172,34 @@ export class DBService {
     return await UtilService.fileExists(datArchive, baseDir + '/migration-done-753')
   }
 
+  static async idempotentCleanup(datArchive: DatArchive, version: string): Promise<void> {
+    const root = '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6'
+    const baseDirComponents = [ root, 'version', version]
+    const baseDir = '/' + baseDirComponents.join('/')
+
+    try {
+      await datArchive.rmdir(baseDir, { recursive: true })
+    }
+    catch(e) {
+      // It's ok if it doesn't exist. TODO: check the error is actually a doesn't-exist error.
+    }
+  }
+
   async migrateDB(datArchive: DatArchive): Promise<void> {
     // TODO: May actually take longer. Perhaps calculate it depends on the number of rows?
     const lockSecret = await this.lockerService.acquireLock(Lock.MigrateDB, 5 * 60 * 1000)
     try {
-      let i = this.migrations.length - 1
-      while(i >= 0 && !await this.migrations[i].check(datArchive))
-        --i
-      for (i++; i < this.migrations.length; ++i)
-        await this.migrations[i].migrate(datArchive)
+      {
+        // Curly braces to limit the scope of the variable `i`
+        let i = this.migrations.length - 1
+        while(i >= 0 && !await this.migrations[i].check(datArchive))
+          --i
+        for (i++; i < this.migrations.length; ++i)
+          await this.migrations[i].migrate(datArchive)
+      }
+      // clean-up all previous versions' files
+      for (let i = 0; i < this.migrations.length - 1; ++i)
+        await this.migrations[i].idempotentCleanup(datArchive)
     }
     finally {
       this.lockerService.releaseLock(Lock.MigrateDB, lockSecret)
