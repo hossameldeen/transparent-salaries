@@ -51,6 +51,33 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.retrieveTrustees()
   }
 
+  startEditDisplayName(s: LoggedInAndIsOwner) {
+    const initialInputValue = this.displayNameState.kind === "loaded" ? this.displayNameState.displayName : ""; // if loading or failure, just initialize it to empty
+    this.state = new LoggedInAndIsOwner(s.loggedInDatArchive, { editing: true, inputValue: initialInputValue, updating: false })
+  }
+
+  updateDisplayNameInputValue(s: LoggedInAndIsOwner, newInputValue: string) {
+    this.state = new LoggedInAndIsOwner(s.loggedInDatArchive, { editing: true, inputValue: newInputValue, updating: false })
+  }
+
+  async confirmDisplayNameEdit(s: LoggedInAndIsOwner) {
+    if (s.editingState.editing) {
+      await this.dbService.putRow2<Profile>(s.loggedInDatArchive, 'profiles', new Profile(s.editingState.inputValue), this.dbService.PROFILE_ROW_UUID)
+
+      // TODO: refactor this whole state thing. Possibilities of unthought-of race conditions.
+      // because the state might have changed during the request
+      if (this.state.kind === StateKind.LoggedInAndIsOwner && this.state.loggedInDatArchive.url === s.loggedInDatArchive.url) {
+        this.state = new LoggedInAndIsOwner(this.state.loggedInDatArchive, { editing: false })
+      }
+    }
+    else
+      throw Error("Confirm clicked but not in display-name-editing state. Should never happen.")
+  }
+
+  cancelDisplayNameEdit(s: LoggedInAndIsOwner) {
+    this.state = new LoggedInAndIsOwner(s.loggedInDatArchive, { editing: false })
+  }
+
   async addTrustee(loggedInAndNotOwnerState: LoggedInAndNotOwner) {
     await this.dbService.putRow<Trustee>(loggedInAndNotOwnerState.loggedInDatArchive, 'trustees', new Trustee(this.profileDatArchive.url))
 
@@ -59,6 +86,18 @@ export class ProfileComponent implements OnInit, OnDestroy {
     if (this.state.kind === StateKind.LoggedInAndNotOwner && this.state.loggedInDatArchive.url === loggedInAndNotOwnerState.loggedInDatArchive.url) {
       this.state = new LoggedInAndNotOwner(this.state.loggedInDatArchive, { kind: "loaded", isTrusted: true })
     }
+  }
+
+  liaiso(state: State): LoggedInAndIsOwner {
+    return <LoggedInAndIsOwner>state;
+  }
+
+  liano(state: State): LoggedInAndNotOwner {
+    return <LoggedInAndNotOwner>state;
+  }
+
+  nli(state: State): NotLoggedIn {
+    return <NotLoggedIn>state;
   }
 
   private async retrieveDisplayName(): Promise<void> {
@@ -104,7 +143,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         break;
       case ProfileStateKind.ProfileSelected:
         if (loggedInProfileState.datArchive.url === this.profileDatArchive.url) {
-          this.state = new LoggedInAndIsOwner(loggedInProfileState.datArchive, false)
+          this.state = new LoggedInAndIsOwner(loggedInProfileState.datArchive, { editing: false })
         }
         else {
           this.state = new LoggedInAndNotOwner(loggedInProfileState.datArchive, { kind: "loading" })
@@ -153,7 +192,7 @@ enum StateKind { LoggedInAndIsOwner, LoggedInAndNotOwner, NotLoggedIn }
 class LoggedInAndIsOwner {
   constructor(
     readonly loggedInDatArchive: DatArchive,
-    readonly isEditingDisplayName: boolean,
+    readonly editingState: { editing: false } | { editing: true, inputValue: string, updating: boolean },
     readonly kind: StateKind.LoggedInAndIsOwner = StateKind.LoggedInAndIsOwner
   ) { }
 }
