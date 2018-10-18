@@ -2,7 +2,8 @@
   <div fxFlex="3vh"></div>
   <div fxLayout="column" fxLayoutAlign="start center">
     <div fxLayout fxLayoutAlign="start center">
-      <h1 style="margin-bottom: 0;">{{displayName ? displayName : "Ahmed Mostafa"}}</h1>
+      <h1 *ngIf="displayName.length == 0" style="margin-bottom: 0; font-style: italic; font-weight: bold;">Anonymous</h1>
+      <h1 *ngIf="displayName.length > 0" style="margin-bottom: 0;">{{displayName}}</h1>
       <button *ngIf="isOwner" mat-icon-button color="primary"> <!-- TODO: implement this -->
         <mat-icon>edit</mat-icon>
       </button>

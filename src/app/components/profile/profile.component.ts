@@ -18,7 +18,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   ProfileStateKind = ProfileStateKind;
 
   @Input() profileDatArchive: DatArchive;
-  displayName: string | null;
+  displayName: string;
   isOwner: boolean;
   alreadyAFriend: boolean;
   stateSubjectSubscription: Subscription;
