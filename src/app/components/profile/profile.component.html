@@ -1,12 +1,28 @@
 <div fxLayout="column">
+
   <div fxFlex="3vh"></div>
-  <div fxLayout="row" fxLayoutAlign="center center">
-    <h1 *ngIf="displayName.length == 0" style="margin-bottom: 0; font-style: italic; font-weight: bold;">Anonymous</h1>
-    <h1 *ngIf="displayName.length > 0" style="margin-bottom: 0;">{{displayName}}</h1>
-  </div>
-  <button *ngIf="isOwner" mat-icon-button color="primary" fxFlexAlign="center"> <!-- TODO: implement this -->
-    <mat-icon>edit</mat-icon>
-  </button>
+
+  <!-- displayName & trust -->
+  <!-- TODO: implemented the cases -->
+  <ng-container [ngSwitch]="state.kind">
+
+    <ng-container *ngSwitchCase="StateKind.LoggedInAndIsOwner">
+
+    </ng-container>
+
+    <ng-container *ngSwitchCase="StateKind.LoggedInAndNotOwner">
+    </ng-container>
+
+    <ng-container *ngSwitchCase="StateKind.NotLoggedIn">
+      <div fxLayout="row" fxLayoutAlign="center center">
+        <h1 *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName == 0" style="margin-bottom: 0; font-style: italic; font-weight: bold;">Anonymous</h1>
+        <h1 *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName  > 0" style="margin-bottom: 0;">{{displayNameState.displayName }}</h1>
+      </div>
+    </ng-container>
+
+  </ng-container>
+  <!-- End of displayName & trust -->
+
   <h3>(<a [href]="sanitizer.bypassSecurityTrustUrl(profileDatArchive.url)">{{profileDatArchive.url.slice(0, 12)}}..{{profileDatArchive.url.slice(-6)}}/</a>)</h3>
   <ng-container
     *ngIf="profileService.stateSubject.value.kind === ProfileStateKind.ProfileSelected && profileService.stateSubject.value.datArchive.url !== profileDatArchive.url && !alreadyAFriend">
@@ -18,11 +34,11 @@
   <mat-divider></mat-divider>
   <mat-tab-group mat-stretch-tabs>
     <mat-tab label="Salaries">
-      <app-salaries [profileDatArchive]="profileDatArchive" [isOwner]="isOwner"></app-salaries>
+      <app-salaries [profileDatArchive]="profileDatArchive" [isOwner]="state.kind === StateKind.LoggedInAndIsOwner"></app-salaries>
     </mat-tab>
     <mat-tab label="Trustees">
       <div fxLayout="column" fxLayoutAlign="start center">
-        <a *ngFor="let trustee of trusts" routerLink="/profile/{{trustee.url.slice(6)}}">{{trustee.url}}</a>
+        <a *ngFor="let trustee of trusts" routerLink="/profile/{{trustee.datUrl.slice(6)}}">{{trustee.datUrl}}</a>
       </div>
     </mat-tab>
   </mat-tab-group>
