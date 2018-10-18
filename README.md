@@ -55,7 +55,7 @@ You're, obviously, using [Angular Framework](https://angular.io/). You're also u
 
 There're TODOs in the code. Beside them, there're TODOs here.
 
-Next free TODO number: 15
+Next free TODO number: 16
 
 ### Not Resolved Yet
 
@@ -93,5 +93,7 @@ But very not clean & no guarantee it'll solve all our problems. It's just a temp
 13) Handle reading from profiles that haven't upgraded yet. Will probably handle only when I go live isA & it's worth it. Also, handle making the new structure compatible with the old one or showing a warning somehow to an old reader of a new archive.
 
 14) Perhaps factor out the migration code in DBService if you're gonna stick with the directory & version thing.
+
+15) Make a `SnackBarService` that can deal with multiple messages, probably using `afterDismissed`. Check [this](https://stackoverflow.com/questions/47409869/angular-2-4-material-design-snackbars-multiple-message-in-sequence).
 
 ### Resolved

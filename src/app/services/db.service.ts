@@ -289,6 +289,15 @@ export class DBService {
     return uuids
   }
 
+  async readAllRows<T>(datArchive: DatArchive, tableName: string): Promise<Array<{ status: "succeeded", row: DBRow<T> } | { status: "failed", err: any }>> {
+    const rowsUuids = await this.getRowsUuids(datArchive, tableName)
+    const rowsPromises = rowsUuids.map(rowUuid => this.readRow<T>(datArchive, tableName, rowUuid))
+    // thanks to https://stackoverflow.com/a/31424853/6690391
+    // Needed to add the type parameter to `then` because ts would just infer the type to be {status: string, ..} | {status: string, ..} instead of {status: "succeeded", ..} | ...
+    const rowPromisesNeverFail = rowsPromises.map(p => p.then<{ status: "succeeded", row: DBRow<T> }, { status: "failed", err: any }>(row => ({ status: "succeeded", row: row }), err => ({ status: "failed", err: err })))
+    return await Promise.all(rowPromisesNeverFail)
+  }
+
   /**
    * The difference is that this one shouldn't depend on stuff like the version.
    * TODO: Actually, it could if, e.g., the version was a static property. This needs to be refactored.
