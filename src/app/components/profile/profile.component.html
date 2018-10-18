@@ -1,15 +1,13 @@
 <div fxLayout="column">
   <div fxFlex="3vh"></div>
-  <div fxLayout="column" fxLayoutAlign="start center">
-    <div fxLayout fxLayoutAlign="start center">
-      <h1 *ngIf="displayName.length == 0" style="margin-bottom: 0; font-style: italic; font-weight: bold;">Anonymous</h1>
-      <h1 *ngIf="displayName.length > 0" style="margin-bottom: 0;">{{displayName}}</h1>
-      <button *ngIf="isOwner" mat-icon-button color="primary"> <!-- TODO: implement this -->
-        <mat-icon>edit</mat-icon>
-      </button>
-    </div>
-    <h3>(<a [href]="sanitizer.bypassSecurityTrustUrl(profileDatArchive.url)">{{profileDatArchive.url.slice(0, 12)}}..{{profileDatArchive.url.slice(-6)}}/</a>)</h3>
+  <div fxLayout="row" fxLayoutAlign="center center">
+    <h1 *ngIf="displayName.length == 0" style="margin-bottom: 0; font-style: italic; font-weight: bold;">Anonymous</h1>
+    <h1 *ngIf="displayName.length > 0" style="margin-bottom: 0;">{{displayName}}</h1>
   </div>
+  <button *ngIf="isOwner" mat-icon-button color="primary" fxFlexAlign="center"> <!-- TODO: implement this -->
+    <mat-icon>edit</mat-icon>
+  </button>
+  <h3>(<a [href]="sanitizer.bypassSecurityTrustUrl(profileDatArchive.url)">{{profileDatArchive.url.slice(0, 12)}}..{{profileDatArchive.url.slice(-6)}}/</a>)</h3>
   <ng-container
     *ngIf="profileService.stateSubject.value.kind === ProfileStateKind.ProfileSelected && profileService.stateSubject.value.datArchive.url !== profileDatArchive.url && !alreadyAFriend">
     <div fxLayout fxLayoutAlign="center">
