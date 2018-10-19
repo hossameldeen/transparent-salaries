@@ -24,7 +24,7 @@ export class DBService {
    */
   private readonly ROOT = '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6';
 
-  private readonly BASE_DIR_COMPONENTS = [ this.ROOT, 'version', '753']
+  private readonly BASE_DIR_COMPONENTS = [ this.ROOT, 'version', '754']
   private readonly BASE_DIR = '/' + this.BASE_DIR_COMPONENTS.join('/')
   private readonly TABLES_NAMES = ['salaries', 'trustees', 'profiles']  // TODO: profiles actually should have only one row
 

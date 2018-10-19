@@ -38,14 +38,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private readonly snackBar: MatSnackBar,
     private readonly utilService: UtilService
   ) {
-    this.setState(this.profileService.stateSubject.value)
-
     this.displayNameState = { kind: "loading" }
     this.trusts = []
-    this.stateSubjectSubscription = this.profileService.stateSubject.subscribe(profileState => this.setState(profileState))
   }
 
   ngOnInit() {
+    // TODO: Having to do it here to wait till `profileDatArchive` has been binded. However, that's bad because `state` will be undefined
+    // TODO or something for some time.
+    this.setState(this.profileService.stateSubject.value)
+    this.stateSubjectSubscription = this.profileService.stateSubject.subscribe(profileState => this.setState(profileState))
+
     // Note: not awaiting to read both displayName & trustees at the same time
     this.retrieveDisplayName()
     this.retrieveTrustees()
