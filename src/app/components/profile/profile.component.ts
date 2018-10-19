@@ -128,22 +128,27 @@ export class ProfileComponent implements OnInit, OnDestroy {
   private async retrieveTrustees(): Promise<void> {
     this.progressBarService.pushLoading()
 
-    // Not wrapping in a try-catch because it should never fail
-    const trusteesOrFailures = await this.dbService.readAllRows<Trustee>(this.profileDatArchive, 'trustees')
+    try {
+      const trusteesOrFailures = await this.dbService.readAllRows<Trustee>(this.profileDatArchive, 'trustees')
 
-    let atLeastOneFailed = false
-    for (const ret of trusteesOrFailures) {
-      if (ret.status === "succeeded") {
-        this.trusts.push(ret.row.dbRowData)
+      let atLeastOneFailed = false
+      for (const ret of trusteesOrFailures) {
+        if (ret.status === "succeeded") {
+          this.trusts.push(ret.row.dbRowData)
+        }
+        else {
+          atLeastOneFailed = true
+        }
       }
-      else {
-        atLeastOneFailed = true
-      }
+      if (atLeastOneFailed)
+        this.snackBar.open("Couldn't retrieve some trustees from the profile. That's all I know :(", "Dismiss")
     }
-    if (atLeastOneFailed)
-      this.snackBar.open("Couldn't retrieve some trustees from the profile. That's all I know :(", "Dismiss")
-
-    this.progressBarService.popLoading()
+    catch(e) {
+      this.snackBar.open("Couldn't retrieve trustees from the profile. That's all I know :(", "Dismiss")
+    }
+    finally {
+      this.progressBarService.popLoading()
+    }
   }
 
   private setState(loggedInProfileState: ProfileState): void {
