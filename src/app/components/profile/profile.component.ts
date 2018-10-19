@@ -78,13 +78,23 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.state = new LoggedInAndIsOwner(s.loggedInDatArchive, { editing: false })
   }
 
-  async addTrustee(loggedInAndNotOwnerState: LoggedInAndNotOwner) {
-    await this.dbService.putRow<Trustee>(loggedInAndNotOwnerState.loggedInDatArchive, 'trustees', new Trustee(this.profileDatArchive.url))
+  async trust(loggedInAndNotOwnerState: LoggedInAndNotOwner) {
+    const row = await this.dbService.putRow<Trustee>(loggedInAndNotOwnerState.loggedInDatArchive, 'trustees', new Trustee(this.profileDatArchive.url))
 
     // TODO: refactor this whole state thing. Possibilities of unthought-of race conditions.
     // because the state might have changed during the request
     if (this.state.kind === StateKind.LoggedInAndNotOwner && this.state.loggedInDatArchive.url === loggedInAndNotOwnerState.loggedInDatArchive.url) {
-      this.state = new LoggedInAndNotOwner(this.state.loggedInDatArchive, { kind: "loaded", isTrusted: true })
+      this.state = new LoggedInAndNotOwner(this.state.loggedInDatArchive, { kind: "loaded", isTrusted: true, trusteeUuid: row.uuid })
+    }
+  }
+
+  async untrust(loggedInAndNotOwnerState: LoggedInAndNotOwner, trusteeUuid: string) {
+    await this.dbService.deleteRow<Trustee>(loggedInAndNotOwnerState.loggedInDatArchive, 'trustees', trusteeUuid)
+
+    // TODO: refactor this whole state thing. Possibilities of unthought-of race conditions.
+    // because the state might have changed during the request
+    if (this.state.kind === StateKind.LoggedInAndNotOwner && this.state.loggedInDatArchive.url === loggedInAndNotOwnerState.loggedInDatArchive.url) {
+      this.state = new LoggedInAndNotOwner(this.state.loggedInDatArchive, { kind: "loaded", isTrusted: false })
     }
   }
 
@@ -157,27 +167,39 @@ export class ProfileComponent implements OnInit, OnDestroy {
   private async updateIsTrusted(loggedInAndNotOwnerState: LoggedInAndNotOwner): Promise<void> {
     this.progressBarService.pushLoading()
 
-    const trusteesOrFailures = await this.dbService.readAllRows<Trustee>(loggedInAndNotOwnerState.loggedInDatArchive, 'trustees')
+    try {
+      const trusteesOrFailures = await this.dbService.readAllRows<Trustee>(loggedInAndNotOwnerState.loggedInDatArchive, 'trustees')
 
-    // Check that state hasn't changed while you were doing the request
-    if (loggedInAndNotOwnerState !== this.state)
-      return
+      // Check that state hasn't changed while you were doing the request
+      if (loggedInAndNotOwnerState !== this.state)
+        return
 
-    let atLeastOneFailed = false
-    let foundTrustee = false
-    for (const trusteeOrFailure of trusteesOrFailures) {
-      if (trusteeOrFailure.status === "succeeded") {
-        if (this.profileDatArchive.url === trusteeOrFailure.row.dbRowData.datUrl)
-          foundTrustee = true
+      let atLeastOneFailed = false
+      let trusteeUuid: string | null = null
+      for (const trusteeOrFailure of trusteesOrFailures) {
+        if (trusteeOrFailure.status === "succeeded") {
+          if (this.profileDatArchive.url === trusteeOrFailure.row.dbRowData.datUrl)
+            trusteeUuid = trusteeOrFailure.row.uuid
+        }
+        else {
+          atLeastOneFailed = true
+        }
       }
-      else {
-        atLeastOneFailed = true
-      }
+
+      if (trusteeUuid !== null)
+        this.state = new LoggedInAndNotOwner(loggedInAndNotOwnerState.loggedInDatArchive, { kind: "loaded", isTrusted: true, trusteeUuid: trusteeUuid })
+      else
+        this.state = new LoggedInAndNotOwner(loggedInAndNotOwnerState.loggedInDatArchive, { kind: "loaded", isTrusted: false })
+
+      if (atLeastOneFailed)
+        this.snackBar.open("Couldn't retrieve some trustees from the profile. That's all I know :(", "Dismiss")
     }
-    this.state = new LoggedInAndNotOwner(loggedInAndNotOwnerState.loggedInDatArchive, { kind: "loaded", isTrusted: foundTrustee })
-    if (atLeastOneFailed)
-      this.snackBar.open("Couldn't retrieve some trustees from the profile. That's all I know :(", "Dismiss")
-    this.progressBarService.popLoading()
+    catch(e) {
+      this.snackBar.open("Couldn't retrieve trustees from the profile. That's all I know :(", "Dismiss")
+    }
+    finally {
+      this.progressBarService.popLoading()
+    }
   }
 
   ngOnDestroy() {
@@ -200,7 +222,7 @@ class LoggedInAndIsOwner {
 export class LoggedInAndNotOwner {
   constructor(
     readonly loggedInDatArchive: DatArchive,
-    readonly isTrustedState: { kind: "loading"} | { kind: "loaded", isTrusted: boolean},
+    readonly isTrustedState: { kind: "loading"} | { kind: "loaded", isTrusted: false } | { kind: "loaded", isTrusted: true, trusteeUuid: string },
     readonly kind: StateKind.LoggedInAndNotOwner = StateKind.LoggedInAndNotOwner
   ) { }
 }

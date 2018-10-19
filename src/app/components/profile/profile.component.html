@@ -37,6 +37,13 @@
     </ng-container>
 
     <ng-container *ngSwitchCase="StateKind.LoggedInAndNotOwner">
+      <h1 fxFlexAlign="center" *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName == 0" style="margin-bottom: 0; font-style: italic; font-weight: bold;">Anonymous</h1>
+      <h1 fxFlexAlign="center" *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName  > 0" style="margin-bottom: 0;">{{displayNameState.displayName }}</h1>
+
+      <ng-container *ngIf="liano(state).isTrustedState.kind === 'loaded'">
+        <button *ngIf="!liano(state).isTrustedState.isTrusted" mat-raised-button (click)="trust(liano(state))">Trust</button>
+        <button *ngIf="liano(state).isTrustedState.isTrusted" color="primary" mat-raised-button (click)="untrust(liano(state), liano(state).isTrustedState.trusteeUuid)">Untrust</button>
+      </ng-container>
     </ng-container>
 
     <ng-container *ngSwitchCase="StateKind.NotLoggedIn">
@@ -48,13 +55,6 @@
   <!-- End of displayName & trust -->
 
   <h3>(<a [href]="sanitizer.bypassSecurityTrustUrl(profileDatArchive.url)">{{profileDatArchive.url.slice(0, 12)}}..{{profileDatArchive.url.slice(-6)}}/</a>)</h3>
-  <ng-container
-    *ngIf="profileService.stateSubject.value.kind === ProfileStateKind.ProfileSelected && profileService.stateSubject.value.datArchive.url !== profileDatArchive.url && !alreadyAFriend">
-    <div fxLayout fxLayoutAlign="center">
-      <button mat-raised-button color="primary" (click)="addTrustee()" fxLayout fxLayoutAlign="center">Add Trustee</button>
-    </div>
-    <div fxFlex="1vh"></div>
-  </ng-container>
   <mat-divider></mat-divider>
   <mat-tab-group mat-stretch-tabs>
     <mat-tab label="Salaries">
