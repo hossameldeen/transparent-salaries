@@ -177,7 +177,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
       // Check that state hasn't changed while you were doing the request
       if (loggedInAndNotOwnerState !== this.state)
-        return
+        return;
 
       let atLeastOneFailed = false
       let trusteeUuid: string | null = null

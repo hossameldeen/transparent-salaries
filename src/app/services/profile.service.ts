@@ -43,7 +43,7 @@ export class ProfileService {
     })
 
     if (profile === null)
-      return
+      return;
 
     try {
       await this.selectAndMigrate(profile)
@@ -63,7 +63,7 @@ export class ProfileService {
     })
 
     if (profile === null)
-      return
+      return;
 
     try {
       await this.selectAndMigrate(profile)
