@@ -74,25 +74,33 @@ export class SalariesComponent implements OnInit {
     this.dataSource.getRow(0).delete()
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+
     this.progressBarService.pushLoading()
-    this.dbService.getRowsUuids(this.profileDatArchive, 'salaries').then(rowsUuids => {
-      const readRowsPromises = rowsUuids.map(rowUuid => this.dbService.readRow<Salary>(this.profileDatArchive, 'salaries', rowUuid))
-      // thanks to https://stackoverflow.com/a/31424853/6690391
-      const readRowsPromisesCaught = readRowsPromises.map(p => p.then(v => ({ vOrE: v, status: "resolved" }), e => ({ vOrE: e, status: "rejected" })))
-      return Promise.all(readRowsPromisesCaught)
-    })
-    .then(rets => {
-      const succeeded = rets.filter(ret => ret.status === 'resolved').map(ret => ret.vOrE)
+
+    try {
+      const salariesOrFailures = await this.dbService.readAllRows<Salary>(this.profileDatArchive, 'salaries')
+
+      const succeeded: Array<DBRow<Salary>> = []
+      let atLeastOneFailed = false
+      for (const salaryOrFailure of salariesOrFailures) {
+        if (salaryOrFailure.status === 'succeeded')
+          succeeded.push(salaryOrFailure.row)
+        else
+          atLeastOneFailed = true
+      }
+
       this.dataSource.updateDatasource(succeeded.map(salaryDBRow => new ExistingRow(salaryDBRow)))
-      this.progressBarService.popLoading()
-      if (rets.findIndex(ret => ret.status === 'reject') !== -1)
+
+      if (atLeastOneFailed)
         this.snackBar.open("Couldn't retrieve some salaries from the profile. That's all I know :(", "Dismiss")
-    })
-    .catch(() => {
-      this.progressBarService.popLoading()
+    }
+    catch(e) {
       this.snackBar.open("Couldn't retrieve salaries from the profile. That's all I know :(", "Dismiss")
-    })
+    }
+    finally {
+      this.progressBarService.popLoading()
+    }
   }
 
   salary(row: TableRow): Salary {
