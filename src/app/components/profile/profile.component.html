@@ -10,8 +10,8 @@
 
       <ng-container *ngIf="!liaiso(state).editingState.editing">
         <div fxLayout="row" fxLayoutAlign="center center">
-          <h1 *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName == 0" style="margin-bottom: 0; font-style: italic; font-weight: bold;">Anonymous</h1>
-          <h1 *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName  > 0" style="margin-bottom: 0;">{{displayNameState.displayName }}</h1>
+          <h1 *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName.length == 0" style="margin-bottom: 0; font-style: italic; font-weight: bold;">Anonymous</h1>
+          <h1 *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName.length  > 0" style="margin-bottom: 0;">{{displayNameState.displayName }}</h1>
 
           <button mat-icon-button color="primary"  matTooltip="Edit" (click)="startEditDisplayName(liaiso(state))">
             <mat-icon>edit</mat-icon>
@@ -21,7 +21,7 @@
 
       <ng-container *ngIf="liaiso(state).editingState.editing">
         <div fxLayout="row" fxLayoutAlign="center center">
-          <mat-form-field appearance="outline">
+          <mat-form-field>
             <mat-label>Display name</mat-label>
             <input matInput placeholder="Display name" type="text" [value]="liaiso(state).editingState.inputValue" (input)="updateDisplayNameInputValue(liaiso(state), $event.target.value)" [disabled]="liaiso(state).editingState.updating">
           </mat-form-field>
@@ -38,8 +38,8 @@
     </ng-container>
 
     <ng-container *ngSwitchCase="StateKind.LoggedInAndNotOwner">
-      <h1 fxFlexAlign="center" *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName == 0" style="margin-bottom: 0; font-style: italic; font-weight: bold;">Anonymous</h1>
-      <h1 fxFlexAlign="center" *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName  > 0" style="margin-bottom: 0;">{{displayNameState.displayName }}</h1>
+      <h1 fxFlexAlign="center" *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName.length == 0" style="margin-bottom: 0; font-style: italic; font-weight: bold;">Anonymous</h1>
+      <h1 fxFlexAlign="center" *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName.length  > 0" style="margin-bottom: 0;">{{displayNameState.displayName }}</h1>
 
       <ng-container *ngIf="liano(state).isTrustedState.kind === 'loaded'">
         <button *ngIf="!liano(state).isTrustedState.isTrusted" mat-raised-button (click)="trust(liano(state))">Trust</button>
@@ -48,8 +48,8 @@
     </ng-container>
 
     <ng-container *ngSwitchCase="StateKind.NotLoggedIn">
-        <h1 fxFlexAlign="center" *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName == 0" style="margin-bottom: 0; font-style: italic; font-weight: bold;">Anonymous</h1>
-        <h1 fxFlexAlign="center" *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName  > 0" style="margin-bottom: 0;">{{displayNameState.displayName }}</h1>
+        <h1 fxFlexAlign="center" *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName.length == 0" style="margin-bottom: 0; font-style: italic; font-weight: bold;">Anonymous</h1>
+        <h1 fxFlexAlign="center" *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName.length  > 0" style="margin-bottom: 0;">{{displayNameState.displayName }}</h1>
     </ng-container>
 
   </ng-container>

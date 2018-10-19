@@ -66,6 +66,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
     if (s.editingState.editing) {
       await this.dbService.putRow2<Profile>(s.loggedInDatArchive, 'profiles', new Profile(s.editingState.inputValue), this.dbService.PROFILE_ROW_UUID)
 
+      // Re-retrieve displayName
+      await this.retrieveDisplayName()
+
       // TODO: refactor this whole state thing. Possibilities of unthought-of race conditions.
       // because the state might have changed during the request
       if (this.state.kind === StateKind.LoggedInAndIsOwner && this.state.loggedInDatArchive.url === s.loggedInDatArchive.url) {
