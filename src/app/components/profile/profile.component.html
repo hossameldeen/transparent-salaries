@@ -55,7 +55,7 @@
   </ng-container>
   <!-- End of displayName & trust -->
 
-  <h3>(<a [href]="sanitizer.bypassSecurityTrustUrl(profileDatArchive.url)">{{profileDatArchive.url.slice(0, 12)}}..{{profileDatArchive.url.slice(-6)}}/</a>)</h3>
+  <h3 fxFlexAlign="center">(<a [href]="sanitizer.bypassSecurityTrustUrl(profileDatArchive.url)">{{profileDatArchive.url.slice(0, 12)}}..{{profileDatArchive.url.slice(-6)}}/</a>)</h3>
   <mat-divider></mat-divider>
   <mat-tab-group mat-stretch-tabs>
     <mat-tab label="Salaries">
