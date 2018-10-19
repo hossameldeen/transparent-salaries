@@ -22,6 +22,7 @@
       <ng-container *ngIf="liaiso(state).editingState.editing">
         <div fxLayout="row" fxLayoutAlign="center center">
           <mat-form-field appearance="outline">
+            <mat-label>Display name</mat-label>
             <input matInput placeholder="Display name" type="text" [value]="liaiso(state).editingState.inputValue" (input)="updateDisplayNameInputValue(liaiso(state), $event.target.value)" [disabled]="liaiso(state).editingState.updating">
           </mat-form-field>
 
