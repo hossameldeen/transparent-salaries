@@ -1,7 +1,7 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DBService} from 'src/app/services/db.service';
 import {ProgressBarService} from 'src/app/services/progress-bar.service';
-import {MatSnackBar} from '@angular/material';
+import {MatFormField, MatSnackBar} from '@angular/material';
 import {Trustee} from 'src/app/models/trustee.model';
 import {Profile} from 'src/app/models/profile.model';
 import {ProfileService, ProfileState, ProfileStateKind} from 'src/app/services/profile.service';
@@ -29,6 +29,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   displayNameState: { kind: "loading" } | { kind: "loaded", displayName: string } | { kind: "errored", err: any }; // Not worth making as separate classes & enums
   trusts: Trustee[];
   stateSubjectSubscription: Subscription;
+  @ViewChild('displayNameFormField') displayNameFormField: MatFormField;
 
   constructor(
     readonly sanitizer: DomSanitizer,
@@ -56,6 +57,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   startEditDisplayName(s: LoggedInAndIsOwner) {
     const initialInputValue = this.displayNameState.kind === "loaded" ? this.displayNameState.displayName : ""; // if loading or failure, just initialize it to empty
     this.state = new LoggedInAndIsOwner(s.loggedInDatArchive, { editing: true, inputValue: initialInputValue, updating: false })
+
+    // thanks to https://stackoverflow.com/a/51848683/6690391. I honestly don't know why I need to call it in a timeout.
+    setTimeout(() => this.displayNameFormField.updateOutlineGap())
   }
 
   updateDisplayNameInputValue(s: LoggedInAndIsOwner, newInputValue: string) {

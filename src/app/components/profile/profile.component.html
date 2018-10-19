@@ -21,7 +21,8 @@
 
       <ng-container *ngIf="liaiso(state).editingState.editing">
         <div fxLayout="row" fxLayoutAlign="center center">
-          <mat-form-field>
+          <!-- Label-on-outline fix thanks to: https://stackoverflow.com/a/51848683/6690391 -->
+          <mat-form-field appearance="outline" #displayNameFormField="matFormField">
             <mat-label>Display name</mat-label>
             <input matInput placeholder="Display name" type="text" [value]="liaiso(state).editingState.inputValue" (input)="updateDisplayNameInputValue(liaiso(state), $event.target.value)" [disabled]="liaiso(state).editingState.updating">
           </mat-form-field>
