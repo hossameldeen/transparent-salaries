@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, NgZone} from '@angular/core';
 import {DBRow} from 'src/app/models/db-row.model';
 import {v4 as uuid} from 'uuid';
 import {UtilService} from './util.service';
@@ -48,7 +48,8 @@ export class DBService {
   ]
 
   constructor(
-    private readonly lockerService: LockerService
+    private readonly lockerService: LockerService,
+    private readonly ngZone: NgZone
   ) { }
 
   static async migrateNewArchiveTo545(datArchive: DatArchive): Promise<void> {
@@ -296,6 +297,27 @@ export class DBService {
     // Needed to add the type parameter to `then` because ts would just infer the type to be {status: string, ..} | {status: string, ..} instead of {status: "succeeded", ..} | ...
     const rowPromisesNeverFail = rowsPromises.map(p => p.then<{ status: "succeeded", row: DBRow<T> }, { status: "failed", err: any }>(row => ({ status: "succeeded", row: row }), err => ({ status: "failed", err: err })))
     return await Promise.all(rowPromisesNeverFail)
+  }
+
+  /**
+   * Listen to changes on the rows of a table
+   *
+   * @param uuid If given, will listen only to changes on that rows. Otherwise, will listen changes of all rows
+   *
+   * @returns A function that will stop watching if you call it
+   */
+  async watch<T>(datArchive: DatArchive, tableName: string, cb: (path: string) => void, uuid?: string): Promise<() => void> {
+    const evts = await datArchive.watch(this.BASE_DIR + '/' + tableName + '/' + (uuid ? uuid : '*') + '.json')
+
+    // For why I'm using `ngZone.run`, check this: https://stackoverflow.com/q/42971865/6690391
+    // If there's a performance issue in the future, I could make each component run `detectChanges` on the callback of `watch` individually.
+    // However, right now, app.component uses this and thus detectChanges will run for all components anyway. If you refactor and make toolbar
+    // in a component by itself, then you could use detectChanges with a gain. That's according to time of writing.
+    evts.addEventListener('invalidated', evt => datArchive.download((<any>evt).path))
+    evts.addEventListener('changed', evt => this.ngZone.run(() => cb((<any>evt).path)))
+
+
+    return () => evts.close()
   }
 
   /**

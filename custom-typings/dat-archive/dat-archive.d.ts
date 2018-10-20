@@ -69,6 +69,20 @@ declare class DatArchive {
    * Works with both files and directories
    */
   rename(oldPath: string, newPath: string, opts?: { timeout?: number }): Promise<void>;
+
+  /**
+   * I'm adding it only because it's used in the standard example of `watch`.
+   */
+  download(path: string, opts?: { timeout?: number }): Promise<void>;
+
+  /**
+   * The EventTarget returned has 2 events: change and invalidated.
+   *
+   * Usually, you shouldn't need to add `onInvalidated` here, add it manually.
+   *
+   * For the standard way to use it, check Beaker's DatArchive API docs.
+   */
+  watch(pattern?: string | Array<string>, onInvalidated?: ({ path: string }) => void): Promise<EventTarget & { close: () => void }>;
 }
 
 /**
