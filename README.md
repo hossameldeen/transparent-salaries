@@ -73,9 +73,6 @@ Next free TODO number: 18
 
 7) Remove add/edit/delete buttons from profiles not owner by the user.
 
-8) Currently, `shared-worker` is compiled & pasted into assets by hand.  
-Also, to use Angular's compilation/optimization goodness, I may be adding unnecessary stuff.
-
 9) Shared state & concurrency in one tab.  
 An example problem: A user opens a profile-1 -> SPA/Angular-navigates to profile-2 -> profile-2 loading succeeds -> profile-1 loading fails -> a snack shown "Loading profile failed".  
 The problem is that profile-1 had promises that weren't cancelled in `onDestory()`. Had the effect of these promises been only changing the state of the component, there'd have been no problem (or a slight problem). But the problem that is it changes a _shared state_ which is the snackbar here in this case.  
@@ -101,3 +98,7 @@ But very not clean & no guarantee it'll solve all our problems. It's just a temp
 17) Consider running stuff like retrieving salaries & trustees and migrating db, outside of Angular Zone. Check this: https://blog.angularindepth.com/do-you-still-think-that-ngzone-zone-js-is-required-for-change-detection-in-angular-16f7a575afef
 
 ### Resolved
+
+8) Currently, `shared-worker` is compiled & pasted into assets by hand.  
+Also, to use Angular's compilation/optimization goodness, I may be adding unnecessary stuff.  
+**A**: I've moved away from this idea.
