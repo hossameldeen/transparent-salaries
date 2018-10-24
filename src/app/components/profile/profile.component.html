@@ -1,20 +1,72 @@
-<div fxLayout="column" fxLayoutGap="3vh">
+<div fxLayout="column">
+
   <div fxFlex="3vh"></div>
-  <div fxLayout fxLayoutAlign="center">
-  <mat-card>
-    <mat-card-title>{{profileDatArchive.url}}</mat-card-title>
-    <mat-card-subtitle *ngIf="profileService.stateSubject.value.kind === ProfileStateKind.ProfileSelected && profileService.stateSubject.value.datArchive.url !== profileDatArchive.url && !alreadyAFriend" fxLayout fxLayoutAlign="center">
-      <button mat-raised-button color="primary" (click)="addTrustee()">Add Trustee</button>
-    </mat-card-subtitle>
-    <mat-divider [inset]="true"></mat-divider>
-    <br/>
-    <mat-card-content fxLayout="column">
-      <h2>Trusts:</h2>
-      <a *ngFor="let trustee of trusts" routerLink="/profile/{{trustee.url.slice(6)}}">{{trustee.url}}</a>
-    </mat-card-content>
-  </mat-card>
-  </div>
-  <h1>Salaries collected by {{profileDatArchive.url}}:</h1>
-  <app-salaries [profileDatArchive]="profileDatArchive" [isOwner]="isOwner"></app-salaries>
+
+  <!-- displayName & trust -->
+  <!-- TODO: implemented the cases -->
+  <ng-container [ngSwitch]="state.kind">
+
+    <ng-container *ngSwitchCase="StateKind.LoggedInAndIsOwner">
+
+      <ng-container *ngIf="!liaiso(state).editingState.editing">
+        <div fxLayout="row" fxLayoutAlign="center center">
+          <h1 *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName.length == 0" style="margin-bottom: 0; font-style: italic; font-weight: bold;">Anonymous</h1>
+          <h1 *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName.length  > 0" style="margin-bottom: 0;">{{displayNameState.displayName }}</h1>
+
+          <button mat-icon-button color="primary"  matTooltip="Edit" (click)="startEditDisplayName(liaiso(state))">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="liaiso(state).editingState.editing">
+        <div fxLayout="row" fxLayoutAlign="center center">
+          <!-- Label-on-outline fix thanks to: https://stackoverflow.com/a/51848683/6690391 -->
+          <mat-form-field appearance="outline" #displayNameFormField="matFormField">
+            <mat-label>Display name</mat-label>
+            <input matInput placeholder="Display name" type="text" [value]="liaiso(state).editingState.inputValue" (input)="updateDisplayNameInputValue(liaiso(state), $event.target.value)" [disabled]="liaiso(state).editingState.updating">
+          </mat-form-field>
+
+          <button mat-icon-button color="primary" matTooltip="Confirm" (click)="confirmDisplayNameEdit(liaiso(state))" [disabled]="liaiso(state).editingState.updating">
+            <mat-icon>check</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" matTooltip="Cancel" (click)="cancelDisplayNameEdit(liaiso(state))" [disabled]="liaiso(state).editingState.updating">
+            <mat-icon>clear</mat-icon>
+          </button>
+        </div>
+      </ng-container>
+
+    </ng-container>
+
+    <ng-container *ngSwitchCase="StateKind.LoggedInAndNotOwner">
+      <h1 fxFlexAlign="center" *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName.length == 0" style="margin-bottom: 0; font-style: italic; font-weight: bold;">Anonymous</h1>
+      <h1 fxFlexAlign="center" *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName.length  > 0" style="margin-bottom: 0;">{{displayNameState.displayName }}</h1>
+
+      <ng-container *ngIf="liano(state).isTrustedState.kind === 'loaded'">
+        <button *ngIf="!liano(state).isTrustedState.isTrusted" mat-raised-button (click)="trust(liano(state))">Trust</button>
+        <button *ngIf="liano(state).isTrustedState.isTrusted" color="primary" mat-raised-button (click)="untrust(liano(state), liano(state).isTrustedState.trusteeUuid)">Untrust</button>
+      </ng-container>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="StateKind.NotLoggedIn">
+        <h1 fxFlexAlign="center" *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName.length == 0" style="margin-bottom: 0; font-style: italic; font-weight: bold;">Anonymous</h1>
+        <h1 fxFlexAlign="center" *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName.length  > 0" style="margin-bottom: 0;">{{displayNameState.displayName }}</h1>
+    </ng-container>
+
+  </ng-container>
+  <!-- End of displayName & trust -->
+
+  <h3 fxFlexAlign="center">(<a [href]="sanitizer.bypassSecurityTrustUrl(profileDatArchive.url)">{{profileDatArchive.url.slice(0, 12)}}..{{profileDatArchive.url.slice(-6)}}/</a>)</h3>
+  <mat-divider></mat-divider>
+  <mat-tab-group mat-stretch-tabs>
+    <mat-tab label="Salaries">
+      <app-salaries [profileDatArchive]="profileDatArchive" [isOwner]="state.kind === StateKind.LoggedInAndIsOwner"></app-salaries>
+    </mat-tab>
+    <mat-tab label="Trustees">
+      <div fxLayout="column" fxLayoutAlign="start center">
+        <a *ngFor="let trustee of trusts" routerLink="/profile/{{trustee.datUrl.slice(6)}}">{{trustee.datUrl}}</a>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
   <div fxFlex="3vh"></div>
 </div>

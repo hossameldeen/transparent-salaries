@@ -1,1 +1,8 @@
-<h1>Page not found :(</h1>
+<ng-container [ngSwitch]="profileService.appInitStatus">
+  <ng-container
+  <ng-container *ngSwitchCase="AppInitStatus.Succeeded">
+    <h1>Page not found :(</h1>
+  </ng-container>
+  <app-app-init *ngSwitchDefault>
+  </app-app-init>
+</ng-container>

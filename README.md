@@ -55,7 +55,7 @@ You're, obviously, using [Angular Framework](https://angular.io/). You're also u
 
 There're TODOs in the code. Beside them, there're TODOs here.
 
-Next free TODO number: 12
+Next free TODO number: 18
 
 ### Not Resolved Yet
 
@@ -86,5 +86,18 @@ But very not clean & no guarantee it'll solve all our problems. It's just a temp
 10) Probably need something like `ngrx` to handle state consistency between the components. For example, what if 2 components ask about the login status, but the two receive 2 different answers due to change in time?
 
 11) Enable TSLint from Settings -> TSLint -> Enable
+
+12) Perhaps allow using an archive that has other data as a Transparent-Salaries archive. Perhaps just show a warning?  
+**Update:** Currently, I only care about the files in the public-key (root) folder. Probably should show a warning if detected the archive has files outside of this root folder.
+
+13) Handle reading from profiles that haven't upgraded yet. Will probably handle only when I go live isA & it's worth it. Also, handle making the new structure compatible with the old one or showing a warning somehow to an old reader of a new archive.
+
+14) Perhaps factor out the migration code in DBService if you're gonna stick with the directory & version thing.
+
+15) Make a `SnackBarService` that can deal with multiple messages, probably using `afterDismissed`. Check [this](https://stackoverflow.com/questions/47409869/angular-2-4-material-design-snackbars-multiple-message-in-sequence).
+
+16) To avoid concurrency errors of async update & then retrieval, probably it'd be a good idea to separate updating & reading. Perhaps you should `watch` on the state directly & not trigger re-retrieval on updates.
+
+17) Consider running stuff like retrieving salaries & trustees and migrating db, outside of Angular Zone. Check this: https://blog.angularindepth.com/do-you-still-think-that-ngzone-zone-js-is-required-for-change-detection-in-angular-16f7a575afef
 
 ### Resolved
