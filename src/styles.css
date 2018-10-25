@@ -2,3 +2,16 @@
 
 html, body { height: 100%; }
 body { margin: 0; }
+
+/*
+ * According to material spec, this like [this PR](https://github.com/angular/material2/pull/13219) fixes the stroked-
+ * button's border-color. However, I liked it the wrong way more.
+ *
+ * Of course, this rule uses insider knowledge knowledge on material buttons' css & will require maintenance,
+ * unfortunately.
+ *
+ * Finally, I'm not sure about the difference between `unset` and `inherit`, but my intuition says `unset`.
+ */
+.mat-stroked-button:not([disabled]) {
+  border-color: unset;
+}
