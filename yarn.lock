@@ -118,13 +118,6 @@
   optionalDependencies:
     parse5 "^5.0.0"
 
-"@angular/cdk@^6.2.1":
-  version "6.4.7"
-  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-6.4.7.tgz#1549b304dd412e82bd854cc55a7d5c6772ee0411"
-  integrity sha512-18x0U66fLD5kGQWZ9n3nb75xQouXlWs7kUDaTd8HTrHpT1s2QIAqlLd1KxfrYiVhsEC2jPQaoiae7VnBlcvkBg==
-  dependencies:
-    tslib "^1.7.1"
-
 "@angular/cli@7.0.2":
   version "7.0.2"
   resolved "https://registry.yarnpkg.com/@angular/cli/-/cli-7.0.2.tgz#c172601d48b176f1c8298e59ccc2ba2dd859bf68"
@@ -145,13 +138,6 @@
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/@angular/common/-/common-7.0.0.tgz#29206614d2b8dc79e5207b7dc6f9fc559e9a24f2"
   integrity sha512-jp6MA6EOq/a1m+F0c1aZC345pAYYYFpN1m7GMM91JlqkjzJMhyYVk+Bod9xQOEWadcpY+RFudG+jRsPCMO8bvQ==
-  dependencies:
-    tslib "^1.9.0"
-
-"@angular/common@^6.0.4":
-  version "6.1.10"
-  resolved "https://registry.yarnpkg.com/@angular/common/-/common-6.1.10.tgz#96e01564031b23cf54e4264e4c9defd6e10a0e11"
-  integrity sha512-73xxTSYJNKfiJ7C1Ajg+sz5l8y+blb/vNgHYg7O3yem5zLBnfPpidJ1UGg4W4d2Y+jwUVJbZKh8SKJarqAJVUQ==
   dependencies:
     tslib "^1.9.0"
 
@@ -185,13 +171,6 @@
   dependencies:
     tslib "^1.9.0"
 
-"@angular/core@^6.0.4":
-  version "6.1.10"
-  resolved "https://registry.yarnpkg.com/@angular/core/-/core-6.1.10.tgz#9f3d8b7e44ec0a68c88745d25a920f98bfb2bc43"
-  integrity sha512-61l3rIQTVdT45eOf6/fBJIeVmV10mcrxqS4N/1OWkuDT29YSJTZSxGcv8QjAyyutuhcqWWpO6gVRkN07rWmkPg==
-  dependencies:
-    tslib "^1.9.0"
-
 "@angular/flex-layout@7.0.0-beta.19":
   version "7.0.0-beta.19"
   resolved "https://registry.yarnpkg.com/@angular/flex-layout/-/flex-layout-7.0.0-beta.19.tgz#f8aa46dd1290adba512a15e762938d6a1d71bcd5"
@@ -203,13 +182,6 @@
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/@angular/forms/-/forms-7.0.0.tgz#672c306b13e94a20b72c096214642a326c43699a"
   integrity sha512-rTg1UHq9gHR6zY3Kkip1KCm/YTck/rlR8CvVFIMwF0bdQxUCT51SXVn58nXts9yDaieABcGaQHNkQn1mARslgw==
-  dependencies:
-    tslib "^1.9.0"
-
-"@angular/forms@^6.0.4":
-  version "6.1.10"
-  resolved "https://registry.yarnpkg.com/@angular/forms/-/forms-6.1.10.tgz#c9cd0f716cf91272e8e09e17a51fc20313df31b0"
-  integrity sha512-zAPx2kMV1/FbP5DrY472Sd/ze1m+GS6T5ullZCtP392r62p2RkwzDCXieR51YiRJjZj3M6c3AcRND7PWBdXT7A==
   dependencies:
     tslib "^1.9.0"
 
@@ -711,20 +683,6 @@ amdefine@>=0.0.4:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/amdefine/-/amdefine-1.0.1.tgz#4a5282ac164729e93619bcfd3ad151f817ce91f5"
   integrity sha1-SlKCrBZHKek2Gbz9OtFR+BfOkfU=
-
-angular4-material-table@0.6.8:
-  version "0.6.8"
-  resolved "https://registry.yarnpkg.com/angular4-material-table/-/angular4-material-table-0.6.8.tgz#34a5d3dfa75512a41811400655d10fae518dac15"
-  integrity sha512-UTqJPS6mwnR0+VBF1nAOkd/jaiYt3r13Ry1I1H1BWX2IgihSrKDP9zkotRswe5xIbcNdgnWzO1ne5oqS9iZfQQ==
-  dependencies:
-    "@angular/cdk" "^6.2.1"
-    "@angular/common" "^6.0.4"
-    "@angular/core" "^6.0.4"
-    "@angular/forms" "^6.0.4"
-    core-js "^2.5.7"
-    lodash.clonedeep "^4.5.0"
-    rxjs "^6.2.0"
-    zone.js "^0.8.26"
 
 ansi-colors@^3.0.0:
   version "3.2.1"
@@ -1865,7 +1823,7 @@ copy-webpack-plugin@4.5.3:
     p-limit "^1.0.0"
     serialize-javascript "^1.4.0"
 
-core-js@2.5.7, core-js@^2.2.0, core-js@^2.4.0, core-js@^2.5.7:
+core-js@2.5.7, core-js@^2.2.0, core-js@^2.4.0:
   version "2.5.7"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.5.7.tgz#f972608ff0cead68b841a16a932d0b183791814e"
   integrity sha512-RszJCAxg/PP6uzXVXL6BsxSXx/B05oJAQ2vkJRjyjrEcNVycaqOmNb5OTxZPE3xa5gwZduqza6L9JOCenh/Ecw==
@@ -6212,7 +6170,7 @@ run-queue@^1.0.0, run-queue@^1.0.3:
   dependencies:
     aproba "^1.1.1"
 
-rxjs@6.3.3, rxjs@^6.1.0, rxjs@^6.2.0:
+rxjs@6.3.3, rxjs@^6.1.0:
   version "6.3.3"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.3.3.tgz#3c6a7fa420e844a81390fb1158a9ec614f4bad55"
   integrity sha512-JTWmoY9tWCs7zvIk/CvRjhjGaOd+OVBM987mxFo+OW66cGpdKjZcpmc74ES1sB//7Kl/PAe8+wEakuhG4pcgOw==
@@ -7933,7 +7891,7 @@ yn@^2.0.0:
   resolved "https://registry.yarnpkg.com/yn/-/yn-2.0.0.tgz#e5adabc8acf408f6385fc76495684c88e6af689a"
   integrity sha1-5a2ryKz0CPY4X8dklWhMiOavaJo=
 
-zone.js@0.8.26, zone.js@^0.8.26:
+zone.js@0.8.26:
   version "0.8.26"
   resolved "https://registry.yarnpkg.com/zone.js/-/zone.js-0.8.26.tgz#7bdd72f7668c5a7ad6b118148b4ea39c59d08d2d"
   integrity sha512-W9Nj+UmBJG251wkCacIkETgra4QgBo/vgoEkb4a2uoLzpQG7qF9nzwoLXWU5xj3Fg2mxGvEDh47mg24vXccYjA==
