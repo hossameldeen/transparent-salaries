@@ -16,7 +16,6 @@
         <span *ngIf="displayNameState.kind === 'loaded' && loadedCast(displayNameState).displayName.length == 0" style="font-style: italic; font-weight: bold;">Anonymous</span>
         <span *ngIf="displayNameState.kind === 'loaded' && loadedCast(displayNameState).displayName.length  > 0">{{loadedCast(displayNameState).displayName}}</span>
         <a mat-button [href]="sanitizer.bypassSecurityTrustUrl(profileService.stateSubject.value.datArchive.url)">{{profileService.stateSubject.value.datArchive.url.slice(0, 12)}}..{{profileService.stateSubject.value.datArchive.url.slice(-2)}}/</a>
-        <div fxFlex="2vw"></div>
         <button mat-stroked-button (click)="profileService.logout()">Logout</button>
       </ng-container>
     </ng-container>
