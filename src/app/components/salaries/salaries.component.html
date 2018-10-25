@@ -1,42 +1,17 @@
-<mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-
-  <ng-container *ngFor="let cc of columnsConfigs;" matColumnDef="{{cc.matColumnDef}}">
-    <mat-header-cell *matHeaderCellDef> {{cc.matHeaderCellDef}} </mat-header-cell>
-    <mat-cell *matCellDef="let row">
-      <ng-container *ngIf="!row.editing"> {{salary(row.currentData)[cc.propertyName]}} </ng-container>
-      <mat-form-field *ngIf="row.editing">
-        <input matInput placeholder="{{cc.placeholder}}" type="{{cc.inputType}}" [value]="salary(row.currentData)[cc.propertyName]" (input)="salary(row.currentData)[cc.propertyName]=$event.target.value" [disabled]="row.currentData.locked">
-        <mat-hint *ngIf="cc.hintText"> {{cc.hintText}} </mat-hint>
-      </mat-form-field>
-    </mat-cell>
-  </ng-container>
-
-  <ng-container matColumnDef="actionsColumn">
-    <mat-header-cell *matHeaderCellDef>
-      <button mat-icon-button color="accent" matTooltip="Add new salary" (click)="createNewWithDefaultValues()" [disabled]="!isOwner || persistingNewSalary"><mat-icon>add</mat-icon></button>
-    </mat-header-cell>
-    <mat-cell *matCellDef="let row">
-      <ng-container *ngIf="!row.editing">
-        <button mat-icon-button color="primary" matTooltip="Edit" focusable="false" (click)="row.startEdit()" [disabled]="!isOwner || row.currentData.locked">
-          <mat-icon>edit</mat-icon>
-        </button>
-        <button mat-icon-button color="primary" matTooltip="Delete" focusable="false" (click)="delete(row)" [disabled]="!isOwner || row.currentData.locked">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </ng-container>
-      <ng-container *ngIf="row.editing">
-        <button mat-icon-button color="primary" matTooltip="Confirm" focusable="false" (click)="confirmEditCreate(row)" [disabled]="!isOwner || row.currentData.locked">
-          <mat-icon>check</mat-icon>
-        </button>
-        <button mat-icon-button color="primary" matTooltip="Cancel" focusable="false" (click)="row.cancelOrDelete()" [disabled]="!isOwner || row.currentData.locked">
-          <mat-icon>clear</mat-icon>
-        </button>
-      </ng-container>
-      <mat-spinner *ngIf="row.currentData.locked" [diameter]="24"></mat-spinner>
-    </mat-cell>
-  </ng-container>
-
-  <!-- Header and Row Declarations -->
-  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
-  </mat-table>
+<div fxLayout="column" fxLayoutGap="8px" fxLayoutAlign="start center">
+  <div fxFlex="8px"></div>
+  <mat-card *ngFor="let salary of salaries" style="width: 55ch;" class="mat-elevation-z8">
+    <mat-card-title>{{salary.job}}</mat-card-title>
+    <mat-card-subtitle>{{salary.company}}</mat-card-subtitle>
+    <mat-divider></mat-divider>
+    <mat-card-content>
+      <div fxLayout="row">
+        <h1>{{salary.netSalary}} {{salary.currency}}</h1>
+        <span fxFlex></span>
+        <h2>{{salary.month}}</h2>
+      </div>
+      <span>{{salary.otherInfo}}</span>
+    </mat-card-content>
+  </mat-card>
+  <div fxFlex="8px"></div>
+</div>
