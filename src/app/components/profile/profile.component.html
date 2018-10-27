@@ -67,6 +67,7 @@
 
   <!-- Trustees -->
   <div style="max-width: 60ch;">
+    <h1>Trusts</h1>
     <div fxLayout="column">
       <a *ngFor="let trustee of trusts" routerLink="/profile/{{trustee.datUrl.slice(6)}}">{{trustee.datUrl}}</a>
     </div>
