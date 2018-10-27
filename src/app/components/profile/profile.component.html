@@ -1,76 +1,87 @@
 <div fxLayout="row wrap" fxLayoutAlign="center" fxLayoutGap="2ch" style="margin-top: 8px;">
 
   <!-- Display name, trust, and dat url -->
-  <div style="max-width: 60ch;">
-    <ng-container [ngSwitch]="state.kind">
+  <div style="width: 38ch;">
+    <mat-card>
+      <ng-container [ngSwitch]="state.kind">
 
-      <ng-container *ngSwitchCase="StateKind.LoggedInAndIsOwner">
+        <ng-container *ngSwitchCase="StateKind.LoggedInAndIsOwner">
 
-        <ng-container *ngIf="!liaiso(state).editingState.editing">
+          <ng-container *ngIf="!liaiso(state).editingState.editing">
+            <div fxLayout="row" fxLayoutAlign="center center">
+              <h1 *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName.length == 0" style="margin-bottom: 0; font-style: italic; font-weight: bold;">Anonymous</h1>
+              <h1 *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName.length  > 0" style="margin-bottom: 0;">{{displayNameState.displayName }}</h1>
+
+              <button mat-icon-button color="primary"  matTooltip="Edit" (click)="startEditDisplayName(liaiso(state))">
+                <mat-icon>edit</mat-icon>
+              </button>
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="liaiso(state).editingState.editing">
+            <div fxLayout="row" fxLayoutAlign="center center">
+              <!-- Label-on-outline fix thanks to: https://stackoverflow.com/a/51848683/6690391 -->
+              <mat-form-field appearance="outline" #displayNameFormField="matFormField">
+                <mat-label>Display name</mat-label>
+                <input matInput placeholder="Display name" type="text" [value]="liaiso(state).editingState.inputValue" (input)="updateDisplayNameInputValue(liaiso(state), $event.target.value)" [disabled]="liaiso(state).editingState.updating">
+              </mat-form-field>
+
+              <button mat-icon-button color="primary" matTooltip="Confirm" (click)="confirmDisplayNameEdit(liaiso(state))" [disabled]="liaiso(state).editingState.updating">
+                <mat-icon>check</mat-icon>
+              </button>
+              <button mat-icon-button color="primary" matTooltip="Cancel" (click)="cancelDisplayNameEdit(liaiso(state))" [disabled]="liaiso(state).editingState.updating">
+                <mat-icon>clear</mat-icon>
+              </button>
+            </div>
+          </ng-container>
+
+        </ng-container>
+
+        <ng-container *ngSwitchCase="StateKind.LoggedInAndNotOwner">
           <div fxLayout="row" fxLayoutAlign="center center">
             <h1 *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName.length == 0" style="margin-bottom: 0; font-style: italic; font-weight: bold;">Anonymous</h1>
             <h1 *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName.length  > 0" style="margin-bottom: 0;">{{displayNameState.displayName }}</h1>
 
-            <button mat-icon-button color="primary"  matTooltip="Edit" (click)="startEditDisplayName(liaiso(state))">
-              <mat-icon>edit</mat-icon>
-            </button>
+            <div fxFlex="8px"></div>
+
+            <ng-container *ngIf="liano(state).isTrustedState.kind === 'loaded'">
+              <button *ngIf="!liano(state).isTrustedState.isTrusted" color="warn" mat-raised-button (click)="trust(liano(state))">Trust</button>
+              <button *ngIf="liano(state).isTrustedState.isTrusted" color="primary" mat-raised-button (click)="untrust(liano(state), liano(state).isTrustedState.trusteeUuid)">Untrust</button>
+            </ng-container>
           </div>
         </ng-container>
 
-        <ng-container *ngIf="liaiso(state).editingState.editing">
+        <ng-container *ngSwitchCase="StateKind.NotLoggedIn">
           <div fxLayout="row" fxLayoutAlign="center center">
-            <!-- Label-on-outline fix thanks to: https://stackoverflow.com/a/51848683/6690391 -->
-            <mat-form-field appearance="outline" #displayNameFormField="matFormField">
-              <mat-label>Display name</mat-label>
-              <input matInput placeholder="Display name" type="text" [value]="liaiso(state).editingState.inputValue" (input)="updateDisplayNameInputValue(liaiso(state), $event.target.value)" [disabled]="liaiso(state).editingState.updating">
-            </mat-form-field>
-
-            <button mat-icon-button color="primary" matTooltip="Confirm" (click)="confirmDisplayNameEdit(liaiso(state))" [disabled]="liaiso(state).editingState.updating">
-              <mat-icon>check</mat-icon>
-            </button>
-            <button mat-icon-button color="primary" matTooltip="Cancel" (click)="cancelDisplayNameEdit(liaiso(state))" [disabled]="liaiso(state).editingState.updating">
-              <mat-icon>clear</mat-icon>
-            </button>
+            <h1 *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName.length == 0" style="margin-bottom: 0; font-style: italic; font-weight: bold;">Anonymous</h1>
+            <h1 *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName.length  > 0" style="margin-bottom: 0;">{{displayNameState.displayName }}</h1>
           </div>
         </ng-container>
 
       </ng-container>
 
-      <ng-container *ngSwitchCase="StateKind.LoggedInAndNotOwner">
-        <div fxLayout="row" fxLayoutAlign="center center">
-          <h1 *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName.length == 0" style="margin-bottom: 0; font-style: italic; font-weight: bold;">Anonymous</h1>
-          <h1 *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName.length  > 0" style="margin-bottom: 0;">{{displayNameState.displayName }}</h1>
-
-          <div fxFlex="8px"></div>
-
-          <ng-container *ngIf="liano(state).isTrustedState.kind === 'loaded'">
-            <button *ngIf="!liano(state).isTrustedState.isTrusted" color="warn" mat-raised-button (click)="trust(liano(state))">Trust</button>
-            <button *ngIf="liano(state).isTrustedState.isTrusted" color="primary" mat-raised-button (click)="untrust(liano(state), liano(state).isTrustedState.trusteeUuid)">Untrust</button>
-          </ng-container>
-        </div>
-      </ng-container>
-
-      <ng-container *ngSwitchCase="StateKind.NotLoggedIn">
-        <h1 fxFlexAlign="center" *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName.length == 0" style="margin-bottom: 0; font-style: italic; font-weight: bold;">Anonymous</h1>
-        <h1 fxFlexAlign="center" *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName.length  > 0" style="margin-bottom: 0;">{{displayNameState.displayName }}</h1>
-      </ng-container>
-
-    </ng-container>
-
-    <h3 fxFlexAlign="center">(<a [href]="sanitizer.bypassSecurityTrustUrl(profileDatArchive.url)">{{profileDatArchive.url.slice(0, 12)}}..{{profileDatArchive.url.slice(-6)}}/</a>)</h3>
+      <div fxLayout="row" fxLayoutAlign="center">
+        <h3 fxFlexAlign="center" style="margin-bottom: 0;">(<a [href]="sanitizer.bypassSecurityTrustUrl(profileDatArchive.url)">{{profileDatArchive.url.slice(0, 12)}}..{{profileDatArchive.url.slice(-6)}}/</a>)</h3>
+      </div>
+    </mat-card>
+    <div style="height: 8px"></div>
   </div>
 
   <!-- Salaries -->
-  <div style="max-width: 150ch;">
+  <div style="width: 50ch;">
     <app-salaries [profileDatArchive]="profileDatArchive" [isOwner]="state.kind === StateKind.LoggedInAndIsOwner"></app-salaries>
+    <div style="height: 8px"></div>
   </div>
 
   <!-- Trustees -->
-  <div style="max-width: 60ch;">
-    <h1>Trusts</h1>
-    <div fxLayout="column">
-      <a *ngFor="let trustee of trusts" routerLink="/profile/{{trustee.datUrl.slice(6)}}">{{trustee.datUrl}}</a>
-    </div>
+  <div style="width: 70ch;">
+    <mat-card>
+      <mat-card-title>Trusts</mat-card-title>
+      <mat-card-content>
+        <div fxLayout="column"><a *ngFor="let trustee of trusts" routerLink="/profile/{{trustee.datUrl.slice(6)}}">{{trustee.datUrl}}</a></div>
+      </mat-card-content>
+    </mat-card>
+    <div style="height: 8px"></div>
   </div>
 
 </div>
