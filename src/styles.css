@@ -1,7 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }
-body { margin: 0; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 /*
  * According to material spec, this like [this PR](https://github.com/angular/material2/pull/13219) fixes the stroked-
