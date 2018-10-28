@@ -1,8 +1,10 @@
-import {Component, Input, OnInit} from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Trustee} from 'src/app/models/trustee.model';
 import { DBService } from 'src/app/services/db.service';
 import { ProgressBarService } from 'src/app/services/progress-bar.service';
 import { MatSnackBar } from '@angular/material';
+import { Profile } from 'src/app/models/profile.model';
+import { UtilService } from 'src/app/services/util.service';
 
 @Component({
   selector: 'app-trustees',
@@ -13,14 +15,15 @@ export class TrusteesComponent implements OnInit {
 
   @Input() profileDatArchive: DatArchive;
 
-  trusts: Trustee[];
+  trustees: Array<{ datUrl: string, displayNameState: { kind: "loading" } | { kind: "loaded", displayName: string } | { kind: "errored", err: any }}>;
 
   constructor(
+    readonly utilService: UtilService,
     private readonly dbService: DBService,
     private readonly progressBarService: ProgressBarService,
     private readonly snackBar: MatSnackBar
   ) {
-    this.trusts = []
+    this.trustees = []
   }
 
   async ngOnInit() {
@@ -37,7 +40,23 @@ export class TrusteesComponent implements OnInit {
       let atLeastOneFailed = false
       for (const ret of trusteesOrFailures) {
         if (ret.status === "succeeded") {
-          this.trusts.push(ret.row.dbRowData)
+          const trusteeUrl = ret.row.dbRowData.datUrl
+          const trusteeObject:
+            { datUrl: string, displayNameState: { kind: "loading" } | { kind: "loaded", displayName: string } | { kind: "errored", err: any }} =
+            { datUrl: trusteeUrl, displayNameState: { kind: "loading"} } // making it like that to use closures with mutability. Yuck!
+
+          this.trustees.push(trusteeObject)
+          this.progressBarService.pushLoading()
+          DatArchive.load(trusteeUrl)
+            .then(trusteeArchive => this.dbService.readRow<Profile>(trusteeArchive, 'profiles', this.dbService.PROFILE_ROW_UUID))
+            .then(profileRow => {
+              trusteeObject.displayNameState = { kind: 'loaded', displayName: profileRow.dbRowData.displayName }
+              this.progressBarService.popLoading()
+            })
+            .catch(e => {
+              trusteeObject.displayNameState = { kind: 'errored', err: e }
+              this.progressBarService.popLoading()
+            })
         }
         else {
           atLeastOneFailed = true

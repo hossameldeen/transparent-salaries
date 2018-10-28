@@ -3,9 +3,9 @@
   <mat-divider></mat-divider>
   <ng-container *ngFor="let salary of salaries; let last = last">
     <div style="height: 8px"></div>
-    <h3 style="margin-bottom: 0">{{salary.job | uppercase}} <span style="font-style: italic; font-weight: normal;">with</span> {{salary.company | uppercase}}</h3>
-    <h2 style="margin-bottom: 0;">{{salary.netSalary | number}} {{salary.currency}} <span style="font-style: italic; font-weight: normal;">on</span> {{salary.month | date:'MMMM y'}}</h2>
-    <div class="mat-body-strong">{{salary.otherInfo}}</div>
+    <h3 style="margin-bottom: 0; font-weight: bold;">{{salary.job | uppercase}} <span style="font-style: italic; font-weight: normal;">with</span> {{salary.company | uppercase}}</h3>
+    <h2 style="margin-bottom: 0; font-weight: bold;">{{salary.netSalary | number}} {{salary.currency}} <span style="font-style: italic; font-weight: normal;">on</span> {{salary.month | date:'MMMM y'}}</h2>
+    <div>{{salary.otherInfo}}</div>
     <div *ngIf="!last" style="height: 8px"></div>
     <mat-divider *ngIf="!last"></mat-divider>
   </ng-container>

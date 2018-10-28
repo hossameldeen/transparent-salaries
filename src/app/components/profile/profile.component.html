@@ -1,7 +1,7 @@
 <div fxLayout="row wrap" fxLayoutAlign="center" fxLayoutGap="2ch" style="margin-top: 8px;">
 
   <!-- Display name, trust, and dat url -->
-  <div style="width: 38ch;">
+  <div style="width: 40ch;">
     <mat-card>
       <ng-container [ngSwitch]="state.kind">
 
@@ -54,28 +54,24 @@
         <ng-container *ngSwitchCase="StateKind.NotLoggedIn">
           <div fxLayout="row" fxLayoutAlign="center center">
             <h1 *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName.length == 0" style="margin-bottom: 0; font-style: italic; font-weight: bold;">Anonymous</h1>
-            <h1 *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName.length  > 0" style="margin-bottom: 0;">{{displayNameState.displayName }}</h1>
+            <h1 *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName.length  > 0" style="margin-bottom: 0; font-weight: bold;">{{displayNameState.displayName }}</h1>
           </div>
         </ng-container>
 
       </ng-container>
 
       <div fxLayout="row" fxLayoutAlign="center">
-        <h3 fxFlexAlign="center" style="margin-bottom: 0;">(<a [href]="sanitizer.bypassSecurityTrustUrl(profileDatArchive.url)">{{profileDatArchive.url.slice(0, 12)}}..{{profileDatArchive.url.slice(-6)}}/</a>)</h3>
+        <h3 fxFlexAlign="center" style="margin-bottom: 0;">(<a [href]="sanitizer.bypassSecurityTrustUrl(profileDatArchive.url)">{{utilService.shortenedDatUrl(profileDatArchive.url)}}</a>)</h3>
       </div>
     </mat-card>
+    <div style="height: 8px"></div>
+    <app-trustees [profileDatArchive]="profileDatArchive"></app-trustees>
     <div style="height: 8px"></div>
   </div>
 
   <!-- Salaries -->
-  <div style="width: 50ch;">
-    <app-salaries [profileDatArchive]="profileDatArchive" [isOwner]="state.kind === StateKind.LoggedInAndIsOwner"></app-salaries>
-    <div style="height: 8px"></div>
-  </div>
-
-  <!-- Trustees -->
   <div style="width: 70ch;">
-    <app-trustees [profileDatArchive]="profileDatArchive"></app-trustees>
+    <app-salaries [profileDatArchive]="profileDatArchive" [isOwner]="state.kind === StateKind.LoggedInAndIsOwner"></app-salaries>
     <div style="height: 8px"></div>
   </div>
 

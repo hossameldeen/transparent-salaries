@@ -66,4 +66,8 @@ export class UtilService {
   wait(milliseconds): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, milliseconds))
   }
+
+  shortenedDatUrl(datUrl: string): string {
+    return `${datUrl.slice(0, 12)}..${datUrl.slice(-6)}/`
+  }
 }

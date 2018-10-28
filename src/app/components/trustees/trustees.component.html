@@ -1,8 +1,18 @@
 <mat-card>
   <mat-card-title>Trusts</mat-card-title>
   <mat-card-content>
-    <div fxLayout="column">
-      <a *ngFor="let trustee of trusts" routerLink="/profile/{{trustee.datUrl.slice(6)}}">{{trustee.datUrl}}</a>
-    </div>
+    <mat-nav-list>
+      <mat-list-item *ngFor="let trustee of trustees">
+        <a matLine routerLink="/profile/{{trustee.datUrl.slice(6)}}">
+          <ng-container *ngIf="trustee.displayNameState.kind === 'loaded'">
+            <span *ngIf="trustee.displayNameState.displayName.length === 0" style="font-style: italic; font-size: larger; font-weight: bold;">Anonymous</span>
+            <span *ngIf="trustee.displayNameState.displayName.length > 0" style="font-size: larger; font-weight: bold;">{{trustee.displayNameState.displayName}}</span>
+          </ng-container>
+          <span *ngIf="trustee.displayNameState.kind === 'loading'" style="font-style: italic; font-size: larger;">Loading...</span>
+          <span *ngIf="trustee.displayNameState.kind === 'errored'" style="font-style: italic; font-size: larger;">Couldn't retrieve :(</span>
+        </a>
+        <span matLine>{{utilService.shortenedDatUrl(trustee.datUrl)}}</span>
+      </mat-list-item>
+    </mat-nav-list>
   </mat-card-content>
 </mat-card>

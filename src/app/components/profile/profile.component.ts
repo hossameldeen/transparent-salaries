@@ -33,10 +33,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
   constructor(
     readonly sanitizer: DomSanitizer,
     readonly profileService: ProfileService,
+    readonly utilService: UtilService,
     private readonly dbService: DBService,
     private readonly progressBarService: ProgressBarService,
-    private readonly snackBar: MatSnackBar,
-    private readonly utilService: UtilService
+    private readonly snackBar: MatSnackBar
   ) {
     this.displayNameState = { kind: "loading" }
   }
