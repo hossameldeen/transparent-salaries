@@ -13,6 +13,7 @@ import { HomePageComponent } from './components/home-page/home-page.component';
 import { ProfilePageComponent } from './components/profile-page/profile-page.component';
 import { NotFoundPageComponent } from './components/not-found-page/not-found-page.component';
 import { AppInitComponent } from './components/app-init/app-init.component';
+import { TrusteesComponent } from './components/trustees/trustees.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -29,7 +30,8 @@ const routes: Routes = [
     HomeComponent,
     ProfileComponent,
     SalariesComponent,
-    AppInitComponent
+    AppInitComponent,
+    TrusteesComponent
   ],
   imports: [
     BrowserModule,

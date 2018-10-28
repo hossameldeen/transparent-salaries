@@ -1,0 +1,8 @@
+<mat-card>
+  <mat-card-title>Trusts</mat-card-title>
+  <mat-card-content>
+    <div fxLayout="column">
+      <a *ngFor="let trustee of trusts" routerLink="/profile/{{trustee.datUrl.slice(6)}}">{{trustee.datUrl}}</a>
+    </div>
+  </mat-card-content>
+</mat-card>
