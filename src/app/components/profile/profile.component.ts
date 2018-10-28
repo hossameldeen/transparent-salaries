@@ -27,31 +27,28 @@ export class ProfileComponent implements OnInit, OnDestroy {
    */
   @Input() profileDatArchive: DatArchive;
   displayNameState: { kind: "loading" } | { kind: "loaded", displayName: string } | { kind: "errored", err: any }; // Not worth making as separate classes & enums
-  trusts: Trustee[];
   stateSubjectSubscription: Subscription;
   @ViewChild('displayNameFormField') displayNameFormField: MatFormField;
 
   constructor(
     readonly sanitizer: DomSanitizer,
     readonly profileService: ProfileService,
+    readonly utilService: UtilService,
     private readonly dbService: DBService,
     private readonly progressBarService: ProgressBarService,
-    private readonly snackBar: MatSnackBar,
-    private readonly utilService: UtilService
+    private readonly snackBar: MatSnackBar
   ) {
     this.displayNameState = { kind: "loading" }
-    this.trusts = []
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     // TODO: Having to do it here to wait till `profileDatArchive` has been binded. However, that's bad because `state` will be undefined
     // TODO or something for some time.
     this.setState(this.profileService.stateSubject.value)
     this.stateSubjectSubscription = this.profileService.stateSubject.subscribe(profileState => this.setState(profileState))
 
-    // Note: not awaiting to read both displayName & trustees at the same time
-    this.retrieveDisplayName()
-    this.retrieveTrustees()
+    // Note: waiting wouldn't really make a difference.
+    await this.retrieveDisplayName()
   }
 
   startEditDisplayName(s: LoggedInAndIsOwner) {
@@ -128,32 +125,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
     catch(e) {
       this.displayNameState = { kind: "errored", err: e }
       this.snackBar.open("Couldn't retrieve display name", "Dismiss")
-    }
-    finally {
-      this.progressBarService.popLoading()
-    }
-  }
-
-  private async retrieveTrustees(): Promise<void> {
-    this.progressBarService.pushLoading()
-
-    try {
-      const trusteesOrFailures = await this.dbService.readAllRows<Trustee>(this.profileDatArchive, 'trustees')
-
-      let atLeastOneFailed = false
-      for (const ret of trusteesOrFailures) {
-        if (ret.status === "succeeded") {
-          this.trusts.push(ret.row.dbRowData)
-        }
-        else {
-          atLeastOneFailed = true
-        }
-      }
-      if (atLeastOneFailed)
-        this.snackBar.open("Couldn't retrieve some trustees from the profile. That's all I know :(", "Dismiss")
-    }
-    catch(e) {
-      this.snackBar.open("Couldn't retrieve trustees from the profile. That's all I know :(", "Dismiss")
     }
     finally {
       this.progressBarService.popLoading()

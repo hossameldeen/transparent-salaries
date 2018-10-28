@@ -1,10 +1,17 @@
 declare class DatArchive {
 
+  /**
+   * Create a Dat archive instance from an existing archive.
+   *
+   * This has the same effect as using the constructor, but allows you to await until load is successful.
+   */
+  static load(datUrl: string): Promise<DatArchive>;
+
   static create(opts: any): Promise<DatArchive>;
 
   static selectArchive(opts: any): Promise<DatArchive>;
 
-  constructor(datUrl: String);
+  constructor(datUrl: string);
 
   url: string;
 

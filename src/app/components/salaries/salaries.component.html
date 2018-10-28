@@ -1,17 +1,12 @@
-<div fxLayout="column" fxLayoutGap="8px" fxLayoutAlign="start center">
-  <div fxFlex="8px"></div>
-  <mat-card *ngFor="let salary of salaries" style="width: 55ch;" class="mat-elevation-z8">
-    <mat-card-title>{{salary.job}}</mat-card-title>
-    <mat-card-subtitle>{{salary.company}}</mat-card-subtitle>
-    <mat-divider></mat-divider>
-    <mat-card-content>
-      <div fxLayout="row">
-        <h1>{{salary.netSalary}} {{salary.currency}}</h1>
-        <span fxFlex></span>
-        <h2>{{salary.month}}</h2>
-      </div>
-      <span>{{salary.otherInfo}}</span>
-    </mat-card-content>
-  </mat-card>
-  <div fxFlex="8px"></div>
-</div>
+<mat-card>
+  <mat-card-title>Salaries</mat-card-title>
+  <mat-divider></mat-divider>
+  <ng-container *ngFor="let salary of salaries; let last = last">
+    <div style="height: 8px"></div>
+    <h3 style="margin-bottom: 0; font-weight: bold;">{{salary.job | uppercase}} <span style="font-style: italic; font-weight: normal;">with</span> {{salary.company | uppercase}}</h3>
+    <h2 style="margin-bottom: 0; font-weight: bold;">{{salary.netSalary | number}} {{salary.currency}} <span style="font-style: italic; font-weight: normal;">on</span> {{salary.month | date:'MMMM y'}}</h2>
+    <div>{{salary.otherInfo}}</div>
+    <div *ngIf="!last" style="height: 8px"></div>
+    <mat-divider *ngIf="!last"></mat-divider>
+  </ng-container>
+</mat-card>
