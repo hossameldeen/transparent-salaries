@@ -1,6 +1,46 @@
 <mat-card>
   <mat-card-title>Salaries</mat-card-title>
   <mat-divider></mat-divider>
+
+  <div style="height: 8px"></div>
+  <div fxLayout="column">
+    <div fxLayout="row wrap" fxLayoutGap="1ch">
+      <mat-form-field>
+        <input matInput placeholder="Job" type="text">
+      </mat-form-field>
+      <div fxLayout="row wrap" fxLayoutGap="1ch">
+        <span fxFlexAlign="center" style="font-style: italic;"> with </span>
+        <mat-form-field>
+          <input matInput placeholder="Company" type="text">
+        </mat-form-field>
+      </div>
+    </div>
+    <div fxLayout="row wrap" fxLayoutGap="1ch">
+      <mat-form-field>
+        <input matInput placeholder="Net salary" type="number">
+        <mat-hint>Salary after taxes, ... etc.</mat-hint>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Currency" type="text">
+        <mat-hint>E.g., USD, EGP, ... etc.</mat-hint>
+      </mat-form-field>
+      <div fxLayout="row wrap" fxLayoutGap="1ch">
+        <span fxFlexAlign="center" style="font-style: italic;">on</span>
+        <mat-form-field>
+          <input matInput placeholder="Month" type="month" [value]="utilService.getCurrentMonth()">
+          <mat-hint>Any month this salary was paid on.</mat-hint>
+        </mat-form-field>
+      </div>
+    </div>
+    <mat-form-field>
+      <input matInput placeholder="Other info" type="text">
+      <mat-hint>Any other info you want to include.</mat-hint>
+    </mat-form-field>
+    <button mat-raised-button color="primary">Add Salary</button>
+  </div>
+  <div *ngIf="salaries.length > 0" style="height: 8px"></div>
+  <mat-divider *ngIf="salaries.length > 0"></mat-divider>
+
   <ng-container *ngFor="let salary of salaries; let last = last">
     <div style="height: 8px"></div>
     <div fxLayout="row">

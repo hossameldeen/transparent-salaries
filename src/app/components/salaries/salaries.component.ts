@@ -4,6 +4,7 @@ import { DBRow } from 'src/app/models/db-row.model';
 import { DBService } from 'src/app/services/db.service';
 import { ProgressBarService } from 'src/app/services/progress-bar.service';
 import { MatSnackBar } from '@angular/material';
+import { UtilService } from 'src/app/services/util.service';
 
 @Component({
   selector: 'app-salaries',
@@ -62,6 +63,7 @@ export class SalariesComponent implements OnInit {
   salaries: Array<Salary>;
 
   constructor(
+    readonly utilService: UtilService,
     private readonly dbService: DBService,
     private readonly progressBarService: ProgressBarService,
     private readonly snackBar: MatSnackBar
