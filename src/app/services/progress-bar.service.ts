@@ -13,17 +13,17 @@ export class ProgressBarService {
    */
   showProgressBar: boolean = false;
 
-  private ctr;
+  private ctr = 0;
 
   constructor() { }
 
   pushLoading() {
     if (this.ctr++ === 0)
-      this.showProgressBar = true 
+      this.showProgressBar = true
   }
 
   popLoading() {
-    if (this.ctr-- === 0)
+    if (--this.ctr === 0)
       this.showProgressBar = false
   }
 }
