@@ -2,13 +2,15 @@
   <mat-card-title>Salaries</mat-card-title>
   <mat-divider></mat-divider>
 
-  <div style="height: 8px"></div>
-  <div fxLayout="column">
-    <app-salary-form></app-salary-form>
-    <button mat-raised-button color="primary">PUBLISH</button>
-  </div>
-  <div *ngIf="salaries.length > 0" style="height: 8px"></div>
-  <mat-divider *ngIf="salaries.length > 0"></mat-divider>
+  <ng-container *ngIf="isOwner">
+    <div style="height: 8px"></div>
+    <div fxLayout="column">
+      <app-salary-form #newSalaryFormComponent [disabled]="persistingNewSalary"></app-salary-form>
+      <button mat-raised-button color="primary" (click)="addNewSalary(newSalaryFormComponent)" [disabled]="persistingNewSalary">Add new salary</button>
+    </div>
+    <div *ngIf="salaries.length > 0" style="height: 8px"></div>
+    <mat-divider *ngIf="salaries.length > 0"></mat-divider>
+  </ng-container>
 
   <ng-container *ngFor="let salary of salaries; let last = last">
     <div style="height: 8px"></div>

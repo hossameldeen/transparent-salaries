@@ -1,28 +1,28 @@
 <div fxLayout="column">
   <mat-form-field fxFlexAlign="start">
-    <input matInput placeholder="Month" type="month" [value]="salary.month" (input)="onInput($event, 'month')">
+    <input matInput placeholder="Month" type="month" [value]="salary.month" (input)="onInput($event, 'month')" [disabled]="disabled">
     <mat-hint>Any month this salary was paid on.</mat-hint>
   </mat-form-field>
   <div fxLayout="row wrap" fxLayoutGap="1ch">
     <mat-form-field>
-      <input matInput placeholder="Job" type="text" [value]="salary.job" (input)="onInput($event, 'job')">
+      <input matInput placeholder="Job" type="text" [value]="salary.job" (input)="onInput($event, 'job')" [disabled]="disabled">
     </mat-form-field>
     <mat-form-field>
-      <input matInput placeholder="Company" type="text" [value]="salary.company" (input)="onInput($event, 'company')">
+      <input matInput placeholder="Company" type="text" [value]="salary.company" (input)="onInput($event, 'company')" [disabled]="disabled">
     </mat-form-field>
   </div>
   <div fxLayout="row wrap" fxLayoutGap="1ch">
     <mat-form-field>
-      <input matInput placeholder="Net salary" type="number" [value]="salary.netSalary" (input)="onInput($event, 'netSalary')">
+      <input matInput placeholder="Net salary" type="number" [value]="salary.netSalary" (input)="onInput($event, 'netSalary')" [disabled]="disabled">
       <mat-hint>Salary after taxes, ... etc.</mat-hint>
     </mat-form-field>
     <mat-form-field>
-      <input matInput placeholder="Currency" type="text" [value]="salary.currency" (input)="onInput($event, 'currency')">
+      <input matInput placeholder="Currency" type="text" [value]="salary.currency" (input)="onInput($event, 'currency')" [disabled]="disabled">
       <mat-hint>E.g., USD, EGP, ... etc.</mat-hint>
     </mat-form-field>
   </div>
   <mat-form-field>
-    <input matInput placeholder="Other info" type="text" [value]="salary.otherInfo" (input)="onInput($event, 'otherInfo')">
+    <input matInput placeholder="Other info" type="text" [value]="salary.otherInfo" (input)="onInput($event, 'otherInfo')" [disabled]="disabled">
     <mat-hint>Any other info you want to include.</mat-hint>
   </mat-form-field>
 </div>
