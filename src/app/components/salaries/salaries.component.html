@@ -8,23 +8,30 @@
       <app-salary-form #newSalaryFormComponent [disabled]="persistingNewSalary"></app-salary-form>
       <button mat-raised-button color="primary" (click)="addNewSalary(newSalaryFormComponent)" [disabled]="persistingNewSalary">Add new salary</button>
     </div>
-    <div *ngIf="salaries.length > 0" style="height: 8px"></div>
-    <mat-divider *ngIf="salaries.length > 0"></mat-divider>
+    <div *ngIf="salariesDBRows.length > 0" style="height: 8px"></div>
+    <mat-divider *ngIf="salariesDBRows.length > 0"></mat-divider>
   </ng-container>
 
-  <ng-container *ngFor="let salary of salaries; let last = last">
+  <ng-container *ngFor="let salaryDBRow of salariesDBRows; let last = last">
     <div style="height: 8px"></div>
-    <div fxLayout="row">
+    <div *ngIf="salaryDBRow.editingState === EditingState.NotEditing" fxLayout="row">
       <div>
-        <h3 style="margin-bottom: 0;">{{salary.month | date:'MMMM y'}}</h3>
-        <h2 style="margin-bottom: 0;">{{salary.job | uppercase}} <span style="font-style: italic; font-weight: normal;">with</span> {{salary.company | uppercase}}</h2>
-        <h1 style="margin-bottom: 0;">{{salary.netSalary | number}} {{salary.currency}}</h1>
-        <h3 style="margin-bottom: 0;">{{salary.otherInfo}}</h3>
+        <h3 style="margin-bottom: 0;">{{salaryDBRow.dbRow.dbRowData.month | date:'MMMM y'}}</h3>
+        <h2 style="margin-bottom: 0;">{{salaryDBRow.dbRow.dbRowData.job | uppercase}} <span style="font-style: italic; font-weight: normal;">with</span> {{salaryDBRow.dbRow.dbRowData.company | uppercase}}</h2>
+        <h1 style="margin-bottom: 0;">{{salaryDBRow.dbRow.dbRowData.netSalary | number}} {{salaryDBRow.dbRow.dbRowData.currency}}</h1>
+        <h3 style="margin-bottom: 0;">{{salaryDBRow.dbRow.dbRowData.otherInfo}}</h3>
       </div>
       <span fxFlex></span>
-      <button mat-icon-button color="primary" matTooltip="Edit">
+      <button *ngIf="isOwner" mat-icon-button color="primary" matTooltip="Edit" (click)="startEdit(salaryDBRow)">
         <mat-icon>edit</mat-icon>
       </button>
+    </div>
+    <div *ngIf="salaryDBRow.editingState === EditingState.UserEditing || salaryDBRow.editingState === EditingState.EditRequestSent" fxLayout="column">
+      <app-salary-form #updateSalaryFormComponent [initialSalary]="salaryDBRow.dbRow.dbRowData" [disabled]="salaryDBRow.editingState === EditingState.EditRequestSent"></app-salary-form>
+      <div fxLayout="row wrap">
+        <button fxFlex mat-raised-button color="primary" (click)="updateSalary(salaryDBRow, updateSalaryFormComponent)" [disabled]="salaryDBRow.editingState === EditingState.EditRequestSent">Update salary</button>
+        <button fxFlex mat-raised-button color="warn" (click)="cancelEdit(salaryDBRow)" [disabled]="salaryDBRow.editingState === EditingState.EditRequestSent">Cancel</button>
+      </div>
     </div>
     <div *ngIf="!last" style="height: 8px"></div>
     <mat-divider *ngIf="!last"></mat-divider>

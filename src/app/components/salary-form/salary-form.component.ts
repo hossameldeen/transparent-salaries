@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { UtilService } from 'src/app/services/util.service';
 import { Salary } from 'src/app/models/salary.model';
 
@@ -7,13 +7,16 @@ import { Salary } from 'src/app/models/salary.model';
   templateUrl: './salary-form.component.html',
   styleUrls: ['./salary-form.component.css']
 })
-export class SalaryFormComponent {
+export class SalaryFormComponent implements OnInit {
 
+  @Input() initialSalary: Salary;
   @Input() disabled: boolean;
   salary: Salary;
 
-  constructor(utilService: UtilService) {
-    this.salary = new Salary(utilService.getCurrentMonth(), "", "", "", "", "")
+  constructor(readonly utilService: UtilService) { }
+
+  ngOnInit() {
+    this.salary = this.initialSalary || new Salary(this.utilService.getCurrentMonth(), "", "", "", "", "")
   }
 
   onInput($event: Event, fieldPropertyName: string) {
