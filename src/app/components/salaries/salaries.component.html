@@ -12,19 +12,26 @@
     <mat-divider *ngIf="salariesDBRows.length > 0"></mat-divider>
   </ng-container>
 
-  <ng-container *ngFor="let salaryDBRow of salariesDBRows; let last = last">
+  <ng-container *ngFor="let salaryDBRow of salariesDBRows; let last = last; let index = index;">
     <div style="height: 8px"></div>
-    <div *ngIf="salaryDBRow.editingState === EditingState.NotEditing" fxLayout="row">
+    <div *ngIf="salaryDBRow.editingState === EditingState.NotEditing || salaryDBRow.editingState === EditingState.DeleteRequestSent" fxLayout="row">
       <div>
         <h3 style="margin-bottom: 0;">{{salaryDBRow.dbRow.dbRowData.month | date:'MMMM y'}}</h3>
         <h2 style="margin-bottom: 0;">{{salaryDBRow.dbRow.dbRowData.job | uppercase}} <span style="font-style: italic; font-weight: normal;">with</span> {{salaryDBRow.dbRow.dbRowData.company | uppercase}}</h2>
         <h1 style="margin-bottom: 0;">{{salaryDBRow.dbRow.dbRowData.netSalary | number}} {{salaryDBRow.dbRow.dbRowData.currency}}</h1>
         <h3 style="margin-bottom: 0;">{{salaryDBRow.dbRow.dbRowData.otherInfo}}</h3>
       </div>
-      <span fxFlex></span>
-      <button *ngIf="isOwner" mat-icon-button color="primary" matTooltip="Edit" (click)="startEdit(salaryDBRow)">
-        <mat-icon>edit</mat-icon>
-      </button>
+      <ng-container *ngIf="isOwner">
+        <span fxFlex></span>
+        <div fxLayout="column">
+          <button mat-icon-button color="primary" matTooltip="Edit" (click)="startEdit(salaryDBRow)" [disabled]="salaryDBRow.editingState === EditingState.DeleteRequestSent">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" matTooltip="Delete" (click)="deleteSalary(salaryDBRow, index)" [disabled]="salaryDBRow.editingState === EditingState.DeleteRequestSent">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </ng-container>
     </div>
     <div *ngIf="salaryDBRow.editingState === EditingState.UserEditing || salaryDBRow.editingState === EditingState.EditRequestSent" fxLayout="column">
       <app-salary-form #updateSalaryFormComponent [initialSalary]="salaryDBRow.dbRow.dbRowData" [disabled]="salaryDBRow.editingState === EditingState.EditRequestSent"></app-salary-form>

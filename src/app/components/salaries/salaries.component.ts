@@ -152,8 +152,34 @@ export class SalariesComponent implements OnInit {
       this.salariesDBRows.sort((a, b) => this.compareSalaries(a.dbRow.dbRowData, b.dbRow.dbRowData))
     }
     catch (e) {
-      this.snackBar.open("Couldn't add new salary for some reason :(", "Dismiss")
+      this.snackBar.open("Couldn't update the salary for some reason :(", "Dismiss")
       salaryDBRow.editingState = EditingState.UserEditing
+    }
+    finally {
+      this.progressBarService.popLoading()
+    }
+  }
+
+  /**
+   * The index is just for optimization. In most cases, I shouldn't need to loop over the array.
+   */
+  async deleteSalary(salaryDBRow: { dbRow: DBRow<Salary>, editingState: EditingState }, salaryDBRowIndex: number) {
+    try {
+      this.progressBarService.pushLoading()
+      salaryDBRow.editingState = EditingState.DeleteRequestSent
+
+      await this.dbService.deleteRow<Salary>(this.profileDatArchive, 'salaries', salaryDBRow.dbRow.uuid)
+
+      if (salaryDBRowIndex < this.salariesDBRows.length && this.salariesDBRows[salaryDBRowIndex].dbRow.uuid !== salaryDBRow.dbRow.uuid)
+        salaryDBRowIndex = this.salariesDBRows.findIndex(sdbr => sdbr.dbRow.uuid === salaryDBRow.dbRow.uuid)
+
+      // TODO: Add a check that salaryDBRowIndex !== -1
+      this.salariesDBRows.splice(salaryDBRowIndex, 1)
+    }
+    catch (e) {
+      console.log(e)
+      this.snackBar.open("Couldn't delete the salary for some reason :(", "Dismiss")
+      salaryDBRow.editingState = EditingState.NotEditing
     }
     finally {
       this.progressBarService.popLoading()
@@ -218,7 +244,8 @@ export class SalariesComponent implements OnInit {
   // }
 }
 
-enum EditingState { NotEditing, UserEditing, EditRequestSent }
+// Yup, yup, not so clean of a design
+enum EditingState { NotEditing, UserEditing, EditRequestSent, DeleteRequestSent }
 
 /**
  * Either a new Salary, or a DBRow of an existing salary
