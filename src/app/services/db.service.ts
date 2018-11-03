@@ -236,20 +236,21 @@ export class DBService {
   }
 
   async migrateDB(datArchive: DatArchive): Promise<void> {
-    // TODO: May actually take longer. Perhaps calculate it depends on the number of rows?
+    // TODO: May actually take longer. Perhaps calculate it depending on the number of rows?
     const lockSecret = await this.lockerService.acquireLock(Lock.MigrateDB, 5 * 60 * 1000)
     try {
-      {
-        // Curly braces to limit the scope of the variable `i`
-        let i = this.migrations.length - 1
-        while(i >= 0 && !await this.migrations[i].check(datArchive))
-          --i
-        for (i++; i < this.migrations.length; ++i)
-          await this.migrations[i].migrate(datArchive)
+      let biggestCheckedMigration = -1
+      for (let i = this.migrations.length - 1; i >= 0; --i)
+        if (await this.migrations[i].check(datArchive)) {
+          biggestCheckedMigration = i
+          break
+        }
+
+      for (let i = biggestCheckedMigration + 1; i < this.migrations.length; ++i) {
+        await this.migrations[i].migrate(datArchive)
+        if (i - 1 >= 0)
+          await this.migrations[i - 1].idempotentCleanup(datArchive)
       }
-      // clean-up all previous versions' files
-      for (let i = 0; i < this.migrations.length - 1; ++i)
-        await this.migrations[i].idempotentCleanup(datArchive)
     }
     finally {
       this.lockerService.releaseLock(Lock.MigrateDB, lockSecret)
