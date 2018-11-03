@@ -14,6 +14,7 @@ import { ProfilePageComponent } from './components/profile-page/profile-page.com
 import { NotFoundPageComponent } from './components/not-found-page/not-found-page.component';
 import { AppInitComponent } from './components/app-init/app-init.component';
 import { TrusteesComponent } from './components/trustees/trustees.component';
+import { SalaryFormComponent } from './components/salary-form/salary-form.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -31,7 +32,8 @@ const routes: Routes = [
     ProfileComponent,
     SalariesComponent,
     AppInitComponent,
-    TrusteesComponent
+    TrusteesComponent,
+    SalaryFormComponent
   ],
   imports: [
     BrowserModule,

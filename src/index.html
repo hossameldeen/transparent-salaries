@@ -17,8 +17,11 @@
        However, **important**: not using it means you can't use mat-typography classes. To use it, you'll need to
        provide a font and/or give it to font-family in some scss files. Check material typography guide.
        But you can use the `mat-typography` class on the app root and it does make a good difference.
+
+       Update: Reverted to using it. Found a way to not need bolds. Overall, I'm happier with this font, but I don't
+               like it on the main page, especially in "Join Transparent Salaries now.".
    -->
-  <!--<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
 </head>
 <body>
   <app-root class="mat-typography"></app-root>

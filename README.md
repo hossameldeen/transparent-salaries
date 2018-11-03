@@ -55,7 +55,7 @@ You're, obviously, using [Angular Framework](https://angular.io/). You're also u
 
 There're TODOs in the code. Beside them, there're TODOs here.
 
-Next free TODO number: 18
+Next free TODO number: 20
 
 ### Not Resolved Yet
 
@@ -96,6 +96,13 @@ But very not clean & no guarantee it'll solve all our problems. It's just a temp
 16) To avoid concurrency errors of async update & then retrieval, probably it'd be a good idea to separate updating & reading. Perhaps you should `watch` on the state directly & not trigger re-retrieval on updates.
 
 17) Consider running stuff like retrieving salaries & trustees and migrating db, outside of Angular Zone. Check this: https://blog.angularindepth.com/do-you-still-think-that-ngzone-zone-js-is-required-for-change-detection-in-angular-16f7a575afef
+
+18) Perhaps use GitLab for issues instead of this TODO list (& trello board). It has free private repos!
+
+19) Solve the `ExpressionChangedAfterChecked` error. Basically, you have 2 possible solutions:  
+Either, just wrap the change in a `BehaviorSubject` to add asynchronity in it.  
+Or, review your application to make sure it follows the unidirectional-flow stuff linked in [this article](https://blog.angularindepth.com/everything-you-need-to-know-about-the-expressionchangedafterithasbeencheckederror-error-e3fd9ce7dbb4) and see how to re-structure it to make sure it doesn't break it.  
+Either way, definitely read the linked article.
 
 ### Resolved
 

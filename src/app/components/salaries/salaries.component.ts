@@ -4,6 +4,8 @@ import { DBRow } from 'src/app/models/db-row.model';
 import { DBService } from 'src/app/services/db.service';
 import { ProgressBarService } from 'src/app/services/progress-bar.service';
 import { MatSnackBar } from '@angular/material';
+import { UtilService } from 'src/app/services/util.service';
+import { SalaryFormComponent } from 'src/app/components/salary-form/salary-form.component';
 
 @Component({
   selector: 'app-salaries',
@@ -60,8 +62,10 @@ export class SalariesComponent implements OnInit {
   // readonly dataSource: TableDataSource<TableRow>;
   // persistingNewSalary: boolean = false;
   salaries: Array<Salary>;
+  persistingNewSalary: boolean;
 
   constructor(
+    private readonly utilService: UtilService,
     private readonly dbService: DBService,
     private readonly progressBarService: ProgressBarService,
     private readonly snackBar: MatSnackBar
@@ -71,6 +75,7 @@ export class SalariesComponent implements OnInit {
     // this.dataSource = new TableDataSource<TableRow>([new NewRow(new Salary('', '', '', '', '', ''))], undefined, undefined, { prependNewElements: true })
     // this.dataSource.getRow(0).delete()
     this.salaries = []
+    this.persistingNewSalary = false
   }
 
   async ngOnInit(): Promise<void> {
@@ -91,6 +96,7 @@ export class SalariesComponent implements OnInit {
 
       // this.dataSource.updateDatasource(succeeded.map(salaryDBRow => new ExistingRow(salaryDBRow)))
       this.salaries = succeeded.map(salaryDBRow => salaryDBRow.dbRowData)
+      this.salaries.sort((a, b) => this.compareSalaries(a, b))
 
       if (atLeastOneFailed)
         this.snackBar.open("Couldn't retrieve some salaries from the profile. That's all I know :(", "Dismiss")
@@ -101,6 +107,41 @@ export class SalariesComponent implements OnInit {
     finally {
       this.progressBarService.popLoading()
     }
+  }
+
+  async addNewSalary(newSalaryFormComponent: SalaryFormComponent) {
+    try {
+      this.progressBarService.pushLoading()
+      this.persistingNewSalary = true
+
+      await this.utilService.wait(2000)
+
+      const salaryDBRow = await this.dbService.putRow<Salary>(this.profileDatArchive, 'salaries', newSalaryFormComponent.salary)
+
+      this.salaries.push(salaryDBRow.dbRowData)
+      this.salaries.sort((a, b) => this.compareSalaries(a, b))
+
+      newSalaryFormComponent.salary = new Salary(this.utilService.getCurrentMonth(), "", "", "", "", "")
+    }
+    catch (e) {
+      this.snackBar.open("Couldn't add new salary for some reason :(", "Dismiss")
+    }
+    finally {
+      this.persistingNewSalary = false
+      this.progressBarService.popLoading()
+    }
+  }
+
+  /**
+   * TODO: sort by creationDate when you add it isA
+   */
+  private compareSalaries(a: Salary, b: Salary): number {
+    if (a.month < b.month)
+      return 1
+    if (a.month > b.month)
+      return -1
+    return 0  // Actually, in C++ this would blow up because it must mean a === b. But according to JS docs, I think it means either
+              // "don't change the relative order", or in some browsers, undefined/don't-care relative order.
   }
 
   // salary(row: TableRow): Salary {
