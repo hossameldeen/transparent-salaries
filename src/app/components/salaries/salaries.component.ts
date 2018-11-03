@@ -13,6 +13,8 @@ import { SalaryFormComponent } from 'src/app/components/salary-form/salary-form.
 })
 export class SalariesComponent implements OnInit {
 
+  EditingState = EditingState;  // to be available in the template html
+
   @Input() profileDatArchive: DatArchive;
   @Input() isOwner: boolean;
 
@@ -61,7 +63,7 @@ export class SalariesComponent implements OnInit {
   // readonly displayedColumns: string[] = this.columnsConfigs.map(cc => cc.matColumnDef).concat('actionsColumn');
   // readonly dataSource: TableDataSource<TableRow>;
   // persistingNewSalary: boolean = false;
-  salaries: Array<Salary>;
+  salariesDBRows: Array<{ dbRow: DBRow<Salary>, editingState: EditingState }>;  // That's a bad name because it's not just salaryDBRow.
   persistingNewSalary: boolean;
 
   constructor(
@@ -74,7 +76,7 @@ export class SalariesComponent implements OnInit {
     // TODO: An ugly hack, adding a row & removing it. Doing that because I don't know how to send a property dataType/constructor.
     // this.dataSource = new TableDataSource<TableRow>([new NewRow(new Salary('', '', '', '', '', ''))], undefined, undefined, { prependNewElements: true })
     // this.dataSource.getRow(0).delete()
-    this.salaries = []
+    this.salariesDBRows = []
     this.persistingNewSalary = false
   }
 
@@ -95,8 +97,8 @@ export class SalariesComponent implements OnInit {
       }
 
       // this.dataSource.updateDatasource(succeeded.map(salaryDBRow => new ExistingRow(salaryDBRow)))
-      this.salaries = succeeded.map(salaryDBRow => salaryDBRow.dbRowData)
-      this.salaries.sort((a, b) => this.compareSalaries(a, b))
+      this.salariesDBRows = succeeded.map(salaryDBRow => ({ dbRow: salaryDBRow, editingState: EditingState.NotEditing }))
+      this.salariesDBRows.sort((a, b) => this.compareSalaries(a.dbRow.dbRowData, b.dbRow.dbRowData))
 
       if (atLeastOneFailed)
         this.snackBar.open("Couldn't retrieve some salaries from the profile. That's all I know :(", "Dismiss")
@@ -114,12 +116,10 @@ export class SalariesComponent implements OnInit {
       this.progressBarService.pushLoading()
       this.persistingNewSalary = true
 
-      await this.utilService.wait(2000)
-
       const salaryDBRow = await this.dbService.putRow<Salary>(this.profileDatArchive, 'salaries', newSalaryFormComponent.salary)
 
-      this.salaries.push(salaryDBRow.dbRowData)
-      this.salaries.sort((a, b) => this.compareSalaries(a, b))
+      this.salariesDBRows.push({ dbRow: salaryDBRow, editingState: EditingState.NotEditing })
+      this.salariesDBRows.sort((a, b) => this.compareSalaries(a.dbRow.dbRowData, b.dbRow.dbRowData))
 
       newSalaryFormComponent.salary = new Salary(this.utilService.getCurrentMonth(), "", "", "", "", "")
     }
@@ -128,6 +128,60 @@ export class SalariesComponent implements OnInit {
     }
     finally {
       this.persistingNewSalary = false
+      this.progressBarService.popLoading()
+    }
+  }
+
+  startEdit(salaryDBRow: { dbRow: DBRow<Salary>, editingState: EditingState }) {
+    salaryDBRow.editingState = EditingState.UserEditing
+  }
+
+  cancelEdit(salaryDBRow: { dbRow: DBRow<Salary>, editingState: EditingState }) {
+    salaryDBRow.editingState = EditingState.NotEditing
+  }
+
+  async updateSalary(salaryDBRow: { dbRow: DBRow<Salary>, editingState: EditingState }, updateSalaryFormComponent: SalaryFormComponent) {
+    try {
+      this.progressBarService.pushLoading()
+      salaryDBRow.editingState = EditingState.EditRequestSent
+
+      const updatedSalaryDBRow = await this.dbService.putRow2<Salary>(this.profileDatArchive, 'salaries', updateSalaryFormComponent.salary, salaryDBRow.dbRow.uuid)
+
+      salaryDBRow.dbRow = updatedSalaryDBRow
+      salaryDBRow.editingState = EditingState.NotEditing
+      this.salariesDBRows.sort((a, b) => this.compareSalaries(a.dbRow.dbRowData, b.dbRow.dbRowData))
+    }
+    catch (e) {
+      this.snackBar.open("Couldn't update the salary for some reason :(", "Dismiss")
+      salaryDBRow.editingState = EditingState.UserEditing
+    }
+    finally {
+      this.progressBarService.popLoading()
+    }
+  }
+
+  /**
+   * The index is just for optimization. In most cases, I shouldn't need to loop over the array.
+   */
+  async deleteSalary(salaryDBRow: { dbRow: DBRow<Salary>, editingState: EditingState }, salaryDBRowIndex: number) {
+    try {
+      this.progressBarService.pushLoading()
+      salaryDBRow.editingState = EditingState.DeleteRequestSent
+
+      await this.dbService.deleteRow<Salary>(this.profileDatArchive, 'salaries', salaryDBRow.dbRow.uuid)
+
+      if (salaryDBRowIndex < this.salariesDBRows.length && this.salariesDBRows[salaryDBRowIndex].dbRow.uuid !== salaryDBRow.dbRow.uuid)
+        salaryDBRowIndex = this.salariesDBRows.findIndex(sdbr => sdbr.dbRow.uuid === salaryDBRow.dbRow.uuid)
+
+      // TODO: Add a check that salaryDBRowIndex !== -1
+      this.salariesDBRows.splice(salaryDBRowIndex, 1)
+    }
+    catch (e) {
+      console.log(e)
+      this.snackBar.open("Couldn't delete the salary for some reason :(", "Dismiss")
+      salaryDBRow.editingState = EditingState.NotEditing
+    }
+    finally {
       this.progressBarService.popLoading()
     }
   }
@@ -189,6 +243,9 @@ export class SalariesComponent implements OnInit {
   //   row.confirmEditCreate()
   // }
 }
+
+// Yup, yup, not so clean of a design
+enum EditingState { NotEditing, UserEditing, EditRequestSent, DeleteRequestSent }
 
 /**
  * Either a new Salary, or a DBRow of an existing salary
