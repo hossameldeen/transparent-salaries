@@ -5,10 +5,19 @@ import {UtilService} from './util.service';
 import {Lock, LockerService} from './locker.service';
 
 /**
- * A wrapper around a profile dat archive that is used as a database.
+ * A wrapper around a profile dat archive that is used as a JSON database.
  *
- * For my use-case, I should always be dealing with JSON values. This service will be built on that assumption.
- * // TODO: improve wording of the line above.
+ * Anything written in the archive is written under '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6', the pub-key of the
+ * application to make sure no conflicts happen with other applications.
+ *
+ * All current design files are under `<pub_key>/version/`.
+ *
+ * We can describe any [TODO: still writing]
+ *
+ * If a dat-archive has a different BREAKING version, we simply can't deal with it. We could add a layer that does a mapping in the future
+ * if such case emerges, isA.
+ *
+ * TODO: enhance description
  */
 @Injectable({
   providedIn: 'root'
@@ -52,6 +61,10 @@ export class DBService {
     private readonly ngZone: NgZone
   ) { }
 
+  /**
+   * salaries/
+   * trustees/
+   */
   static async migrateNewArchiveTo545(datArchive: DatArchive): Promise<void> {
     const root = '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6'
     const baseDirComponents = [ root, 'version', '545']
@@ -78,6 +91,11 @@ export class DBService {
       await datArchive.mkdir(base + '/' + tableName)
   }
 
+  /**
+   * salaries/
+   * trustees/
+   * migration-done-752
+   */
   static async migrate545To752(datArchive: DatArchive): Promise<void> {
     const root = '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6'
     const baseDirComponents = [ root, 'version', '752']
@@ -98,6 +116,13 @@ export class DBService {
     await datArchive.writeFile(newBaseDir + '/migration-done-752', 'Migration to 752 done.')
   }
 
+  /**
+   * salaries/
+   * trustees/
+   * profiles/
+   *   - profile.json { displayName: null }
+   * migration-done-753
+   */
   static async migrate752To753(datArchive: DatArchive): Promise<void> {
     const root = '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6'
     const oldBaseDir = '/' + [root, 'version', '752'].join('/')
@@ -123,6 +148,13 @@ export class DBService {
     await datArchive.writeFile(newBaseDir + '/migration-done-753', 'Migration to 753 done.')
   }
 
+  /**
+   * salaries/
+   * trustees/
+   * profiles/
+   *   - profile.json if displayName === null => displayName <- ""
+   * migration-done-754
+   */
   static async migrate753To754(datArchive: DatArchive): Promise<void> {
     const root = '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6'
     const oldBaseDir = '/' + [root, 'version', '753'].join('/')
