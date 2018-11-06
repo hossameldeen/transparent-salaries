@@ -278,6 +278,9 @@ export class DBService {
           break
         }
 
+      if (biggestCheckedMigration - 1 >= 0)
+        await this.migrations[biggestCheckedMigration - 1].idempotentCleanup(datArchive)
+
       for (let i = biggestCheckedMigration + 1; i < this.migrations.length; ++i) {
         await this.migrations[i].migrate(datArchive)
         if (i - 1 >= 0)
