@@ -5,11 +5,11 @@
       <div fxLayoutAlign="center">
         <mat-card fxLayout="column" fxLayoutAlign="start center">
           <!-- TODO: The default font is better for this part (i.e., by commenting Roboto font in index.html). -->
-          <h1 fxFlexAlign="start">Help others share their salaries anonymously.</h1>
-          <h1 fxFlexAlign="start">Indicate who is trustworthy.</h1>
-          <h1 fxFlexAlign="start">Be trusted by others.</h1>
+          <h1 fxFlexAlign="start" style="font-family: unset;">Help others share their salaries anonymously.</h1>
+          <h1 fxFlexAlign="start" style="font-family: unset;">Indicate who is trustworthy.</h1>
+          <h1 fxFlexAlign="start" style="font-family: unset;">Be trusted by others.</h1>
           <br/>
-          <h2>Join Transparent Salaries now.</h2>
+          <h2 style="font-family: unset;">Join Transparent Salaries now.</h2>
           <div fxLayout="column" fxLayoutGap="2vh">
             <button mat-raised-button color="primary" (click)="profileService.createProfile()">Create a new profile</button>
             <button mat-stroked-button color="primary" (click)="profileService.selectProfile()">Use an existing profile</button>
