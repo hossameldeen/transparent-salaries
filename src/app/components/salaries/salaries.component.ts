@@ -177,7 +177,6 @@ export class SalariesComponent implements OnInit {
       this.salariesDBRows.splice(salaryDBRowIndex, 1)
     }
     catch (e) {
-      console.log(e)
       this.snackBar.open("Couldn't delete the salary for some reason :(", "Dismiss")
       salaryDBRow.editingState = EditingState.NotEditing
     }

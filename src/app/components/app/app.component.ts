@@ -71,7 +71,6 @@ export class AppComponent implements OnDestroy {
     }
     catch(e) {
       this.displayNameState = { kind: "errored", err: e }
-      console.log(this.displayNameState)
       this.snackBar.open("Couldn't retrieve display name", "Dismiss")
     }
     finally {
