@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { ProgressBarService } from './progress-bar.service';
 import { MatSnackBar } from '@angular/material';
 import { UtilService } from './util.service';
-import { DBService } from './db.service';
 import {BehaviorSubject} from 'rxjs';
+import {MigrationService} from './migration.service';
 
 /**
  * Made this service because there's common logic between the toolbar in app-component & home-component in home-page-component
@@ -19,7 +19,7 @@ export class ProfileService {
   appInitStatus: AppInitStatus;
 
   constructor(
-    private readonly dbService: DBService,
+    private readonly migrationService: MigrationService,
     private readonly progressBarService: ProgressBarService,
     private readonly snackBar: MatSnackBar
   ) {
@@ -83,7 +83,7 @@ export class ProfileService {
         try {
           this.progressBarService.pushLoading()
           this.appInitStatus = AppInitStatus.Initializing
-          await this.dbService.migrateDB(this.stateSubject.value.datArchive)
+          await this.migrationService.migrateDB(this.stateSubject.value.datArchive)
           this.appInitStatus = AppInitStatus.Succeeded
         }
         catch(e) {
@@ -106,7 +106,7 @@ export class ProfileService {
   private async selectAndMigrate(profile: DatArchive): Promise<void> {
     try {
       this.progressBarService.pushLoading()
-      await this.dbService.migrateDB(profile);
+      await this.migrationService.migrateDB(profile);
     }
     finally {
       this.stateSubject.next({ kind: ProfileStateKind.ProfileSelected, datArchive: profile })
