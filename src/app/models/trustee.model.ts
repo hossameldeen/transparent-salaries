@@ -8,6 +8,6 @@ export function encode(trustee: Trustee): string {
   return JSON.stringify(trustee)
 }
 
-export function decode(json: string): Trustee {
-  return JSON.parse(json)
+export function decode(jsonString: string): Trustee {
+  return JSON.parse(jsonString)
 }

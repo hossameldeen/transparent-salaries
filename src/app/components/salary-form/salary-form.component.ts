@@ -16,7 +16,8 @@ export class SalaryFormComponent implements OnInit {
   constructor(readonly utilService: UtilService) { }
 
   ngOnInit() {
-    this.salary = this.initialSalary || new Salary(this.utilService.getCurrentMonth(), "", "", "", "", "")
+    // TODO: Not clean having an unused `createdAt` here that will be overriden anyway on persistence
+    this.salary = this.initialSalary || new Salary(this.utilService.getCurrentMonth(), "", "", "", "", "", Date.now().toString())
   }
 
   onInput($event: Event, fieldPropertyName: string) {
