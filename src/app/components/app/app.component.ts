@@ -2,7 +2,7 @@ import {Component, OnDestroy} from '@angular/core';
 import {ProgressBarService} from 'src/app/services/progress-bar.service';
 import {ProfileService, ProfileStateKind} from 'src/app/services/profile.service';
 import {DomSanitizer} from '@angular/platform-browser';
-import {Profile} from 'src/app/models/profile.model';
+import {Profile, encode as encodeProfile, decode as decodeProfile} from 'src/app/models/profile.model';
 import {DBService} from 'src/app/services/db.service';
 import {Subscription} from 'rxjs';
 import {UtilService} from 'src/app/services/util.service';
@@ -60,7 +60,7 @@ export class AppComponent implements OnDestroy {
             this.displayNameWatchClose()
           this.displayNameWatchClose = displayNameWatchClose
 
-          const profileRow = await this.dbService.readRow<Profile>(this.profileService.stateSubject.value.datArchive, 'profiles', this.dbService.PROFILE_ROW_UUID)
+          const profileRow = await this.dbService.readRow<Profile>(this.profileService.stateSubject.value.datArchive, 'profiles', this.dbService.PROFILE_ROW_UUID, decodeProfile)
 
           // TODO: Actually state could've change till the above `await` returned. Ignoring for now (and not ignoring in other places, idk why)
           this.displayNameState = { kind: "loaded", displayName: profileRow.dbRowData.displayName }

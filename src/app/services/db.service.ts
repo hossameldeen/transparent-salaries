@@ -35,22 +35,22 @@ export class DBService {
    *
    * Mainly used for adding a row. There's a tiny, _tiny_ probability of overriding a row due to uuid collision.
    */
-  async putRow<T>(datArchive: DatArchive, tableName: string, jsonStringifiable: T): Promise<DBRow<T>> {
-    return await this.putRow2(datArchive, tableName, jsonStringifiable, uuid())
+  async putRow<T>(datArchive: DatArchive, tableName: string, jsonStringifiable: T, encode: (T) => string): Promise<DBRow<T>> {
+    return await this.putRow2(datArchive, tableName, jsonStringifiable, uuid(), encode)
   }
 
   /**
    * Mainly used to updating an existing row. Wouldn't complain if given a non-existing uuid, though.
    * Update: Actually, currently, correctly, used in a case that creates a new row (or the static version below)
    */
-  async putRow2<T>(datArchive: DatArchive, tableName: string, jsonStringifiable: T, uuid: string): Promise<DBRow<T>> {
+  async putRow2<T>(datArchive: DatArchive, tableName: string, jsonStringifiable: T, uuid: string, encode: (T) => string): Promise<DBRow<T>> {
     const row = new DBRow(uuid, jsonStringifiable)
-    await datArchive.writeFile(this.wp(tableName + "/" + row.uuid + ".json"), JSON.stringify(row.dbRowData))
+    await datArchive.writeFile(this.wp(tableName + "/" + row.uuid + ".json"), encode(row.dbRowData))
     return row
   }
 
-  async readRow<T>(datArchive: DatArchive, tableName: string, uuid: string): Promise<DBRow<T>> {
-    return new DBRow<T>(uuid, JSON.parse(await datArchive.readFile(this.wp(tableName + "/" + uuid + ".json"))))
+  async readRow<T>(datArchive: DatArchive, tableName: string, uuid: string, decode: (string) => T): Promise<DBRow<T>> {
+    return new DBRow<T>(uuid, decode(await datArchive.readFile(this.wp(tableName + "/" + uuid + ".json"))))
   }
 
   async deleteRow<T>(datArchive: DatArchive, tableName: string, uuid: string): Promise<void> {
@@ -64,9 +64,9 @@ export class DBService {
     return uuids
   }
 
-  async readAllRows<T>(datArchive: DatArchive, tableName: string): Promise<Array<{ status: "succeeded", row: DBRow<T> } | { status: "failed", err: any }>> {
+  async readAllRows<T>(datArchive: DatArchive, tableName: string, decode: (string) => T): Promise<Array<{ status: "succeeded", row: DBRow<T> } | { status: "failed", err: any }>> {
     const rowsUuids = await this.getRowsUuids(datArchive, tableName)
-    const rowsPromises = rowsUuids.map(rowUuid => this.readRow<T>(datArchive, tableName, rowUuid))
+    const rowsPromises = rowsUuids.map(rowUuid => this.readRow<T>(datArchive, tableName, rowUuid, decode))
     // thanks to https://stackoverflow.com/a/31424853/6690391
     // Needed to add the type parameter to `then` because ts would just infer the type to be {status: string, ..} | {status: string, ..} instead of {status: "succeeded", ..} | ...
     const rowPromisesNeverFail = rowsPromises.map(p => p.then<{ status: "succeeded", row: DBRow<T> }, { status: "failed", err: any }>(row => ({ status: "succeeded", row: row }), err => ({ status: "failed", err: err })))

@@ -2,8 +2,8 @@ import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DBService} from 'src/app/services/db.service';
 import {ProgressBarService} from 'src/app/services/progress-bar.service';
 import {MatFormField, MatSnackBar} from '@angular/material';
-import {Trustee} from 'src/app/models/trustee.model';
-import {Profile} from 'src/app/models/profile.model';
+import {Trustee, encode as encodeTrustee, decode as decodeTrustee} from 'src/app/models/trustee.model';
+import {Profile, encode as encodeProfile, decode as decodeProfile} from 'src/app/models/profile.model';
 import {ProfileService, ProfileState, ProfileStateKind} from 'src/app/services/profile.service';
 import {Subscription} from 'rxjs';
 import {UtilService} from 'src/app/services/util.service';
@@ -65,7 +65,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   async confirmDisplayNameEdit(s: LoggedInAndIsOwner) {
     if (s.editingState.editing) {
-      await this.dbService.putRow2<Profile>(s.loggedInDatArchive, 'profiles', new Profile(s.editingState.inputValue), this.dbService.PROFILE_ROW_UUID)
+      await this.dbService.putRow2<Profile>(s.loggedInDatArchive, 'profiles', new Profile(s.editingState.inputValue), this.dbService.PROFILE_ROW_UUID, encodeProfile)
 
       // Re-retrieve displayName
       await this.retrieveDisplayName()
@@ -85,7 +85,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   async trust(loggedInAndNotOwnerState: LoggedInAndNotOwner) {
-    const row = await this.dbService.putRow<Trustee>(loggedInAndNotOwnerState.loggedInDatArchive, 'trustees', new Trustee(this.profileDatArchive.url))
+    const row = await this.dbService.putRow<Trustee>(loggedInAndNotOwnerState.loggedInDatArchive, 'trustees', new Trustee(this.profileDatArchive.url), encodeTrustee)
 
     // TODO: refactor this whole state thing. Possibilities of unthought-of race conditions.
     // because the state might have changed during the request
@@ -119,7 +119,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   private async retrieveDisplayName(): Promise<void> {
     this.progressBarService.pushLoading()
     try {
-      const profileRow = await this.dbService.readRow<Profile>(this.profileDatArchive, 'profiles', this.dbService.PROFILE_ROW_UUID)
+      const profileRow = await this.dbService.readRow<Profile>(this.profileDatArchive, 'profiles', this.dbService.PROFILE_ROW_UUID, decodeProfile)
       this.displayNameState = { kind: "loaded", displayName: profileRow.dbRowData.displayName }
     }
     catch(e) {
@@ -153,7 +153,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.progressBarService.pushLoading()
 
     try {
-      const trusteesOrFailures = await this.dbService.readAllRows<Trustee>(loggedInAndNotOwnerState.loggedInDatArchive, 'trustees')
+      const trusteesOrFailures = await this.dbService.readAllRows<Trustee>(loggedInAndNotOwnerState.loggedInDatArchive, 'trustees', decodeTrustee)
 
       // Check that state hasn't changed while you were doing the request
       if (loggedInAndNotOwnerState !== this.state)

@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Trustee} from 'src/app/models/trustee.model';
+import { Trustee, encode as encodeTrustee, decode as decodeTrustee } from 'src/app/models/trustee.model';
 import { DBService } from 'src/app/services/db.service';
 import { ProgressBarService } from 'src/app/services/progress-bar.service';
 import { MatSnackBar } from '@angular/material';
-import { Profile } from 'src/app/models/profile.model';
+import { Profile, encode as encodeProfile, decode as decodeProfile } from 'src/app/models/profile.model';
 import { UtilService } from 'src/app/services/util.service';
 
 @Component({
@@ -35,7 +35,7 @@ export class TrusteesComponent implements OnInit {
     this.progressBarService.pushLoading()
 
     try {
-      const trusteesOrFailures = await this.dbService.readAllRows<Trustee>(this.profileDatArchive, 'trustees')
+      const trusteesOrFailures = await this.dbService.readAllRows<Trustee>(this.profileDatArchive, 'trustees', decodeTrustee)
 
       let atLeastOneFailed = false
       for (const ret of trusteesOrFailures) {
@@ -48,7 +48,7 @@ export class TrusteesComponent implements OnInit {
           this.trustees.push(trusteeObject)
           this.progressBarService.pushLoading()
           DatArchive.load(trusteeUrl)
-            .then(trusteeArchive => this.dbService.readRow<Profile>(trusteeArchive, 'profiles', this.dbService.PROFILE_ROW_UUID))
+            .then(trusteeArchive => this.dbService.readRow<Profile>(trusteeArchive, 'profiles', this.dbService.PROFILE_ROW_UUID, decodeProfile))
             .then(profileRow => {
               trusteeObject.displayNameState = { kind: 'loaded', displayName: profileRow.dbRowData.displayName }
               this.progressBarService.popLoading()

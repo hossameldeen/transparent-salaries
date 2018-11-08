@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Salary } from 'src/app/models/salary.model';
+import { Salary, encode as encodeSalary, decode as decodeSalary } from 'src/app/models/salary.model';
 import { DBRow } from 'src/app/models/db-row.model';
 import { DBService } from 'src/app/services/db.service';
 import { ProgressBarService } from 'src/app/services/progress-bar.service';
@@ -85,7 +85,7 @@ export class SalariesComponent implements OnInit {
     this.progressBarService.pushLoading()
 
     try {
-      const salariesOrFailures = await this.dbService.readAllRows<Salary>(this.profileDatArchive, 'salaries')
+      const salariesOrFailures = await this.dbService.readAllRows<Salary>(this.profileDatArchive, 'salaries', decodeSalary)
 
       const succeeded: Array<DBRow<Salary>> = []
       let atLeastOneFailed = false
@@ -116,7 +116,7 @@ export class SalariesComponent implements OnInit {
       this.progressBarService.pushLoading()
       this.persistingNewSalary = true
 
-      const salaryDBRow = await this.dbService.putRow<Salary>(this.profileDatArchive, 'salaries', newSalaryFormComponent.salary)
+      const salaryDBRow = await this.dbService.putRow<Salary>(this.profileDatArchive, 'salaries', newSalaryFormComponent.salary, encodeSalary)
 
       this.salariesDBRows.push({ dbRow: salaryDBRow, editingState: EditingState.NotEditing })
       this.salariesDBRows.sort((a, b) => this.compareSalaries(a.dbRow.dbRowData, b.dbRow.dbRowData))
@@ -145,7 +145,7 @@ export class SalariesComponent implements OnInit {
       this.progressBarService.pushLoading()
       salaryDBRow.editingState = EditingState.EditRequestSent
 
-      const updatedSalaryDBRow = await this.dbService.putRow2<Salary>(this.profileDatArchive, 'salaries', updateSalaryFormComponent.salary, salaryDBRow.dbRow.uuid)
+      const updatedSalaryDBRow = await this.dbService.putRow2<Salary>(this.profileDatArchive, 'salaries', updateSalaryFormComponent.salary, salaryDBRow.dbRow.uuid, encodeSalary)
 
       salaryDBRow.dbRow = updatedSalaryDBRow
       salaryDBRow.editingState = EditingState.NotEditing

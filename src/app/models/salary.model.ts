@@ -8,3 +8,11 @@ export class Salary {
     readonly otherInfo: string
   ) { }
 }
+
+export function encode(salary: Salary): string {
+  return JSON.stringify(salary)
+}
+
+export function decode(json: string): Salary {
+  return JSON.parse(json)
+}

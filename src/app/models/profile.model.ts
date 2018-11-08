@@ -3,3 +3,11 @@ export class Profile {
     readonly displayName: string
   ) { }
 }
+
+export function encode(profile: Profile): string {
+  return JSON.stringify(profile)
+}
+
+export function decode(json: string): Profile {
+  return JSON.parse(json)
+}

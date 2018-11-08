@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UtilService } from 'src/app/services/util.service';
-import { Salary } from 'src/app/models/salary.model';
+import { Salary, encode as encodeSalary, decode as decodeSalary } from 'src/app/models/salary.model';
 
 @Component({
   selector: 'app-salary-form',
