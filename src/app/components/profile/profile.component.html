@@ -54,7 +54,7 @@
         <ng-container *ngSwitchCase="StateKind.NotLoggedIn">
           <div fxLayout="row" fxLayoutAlign="center center">
             <h1 *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName.length == 0" style="margin-bottom: 0; font-style: italic; font-weight: bold;">Anonymous</h1>
-            <h1 *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName.length  > 0" style="margin-bottom: 0; font-weight: bold;">{{displayNameState.displayName }}</h1>
+            <h1 *ngIf="displayNameState.kind === 'loaded' && displayNameState.displayName.length  > 0" style="margin-bottom: 0;">{{displayNameState.displayName }}</h1>
           </div>
         </ng-container>
 
@@ -65,7 +65,7 @@
       </div>
     </mat-card>
     <div style="height: 8px"></div>
-    <app-trustees [profileDatArchive]="profileDatArchive"></app-trustees>
+    <app-trustees [profileDatArchive]="profileDatArchive" [isOwner]="state.kind === StateKind.LoggedInAndIsOwner"></app-trustees>
     <div style="height: 8px"></div>
   </div>
 
