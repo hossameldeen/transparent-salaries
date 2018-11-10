@@ -1,18 +1,25 @@
 <mat-card>
   <mat-card-title>Trusts</mat-card-title>
   <mat-card-content>
-    <mat-nav-list>
-      <mat-list-item *ngFor="let trustee of trustees">
-        <a matLine routerLink="/profile/{{trustee.datUrl.slice(6)}}">
-          <ng-container *ngIf="trustee.displayNameState.kind === 'loaded'">
-            <h2 *ngIf="trustee.displayNameState.displayName.length === 0" style="margin-bottom: 0; font-style: italic;">Anonymous</h2>
-            <h2 *ngIf="trustee.displayNameState.displayName.length > 0" style="margin-bottom: 0">{{trustee.displayNameState.displayName}}</h2>
-          </ng-container>
-          <span *ngIf="trustee.displayNameState.kind === 'loading'" style="font-style: italic; font-size: larger;">Loading...</span>
-          <span *ngIf="trustee.displayNameState.kind === 'errored'" style="font-style: italic; font-size: larger;">Couldn't retrieve :(</span>
-        </a>
-        <span matLine>{{utilService.shortenedDatUrl(trustee.datUrl)}}</span>
-      </mat-list-item>
-    </mat-nav-list>
+    <div fxLayout fxLayoutAlign="start center" *ngFor="let trustee of trustees; let index = index;">
+      <!-- TODO: yes, not so clean to make a navigation list like this, and possible not accessible. But that's the
+            TODO: only way I found to get the layout I wanted. If this website grows, I must change it. -->
+      <mat-nav-list fxFlex>
+        <mat-list-item>
+          <a matLine routerLink="/profile/{{trustee.dbRow.dbRowData.datUrl.slice(6)}}">
+            <ng-container *ngIf="trustee.displayNameState.kind === 'loaded'">
+              <h2 *ngIf="trustee.displayNameState.displayName.length === 0" style="margin-bottom: 0; font-style: italic;">Anonymous</h2>
+              <h2 *ngIf="trustee.displayNameState.displayName.length > 0" style="margin-bottom: 0">{{trustee.displayNameState.displayName}}</h2>
+            </ng-container>
+            <span *ngIf="trustee.displayNameState.kind === 'loading'" style="font-style: italic; font-size: larger;">Loading...</span>
+            <span *ngIf="trustee.displayNameState.kind === 'errored'" style="font-style: italic; font-size: larger;">Couldn't retrieve :(</span>
+          </a>
+          <span matLine>{{utilService.shortenedDatUrl(trustee.dbRow.dbRowData.datUrl)}}</span>
+        </mat-list-item>
+      </mat-nav-list>
+      <button *ngIf="isOwner" mat-icon-button color="accent" matTooltip="Untrust" (click)="removeTrustee(trustee, index)" [disabled]="trustee.removing">
+        <mat-icon>clear</mat-icon>
+      </button>
+    </div>
   </mat-card-content>
 </mat-card>
