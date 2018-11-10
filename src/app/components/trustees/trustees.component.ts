@@ -18,6 +18,7 @@ export class TrusteesComponent implements OnInit {
   @Input() isOwner: boolean;
 
   trustees: Array<TrusteeEntry>;
+  persistingNewTrustee: boolean;
 
   constructor(
     readonly utilService: UtilService,
@@ -45,16 +46,13 @@ export class TrusteesComponent implements OnInit {
           const trusteeObject: TrusteeEntry = { dbRow: ret.row, removing: false, displayNameState: { kind: "loading"} } // making it like that to use closures with mutability. Yuck!
 
           this.trustees.push(trusteeObject)
-          this.progressBarService.pushLoading()
           DatArchive.load(ret.row.dbRowData.datUrl)
             .then(trusteeArchive => this.dbService.readRow<Profile>(trusteeArchive, 'profiles', this.dbService.PROFILE_ROW_UUID, decodeProfile))
             .then(profileRow => {
               trusteeObject.displayNameState = { kind: 'loaded', displayName: profileRow.dbRowData.displayName }
-              this.progressBarService.popLoading()
             })
             .catch(e => {
               trusteeObject.displayNameState = { kind: 'errored', err: e }
-              this.progressBarService.popLoading()
             })
         }
         else {
@@ -68,6 +66,59 @@ export class TrusteesComponent implements OnInit {
       this.snackBar.open("Couldn't retrieve trustees from the profile. That's all I know :(", "Dismiss")
     }
     finally {
+      this.progressBarService.popLoading()
+    }
+  }
+
+  async addNewTrustee(datUrl: string) {
+    if (datUrl.startsWith('dat://')) {
+      datUrl = datUrl.substring(3 + 1 + 2)
+      if (datUrl.length < 64) {
+        this.snackBar.open(`The url you wrote is too short. It should start with "dat://" (without the quotes) followed by 64 characters. Perhaps you didn't paste all characters?`, "Dismiss")
+        return
+      }
+      datUrl = `dat://${datUrl.substring(0, 64)}`
+    }
+    else if (datUrl.length === 64) {
+      datUrl = `dat://${datUrl}`
+    }
+    else {
+      const profileIndex = datUrl.indexOf('profile/')
+      if (profileIndex === -1) {
+        this.snackBar.open('Failed to add trustee. Your input should start with "dat://" (without the quotes) followed by 64 characters.', "Dismiss")
+        return
+      }
+      datUrl = datUrl.substring(profileIndex + 7 + 1)
+      if (datUrl.length < 64) {
+        this.snackBar.open(`The url you wrote is too short. The profile identifier (the part after dat:// or profile/) must be 64 characters. Perhaps you didn't paste all characters?`, "Dismiss")
+        return
+      }
+      datUrl = `dat://${datUrl.substring(0, 64)}`
+    }
+
+    try {
+      this.progressBarService.pushLoading()
+      this.persistingNewTrustee = true
+
+      const trusteeDBRow = await this.dbService.putRow<Trustee>(this.profileDatArchive, 'trustees', new Trustee(datUrl), encodeTrustee)
+
+      const trusteeObject: TrusteeEntry = { dbRow: trusteeDBRow, removing: false, displayNameState: { kind: "loading"} } // making it like that to use closures with mutability. Yuck!
+
+      this.trustees.unshift(trusteeObject)
+      DatArchive.load(datUrl)
+        .then(trusteeArchive => this.dbService.readRow<Profile>(trusteeArchive, 'profiles', this.dbService.PROFILE_ROW_UUID, decodeProfile))
+        .then(profileRow => {
+          trusteeObject.displayNameState = { kind: 'loaded', displayName: profileRow.dbRowData.displayName }
+        })
+        .catch(e => {
+          trusteeObject.displayNameState = { kind: 'errored', err: e }
+        })
+    }
+    catch (e) {
+      this.snackBar.open("Couldn't add new trustee for some reason :(", "Dismiss")
+    }
+    finally {
+      this.persistingNewTrustee = false
       this.progressBarService.popLoading()
     }
   }
