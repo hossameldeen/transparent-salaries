@@ -65,7 +65,7 @@ export class OldMigrationService {
   }
 
   async idempotentCleanup(datArchive: DatArchive, version: string): Promise<void> {
-    const root = '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6';
+    const root = '07d5ccd35fbdd7c1d2e936f152cb858fa74df824cbf613c7b008e3587a4fa138';
     const baseDirComponents = [root, 'version', version];
     const baseDir = '/' + baseDirComponents.join('/');
 
@@ -100,7 +100,7 @@ export class OldMigrationService {
    * trustees/
    */
   async migrateNewArchiveTo545(datArchive: DatArchive): Promise<void> {
-    const root = '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6';
+    const root = '07d5ccd35fbdd7c1d2e936f152cb858fa74df824cbf613c7b008e3587a4fa138';
     const baseDirComponents = [root, 'version', '545'];
     const tablesNames = ['salaries', 'trustees'];
 
@@ -131,7 +131,7 @@ export class OldMigrationService {
    * migration-done-752
    */
   async migrate545To752(datArchive: DatArchive): Promise<void> {
-    const root = '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6';
+    const root = '07d5ccd35fbdd7c1d2e936f152cb858fa74df824cbf613c7b008e3587a4fa138';
     const baseDirComponents = [root, 'version', '752'];
     const newBaseDir = '/' + baseDirComponents.join('/');
     const oldBaseDir = '/' + [root, 'version', '545'].join('/');
@@ -158,7 +158,7 @@ export class OldMigrationService {
    * migration-done-753
    */
   async migrate752To753(datArchive: DatArchive): Promise<void> {
-    const root = '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6';
+    const root = '07d5ccd35fbdd7c1d2e936f152cb858fa74df824cbf613c7b008e3587a4fa138';
     const oldBaseDir = '/' + [root, 'version', '752'].join('/');
     const newBaseDir = '/' + [root, 'version', '753'].join('/');
     const profileRowUuid = 'profile';
@@ -190,7 +190,7 @@ export class OldMigrationService {
    * migration-done-754
    */
   async migrate753To754(datArchive: DatArchive): Promise<void> {
-    const root = '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6';
+    const root = '07d5ccd35fbdd7c1d2e936f152cb858fa74df824cbf613c7b008e3587a4fa138';
     const oldBaseDir = '/' + [root, 'version', '753'].join('/');
     const newBaseDir = '/' + [root, 'version', '754'].join('/');
     const profileRowUuid = 'profile';
@@ -225,7 +225,7 @@ export class OldMigrationService {
    * I.e., same as previous but just following the `current-version.json` pattern.
    */
   async migrate754To0(datArchive: DatArchive): Promise<void> {
-    const root = '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6';
+    const root = '07d5ccd35fbdd7c1d2e936f152cb858fa74df824cbf613c7b008e3587a4fa138';
     const oldBaseDir = '/' + [root, 'version', '754'].join('/');
     const newBaseDir = '/' + [root, 'version', '0'].join('/');
 
@@ -246,7 +246,7 @@ export class OldMigrationService {
   }
 
   async check545(datArchive: DatArchive): Promise<boolean> {
-    const root = '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6';
+    const root = '07d5ccd35fbdd7c1d2e936f152cb858fa74df824cbf613c7b008e3587a4fa138';
     const baseDirComponents = [root, 'version', '545'];
     const tablesNames = ['salaries', 'trustees'];
     let base = '';
@@ -262,7 +262,7 @@ export class OldMigrationService {
   }
 
   async check752(datArchive: DatArchive): Promise<boolean> {
-    const root = '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6';
+    const root = '07d5ccd35fbdd7c1d2e936f152cb858fa74df824cbf613c7b008e3587a4fa138';
     const baseDirComponents = [root, 'version', '752'];
     const baseDir = '/' + baseDirComponents.join('/');
     const tablesNames = ['salaries', 'trustees'];
@@ -279,7 +279,7 @@ export class OldMigrationService {
   }
 
   async check753(datArchive: DatArchive): Promise<boolean> {
-    const root = '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6';
+    const root = '07d5ccd35fbdd7c1d2e936f152cb858fa74df824cbf613c7b008e3587a4fa138';
     const baseDirComponents = [root, 'version', '753'];
     const baseDir = '/' + baseDirComponents.join('/');
     const tablesNames = ['salaries', 'trustees', 'profiles'];
@@ -299,7 +299,7 @@ export class OldMigrationService {
   }
 
   async check754(datArchive: DatArchive): Promise<boolean> {
-    const root = '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6';
+    const root = '07d5ccd35fbdd7c1d2e936f152cb858fa74df824cbf613c7b008e3587a4fa138';
     const baseDirComponents = [root, 'version', '754'];
     const baseDir = '/' + baseDirComponents.join('/');
     const tablesNames = ['salaries', 'trustees', 'profiles'];
@@ -319,7 +319,7 @@ export class OldMigrationService {
   }
 
   async check0(datArchive: DatArchive): Promise<boolean> {
-    const root = '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6';
+    const root = '07d5ccd35fbdd7c1d2e936f152cb858fa74df824cbf613c7b008e3587a4fa138';
     const baseDirComponents = [root, 'version', '0'];
     const baseDir = '/' + baseDirComponents.join('/');
     const baseDirUpToVersion = '/' + [root, 'version'].join('/');

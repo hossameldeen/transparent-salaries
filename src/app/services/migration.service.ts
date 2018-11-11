@@ -25,7 +25,7 @@ export class MigrationService {
 
   private readonly migrations: Array<Migration>;
 
-  private readonly PUB_KEY = '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6'
+  private readonly PUB_KEY = '07d5ccd35fbdd7c1d2e936f152cb858fa74df824cbf613c7b008e3587a4fa138'
   private readonly VERSION = 'version';
   private readonly CURRENT_VERSION = 'current-version';
 

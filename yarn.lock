@@ -918,6 +918,13 @@ atob@^2.1.1:
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
+atocha@^1.0.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/atocha/-/atocha-1.1.1.tgz#510b7b24530c971a865041b76155c15a6b94c00f"
+  integrity sha512-Y1iX2ma0EWkLV+F2oWFpLSwyRPYHfpX7SX2C0ojb9pFQnZvN0PahKKHRMNlt3muA8WDA6jiJ9/yJ9Z1xP+ehhg==
+  dependencies:
+    magic-promises "^1.2.0"
+
 autoprefixer@8.4.1:
   version "8.4.1"
   resolved "https://registry.yarnpkg.com/autoprefixer/-/autoprefixer-8.4.1.tgz#c6b30001ea4b3daa6b611e50071f62dd24beb564"
@@ -2907,6 +2914,14 @@ fs-access@^1.0.0:
   dependencies:
     null-check "^1.0.0"
 
+fs-array@^2.2.1:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/fs-array/-/fs-array-2.5.1.tgz#9ee34de8975910add26f4da85e84c55f755a9b6a"
+  integrity sha512-32QFKSaJ43MmWQ4Ws3h4T9vlMFhYveTyJkf5UT8f8UMHnV0yic4YSx04rgztSt/I8if/z5gVRlcX0+uF6LQb1w==
+  dependencies:
+    atocha "^1.0.1"
+    magic-promises "^1.2.0"
+
 fs-constants@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/fs-constants/-/fs-constants-1.0.0.tgz#6be0de9be998ce16af8afc24497b9ee9b7ccd9ad"
@@ -4167,6 +4182,15 @@ lcid@^2.0.0:
   dependencies:
     invert-kv "^2.0.0"
 
+legally@3.3.7:
+  version "3.3.7"
+  resolved "https://registry.yarnpkg.com/legally/-/legally-3.3.7.tgz#e8486af01fbdb50c38deff47a9c5d0cf2227b1f2"
+  integrity sha512-eA6EKF1y/azl5qgXDwpvdCfUpUDLz2c8nz/RFGru2QxB3/P8U3aCmlr8xuc9M1VGfrpVZKtSdN0fAHj/9ja/dQ==
+  dependencies:
+    fs-array "^2.2.1"
+    minimist "^1.2.0"
+    validate-npm-package-name "^3.0.0"
+
 less-loader@4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/less-loader/-/less-loader-4.1.0.tgz#2c1352c5b09a4f84101490274fd51674de41363e"
@@ -4451,6 +4475,11 @@ ltgt@^2.1.2:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/ltgt/-/ltgt-2.2.1.tgz#f35ca91c493f7b73da0e07495304f17b31f87ee5"
   integrity sha1-81ypHEk/e3PaDgdJUwTxezH4fuU=
+
+magic-promises@^1.2.0:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/magic-promises/-/magic-promises-1.2.3.tgz#4aab00af34dc2db1a875a37b007c2e9ada6c1d4b"
+  integrity sha512-hkeL5QUPCnVDgGj3dIh/pSYA32obxfqzvY7bl15Tt7u7rqdAfUcMnQ5dB7R7+rs7JxPA4GGTnfd6BIZsY3COgw==
 
 magic-string@^0.25.0:
   version "0.25.1"

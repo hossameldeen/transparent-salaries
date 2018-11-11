@@ -1,47 +1,82 @@
-# Salary Transparency
+# Transparent Salaries
 
 A Beaker-browser website for sharing salaries.
 
-**Still work in progress, including the README**
+## Processes
 
-## Development setup
-
-### Prerequisites
+### Development setup
 
 - Install [Yarn](https://yarnpkg.com).
 - Install [Beaker Browser](https://beakerbrowser.com/).
-- Create an empty Beaker-browser website.
-- Set its local directory to `<some-path>`.
-- In its `dat.json`, add `"fallback_page": "/index.html"`
+- Install [WebStorm](https://www.jetbrains.com/webstorm/). Yup, costs money. You could [VSCode](https://code.visualstudio.com/) if you want. I'm just using basic [Angular](https://angular.io/) stuff.
+- In WebStorm: `Checkout from Version Control` the project (or `Open` if you've already cloned it).
+- In WebStorm: View menu -> Tool Windows -> mark Version Control.
+- In WebStorm: Disable TSLint (TODO: re-enable it one day isA).
+- Run `yarn install`.
 
 ### Auto-reload
 
-You can have auto build & reload on changes. However, it'll keep whole files between each change, so it'll take a lot of disk space. So, use in a throw-away Beaker-browser website.
+- In the project root, run `yarn run start`.
+- In Beaker Browser, open `localhost:4200`
 
-- In the project root, run `yarn install`.
-- In the project root, run `yarn run watch --output-path=<some-path>`.
-- In Beaker Browser, from the menu: open `Library`. Go to the website you've created. Open its url from the topright.
-- From the 3 dots in the url bar, `Toggle live reloading`.
-
-Note#1: This doesn't delete unused old output files. But it's okay, that's good enough for now since it doesn't affect the behaviour.  
-Note#2: This doesn't use production mode.
+Note: I used to `yarn run build --watch --delete-output-path=false --output-path=<some-beaker-project-path>` because I'd thought `DatArchive` wasn't available to http pages.
 
 ### Deploy
 
-**TODO: Not done yet!!! Currently only dev mode is supported.**
+#### Preqrequisites if deploying under a new dat
 
+**Project setup:**
+- Create a new project.
+- Make sure `dat.json`'s main content:
+```
+{
+  "title": "Transparent Salaries",
+  "fallback_page": "/index.html"
+}
+```
+**Public-key migration:**
+- Let public key of the newly-created dat be `pub_key`.
+- Let `MigrationService.PUB_KEY` be `old_pub_key`.
+- In WebStorm, Ctrl+Shift+R `old_pub_key` -> `pub_key`. (not the words `pub_key`, I mean the values).
+- Run ``grep -ir --exclude-dir=node_modules `old_pub_key` `` to make sure there're no missing instances for any reason. (Credit: [SO answer](https://stackoverflow.com/a/49251979/6690391)).
+
+#### Steps
+
+- Go through the checklist below.
 - In the project root, run `yarn install`.
 - In the project root, run `yarn run build --prod`. **Don't forget the `--prod`!**
-- Manually copy the build artifacts under `dist/salary-transparency` to `<some-path>`.
-- In Beaker Browser, from the menu: open `Library`. Go to the website you've created. Open its url from the topright.
+- Make sure preview mode is on on your website.
+- Delete all old files except `dat.json` and `dat.ignore`.
+- Copy-paste all files.
+- Check & publish.
 
-### IDE
+#### Checklist
 
-You can use any IDE, but I'm using Visual Studio Code. I'm also using [Local History extension](https://marketplace.visualstudio.com/items?itemName=xyz.local-history).
+- Check 3rd-party licenses. (See Process: Check licenses).
+- Make sure all credits are respected if they are not licenseable. E.g., fair-use design inspiration.
 
-Update: I'm using WebStorm. Not perfect, but much _much_ better, and I'm happier.
+### Check licenses
 
-## Docs
+- Run `yarn run legally > legally-output` (because the output is so big for terminal buffer).
+- If there're copyleft licenses (e.g., _GPL_), Ctrl+F and see if the packages are licensed under other licenses.
+- If there're packages without licenses, put the code below in a file `temp.js`. run it, and check each package manually:
+```javascript
+const legally = require('legally');
+
+var done = (function wait () { if (!done) setTimeout(wait, 1000) })();
+
+(async () => {
+  const licenses = await legally();
+  for (packageName in licenses) {
+    const lo = licenses[packageName];
+    if (lo.package.length === 0 && lo.copying.length === 0 && lo.readme.length === 0)
+      console.log(packageName, lo);
+  }
+  done = true;
+})();
+```
+
+## Code Structure
 
 You're, obviously, using [Angular Framework](https://angular.io/). You're also using [Angular Material](https://material.angular.io) and [Angular Flex-layout](https://github.com/angular/flex-layout/wiki/Declarative-API-Overview).
 
