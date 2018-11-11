@@ -6,7 +6,7 @@ import {MigrationService} from './migration.service';
 /**
  * A wrapper around a profile dat archive that is used as a JSON database.
  *
- * Anything written in the archive is written under '60c4a43ee4ce74eea9faf6c4a4b8de8b50da0b3322fb27f6bc5f76b633762ad6', the pub-key of the
+ * Anything written in the archive is written under '07d5ccd35fbdd7c1d2e936f152cb858fa74df824cbf613c7b008e3587a4fa138', the pub-key of the
  * application to make sure no conflicts happen with other applications.
  *
  * All current design files are under `<pub_key>/version/`.
