@@ -35,7 +35,7 @@ export class ProfileService {
 
   async createProfile() {
     const profile = await UtilService.datArchiveCreate({
-      title: `Salary-Transparency Profile: <Replace with profile name>`,
+      title: `Transparent-Salaries Profile: <Replace with profile name>`,
       buttonLabel: 'Select profile',
       filters: {
         isOwner: true

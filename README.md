@@ -1,4 +1,4 @@
-# Salary Transparency
+# Transparent Salaries
 
 A Beaker-browser website for sharing salaries.
 
@@ -9,6 +9,7 @@ A Beaker-browser website for sharing salaries.
 - Install [Yarn](https://yarnpkg.com).
 - Install [Beaker Browser](https://beakerbrowser.com/).
 - Install [WebStorm](https://www.jetbrains.com/webstorm/). Yup, costs money. You could [VSCode](https://code.visualstudio.com/) if you want. I'm just using basic [Angular](https://angular.io/) stuff.
+- In WebStorm: View menu -> Tool Windows -> mark Version Control.
 
 ### Auto-reload
 
@@ -34,7 +35,7 @@ Note: I used to `yarn run build --watch --delete-output-path=false --output-path
 - Let public key of the newly-created dat be `pub_key`.
 - Let `MigrationService.PUB_KEY` be `old_pub_key`.
 - In WebStorm, Ctrl+Shift+R `old_pub_key` -> `pub_key`. (not the words `pub_key`, I mean the values).
-- Run ``grep -ir `old_pub_key` `` to make sure there're no missing instances for any reason. (Credit: [SO answer](https://stackoverflow.com/a/49251979/6690391)).
+- Run ``grep -ir --exclude-dir=node_modules `old_pub_key` `` to make sure there're no missing instances for any reason. (Credit: [SO answer](https://stackoverflow.com/a/49251979/6690391)).
 
 #### Steps
 
