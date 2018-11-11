@@ -34,7 +34,7 @@ Note: I used to `yarn run build --watch --delete-output-path=false --output-path
 - Let public key of the newly-created dat be `pub_key`.
 - Let `MigrationService.PUB_KEY` be `old_pub_key`.
 - In WebStorm, Ctrl+Shift+R `old_pub_key` -> `pub_key`. (not the words `pub_key`, I mean the values).
-- Run ``find -ir `old_pub_key` `` to make sure there're no missing instances for any reason. (Credit: [SO answer](https://stackoverflow.com/a/49251979/6690391)).
+- Run ``grep -ir `old_pub_key` `` to make sure there're no missing instances for any reason. (Credit: [SO answer](https://stackoverflow.com/a/49251979/6690391)).
 
 #### Steps
 
