@@ -31,7 +31,8 @@ export class AppComponent implements OnDestroy {
     this.displayNameWatchClose = null
     this.retrieveDisplayNameAndWatch()  // fire and forget
     this.stateSubjectSubscription = this.profileService.stateSubject.subscribe(() => this.retrieveDisplayNameAndWatch())
-    // TODO: The setTimeout is to make it async because Subject's next() is sync. However, are multiple setTimeout(s) guaranteed to be ordered?
+    // The setTimeout is to make it async because Subject's next() is sync. The order will be preserved.
+    // See: https://stackoverflow.com/questions/53244909/execution-order-of-multiple-settimeout-without-delays-in-angular/53244931#comment93375277_53244931
     this.showProgressBarSubjectSubscription = progressBarService.showProgressBarSubject.subscribe(showProgressBar => setTimeout(() => this.showProgressBar = showProgressBar))
   }
 
