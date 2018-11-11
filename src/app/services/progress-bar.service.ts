@@ -1,17 +1,27 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject} from 'rxjs';
 
 /**
  * TODO: technical debt. What if a caller forgets to call `loadingFinished()`, for example, due to an exception thrown?
+ * Probably should create this function:
+ * wrapLoading(cb) {
+ *     this.pushLoading()
+ *     try {
+ *         cb()
+ *     }
+ *     catch(e) {
+ *         this.popLoading()
+ *         throw e
+ *     }
+ *     this.popLoading()
+ * }
  */
 @Injectable({
   providedIn: 'root'
 })
 export class ProgressBarService {
 
-  /**
-   * TODO: Exposing the variable like that has a bad side: a component/caller could mistakenly change it :(
-   */
-  showProgressBar: boolean = false;
+  showProgressBarSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   private ctr = 0;
 
@@ -19,11 +29,11 @@ export class ProgressBarService {
 
   pushLoading() {
     if (this.ctr++ === 0)
-      this.showProgressBar = true
+      this.showProgressBarSubject.next(true)
   }
 
   popLoading() {
     if (--this.ctr === 0)
-      this.showProgressBar = false
+      this.showProgressBarSubject.next(false)
   }
 }

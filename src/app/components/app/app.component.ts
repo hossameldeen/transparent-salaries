@@ -18,18 +18,21 @@ export class AppComponent implements OnDestroy {
   displayNameWatchClose: null | (() => void);
   displayNameState: { kind: "loading" } | { kind: "loaded", displayName: string } | { kind: "errored", err: any }; // Not worth making as separate classes & enums
   stateSubjectSubscription: Subscription;
+  showProgressBarSubjectSubscription: Subscription;
 
   constructor(
     readonly sanitizer: DomSanitizer,
-    readonly dbService: DBService,
+    private readonly dbService: DBService,
     readonly profileService: ProfileService,
-    readonly progressBarService: ProgressBarService,
-    readonly snackBar: MatSnackBar
+    private readonly progressBarService: ProgressBarService,
+    private readonly snackBar: MatSnackBar
   ) {
     this.displayNameState = { kind: "loading" }
     this.displayNameWatchClose = null
     this.retrieveDisplayNameAndWatch()  // fire and forget
     this.stateSubjectSubscription = this.profileService.stateSubject.subscribe(() => this.retrieveDisplayNameAndWatch())
+    // TODO: The setTimeout is to make it async because Subject's next() is sync. However, are multiple setTimeout(s) guaranteed to be ordered?
+    this.showProgressBarSubjectSubscription = progressBarService.showProgressBarSubject.subscribe(showProgressBar => setTimeout(() => this.showProgressBar = showProgressBar))
   }
 
   loadedCast(displayNameState): { kind: "loaded", displayName: string } {
@@ -80,5 +83,6 @@ export class AppComponent implements OnDestroy {
 
   ngOnDestroy() {
     this.stateSubjectSubscription.unsubscribe()
+    this.showProgressBarSubjectSubscription.unsubscribe()
   }
 }
