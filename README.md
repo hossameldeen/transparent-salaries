@@ -9,7 +9,10 @@ A Beaker-browser website for sharing salaries.
 - Install [Yarn](https://yarnpkg.com).
 - Install [Beaker Browser](https://beakerbrowser.com/).
 - Install [WebStorm](https://www.jetbrains.com/webstorm/). Yup, costs money. You could [VSCode](https://code.visualstudio.com/) if you want. I'm just using basic [Angular](https://angular.io/) stuff.
+- In WebStorm: `Checkout from Version Control` the project (or `Open` if you've already cloned it).
 - In WebStorm: View menu -> Tool Windows -> mark Version Control.
+- In WebStorm: Disable TSLint (TODO: re-enable it one day isA).
+- Run `yarn install`.
 
 ### Auto-reload
 
@@ -39,12 +42,39 @@ Note: I used to `yarn run build --watch --delete-output-path=false --output-path
 
 #### Steps
 
+- Go through the checklist below.
 - In the project root, run `yarn install`.
 - In the project root, run `yarn run build --prod`. **Don't forget the `--prod`!**
 - Make sure preview mode is on on your website.
 - Delete all old files except `dat.json` and `dat.ignore`.
 - Copy-paste all files.
 - Check & publish.
+
+#### Checklist
+
+- Check 3rd-party licenses. (See Process: Check licenses).
+- Make sure all credits are respected if they are not licenseable. E.g., fair-use design inspiration.
+
+### Check licenses
+
+- Run `yarn run legally > legally-output` (because the output is so big for terminal buffer).
+- If there're copyleft licenses (e.g., _GPL_), Ctrl+F and see if the packages are licensed under other licenses.
+- If there're packages without licenses, put the code below in a file `temp.js`. run it, and check each package manually:
+```javascript
+const legally = require('legally');
+
+var done = (function wait () { if (!done) setTimeout(wait, 1000) })();
+
+(async () => {
+  const licenses = await legally();
+  for (packageName in licenses) {
+    const lo = licenses[packageName];
+    if (lo.package.length === 0 && lo.copying.length === 0 && lo.readme.length === 0)
+      console.log(packageName, lo);
+  }
+  done = true;
+})();
+```
 
 ## Code Structure
 
