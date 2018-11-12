@@ -1,7 +1,7 @@
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { RouteReuseStrategy, RouterModule, Routes } from '@angular/router';
 import { MatButtonModule, MatCardModule, MatTabsModule, MatInputModule, MatFormFieldModule, MatToolbarModule, MatTableModule, MatIconModule, MatTooltipModule, MatDividerModule, MatSnackBarModule, MatProgressBarModule, MatProgressSpinnerModule, MatListModule } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
@@ -15,6 +15,7 @@ import { NotFoundPageComponent } from './components/not-found-page/not-found-pag
 import { AppInitComponent } from './components/app-init/app-init.component';
 import { TrusteesComponent } from './components/trustees/trustees.component';
 import { SalaryFormComponent } from './components/salary-form/salary-form.component';
+import { DisableRouteReuseStrategy } from './misc/disable-route-reuse-strategy';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -55,7 +56,9 @@ const routes: Routes = [
     MatListModule,
     RouterModule.forRoot(routes)
   ],
-  providers: [],
+  providers: [
+    { provide: RouteReuseStrategy, useClass: DisableRouteReuseStrategy }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
