@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {AppInitStatus, ProfileService} from 'src/app/services/profile.service';
 
 @Component({
@@ -13,8 +13,7 @@ export class ProfilePageComponent {
 
   constructor(
     readonly profileService: ProfileService,
-    route: ActivatedRoute,
-    private readonly router: Router
+    route: ActivatedRoute
   ) {
     const datPK = route.snapshot.paramMap.get('datPK')
     this.profileDatArchive = new DatArchive(`dat://${datPK}`)
