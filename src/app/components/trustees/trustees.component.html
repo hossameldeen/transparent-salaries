@@ -30,7 +30,9 @@
           <span *ngIf="trustee.displayNameState.kind === 'loading'" style="font-style: italic; font-size: larger;">Loading...</span>
           <span *ngIf="trustee.displayNameState.kind === 'errored'" style="font-style: italic; font-size: larger;">Couldn't retrieve :(</span>
         </a>
-        <span matLine>{{utilService.shortenedDatUrl(trustee.dbRow.dbRowData.datUrl)}}</span>
+        <a matLine routerLink="/profile/{{trustee.dbRow.dbRowData.datUrl.slice(6)}}">
+          <span>{{utilService.shortenedDatUrl(trustee.dbRow.dbRowData.datUrl)}}</span>
+        </a>
       </mat-list-item>
     </mat-nav-list>
     <button *ngIf="isOwner" mat-icon-button color="accent" matTooltip="Untrust" (click)="removeTrustee(trustee, index)" [disabled]="trustee.removing">
