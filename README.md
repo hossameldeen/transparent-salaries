@@ -48,7 +48,8 @@ Note: I used to `yarn run build --watch --delete-output-path=false --output-path
 - Make sure preview mode is on on your website.
 - Delete all old files except `dat.json` and `dat.ignore`.
 - Copy-paste all files.
-- Check & publish.
+- Test.
+- Publish.
 
 #### Checklist
 
