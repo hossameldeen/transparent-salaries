@@ -1,8 +1,9 @@
 <mat-progress-bar mode="indeterminate" *ngIf="showProgressBar" style="position: fixed; z-index: 1;"></mat-progress-bar>
 <div fxLayout="column">
   <mat-toolbar fxLayout="row wrap" fxLayoutAlign="start center" color="primary" class="mat-elevation-z6">
-    <!-- TODO: Rename the project to `Transparent Salaries`-->
-    <span>Transparent Salaries</span>
+    <a routerLink="/" style="text-decoration: none; color: inherit;">
+      <span>Transparent Salaries</span>
+    </a>
     <div fxFlex="2vw"></div>
     <span fxFlex></span>
     <div fxFlex="2vw"></div>
@@ -13,8 +14,10 @@
         <button mat-raised-button (click)="profileService.createProfile()">Create a new profile</button>
       </ng-container>
       <ng-container *ngSwitchCase="ProfileStateKind.ProfileSelected">
-        <span *ngIf="displayNameState.kind === 'loaded' && loadedCast(displayNameState).displayName.length == 0" style="font-style: italic; font-weight: bold;">Anonymous</span>
-        <span *ngIf="displayNameState.kind === 'loaded' && loadedCast(displayNameState).displayName.length  > 0">{{loadedCast(displayNameState).displayName}}</span>
+        <a routerLink="/profile/{{profileService.stateSubject.value.datArchive.url.slice(6)}}" style="text-decoration: none; color: inherit;">
+          <span *ngIf="displayNameState.kind === 'loaded' && loadedCast(displayNameState).displayName.length == 0" style="font-style: italic; font-weight: bold;">Anonymous</span>
+          <span *ngIf="displayNameState.kind === 'loaded' && loadedCast(displayNameState).displayName.length  > 0">{{loadedCast(displayNameState).displayName}}</span>
+        </a>
         <a mat-button [href]="sanitizer.bypassSecurityTrustUrl(profileService.stateSubject.value.datArchive.url)">{{profileService.stateSubject.value.datArchive.url.slice(0, 12)}}..{{profileService.stateSubject.value.datArchive.url.slice(-2)}}/</a>
         <button mat-stroked-button (click)="profileService.logout()">Logout</button>
       </ng-container>
