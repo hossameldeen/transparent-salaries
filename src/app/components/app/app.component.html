@@ -4,6 +4,10 @@
     <a routerLink="/" style="text-decoration: none; color: inherit;">
       <span>Transparent Salaries</span>
     </a>
+    <div fxFlex="1vw"></div>
+    <a mat-raised-button routerLink="/buy">
+      <span>Buy now!</span>
+    </a>
     <a mat-button routerLink="/credits">
       <span>Credits</span>
     </a>
@@ -21,7 +25,7 @@
           <span *ngIf="displayNameState.kind === 'loaded' && loadedCast(displayNameState).displayName.length == 0" style="font-style: italic; font-weight: bold;">Anonymous</span>
           <span *ngIf="displayNameState.kind === 'loaded' && loadedCast(displayNameState).displayName.length  > 0">{{loadedCast(displayNameState).displayName}}</span>
         </a>
-        <a mat-button [href]="sanitizer.bypassSecurityTrustUrl(profileService.stateSubject.value.datArchive.url)">{{profileService.stateSubject.value.datArchive.url.slice(0, 12)}}..{{profileService.stateSubject.value.datArchive.url.slice(-2)}}/</a>
+        <a mat-button target="_blank" rel="noopener noreferrer" [href]="sanitizer.bypassSecurityTrustUrl(profileService.stateSubject.value.datArchive.url)">{{profileService.stateSubject.value.datArchive.url.slice(0, 12)}}..{{profileService.stateSubject.value.datArchive.url.slice(-2)}}/</a>
         <button mat-stroked-button (click)="profileService.logout()">Logout</button>
       </ng-container>
     </ng-container>

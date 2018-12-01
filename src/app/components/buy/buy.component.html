@@ -1,0 +1,17 @@
+<div fxLayout="column">
+  <div fxFlex="5vw"></div>
+  <div fxLayoutAlign="center">
+    <mat-card fxLayout="column" fxLayoutAlign="start center">
+      <!-- TODO: The default font is better for this part (i.e., by commenting Roboto font in index.html). -->
+      <h1 style="font-family: unset;">Buy through <a target="_blank" rel="noopener noreferrer" href="https://gumroad.com/l/gDDIe">Gumroad</a></h1>
+      <a target="_blank" rel="noopener noreferrer" href="https://gumroad.com/l/gDDIe" mat-raised-button color="accent" style="margin-bottom: 16px;">Go to Gumroad</a>
+      <mat-divider [inset]="true"></mat-divider>
+      <h3 style="font-family: unset; margin-top: 8px; margin-bottom: 0">Already bought a license?</h3>
+      <mat-form-field fxFlexAlign="start" style="width: 100%; min-width: 40ch">
+        <input matInput placeholder="Enter license key here" minlength="35" maxlength="35">
+        <mat-hint>Example: XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX</mat-hint>
+      </mat-form-field>
+    </mat-card>
+  </div>
+  <div fxFlex="5vw"></div>
+</div>

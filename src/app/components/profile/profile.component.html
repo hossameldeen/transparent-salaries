@@ -77,7 +77,7 @@
         </ng-container>
 
         <div fxLayout="row" fxLayoutAlign="center">
-          <h3 fxFlexAlign="center" style="margin-bottom: 0;">(<a [href]="sanitizer.bypassSecurityTrustUrl(profileDatArchive.url)">{{utilService.shortenedDatUrl(profileDatArchive.url)}}</a>)</h3>
+          <h3 fxFlexAlign="center" style="margin-bottom: 0;">(<a target="_blank" rel="noopener noreferrer" [href]="sanitizer.bypassSecurityTrustUrl(profileDatArchive.url)">{{utilService.shortenedDatUrl(profileDatArchive.url)}}</a>)</h3>
         </div>
       </mat-card>
       <div style="height: 8px"></div>

@@ -17,10 +17,12 @@ import { TrusteesComponent } from './components/trustees/trustees.component';
 import { SalaryFormComponent } from './components/salary-form/salary-form.component';
 import { DisableRouteReuseStrategy } from './misc/disable-route-reuse-strategy';
 import { CreditsComponent } from './components/credits/credits.component';
+import { BuyComponent } from './components/buy/buy.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
   { path: 'credits', component: CreditsComponent }, // Not making a `CreditsPageComponent` because it'd be trivial
+  { path: 'buy', component: BuyComponent }, // Not making a `BuyPageComponent` because it'd be trivial
   { path: 'profile/:datPK', component: ProfilePageComponent },
   { path: '**', component: NotFoundPageComponent } // TODO: is `pathMatch: 'full'` needed?
 ]
@@ -37,7 +39,8 @@ const routes: Routes = [
     AppInitComponent,
     TrusteesComponent,
     SalaryFormComponent,
-    CreditsComponent
+    CreditsComponent,
+    BuyComponent
   ],
   imports: [
     BrowserModule,
