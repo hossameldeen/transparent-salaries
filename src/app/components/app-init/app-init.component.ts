@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {ProfileService, AppInitStatus} from 'src/app/services/profile.service';
+import {AppInitService, AppInitStatus} from 'src/app/services/app-init.service';
 
 @Component({
   selector: 'app-app-init',
@@ -7,8 +7,8 @@ import {ProfileService, AppInitStatus} from 'src/app/services/profile.service';
 })
 export class AppInitComponent {
 
-  AppInitStatus = AppInitStatus;  // To be available in the html
+  AppInitStatus = AppInitStatus;  // to be available in the html
 
-  constructor(readonly profileService: ProfileService) { }
+  constructor(readonly appInitService: AppInitService) { }
 
 }

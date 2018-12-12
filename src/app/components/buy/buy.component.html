@@ -1,17 +1,73 @@
-<div fxLayout="column">
-  <div fxFlex="5vw"></div>
-  <div fxLayoutAlign="center">
-    <mat-card fxLayout="column" fxLayoutAlign="start center">
-      <!-- TODO: The default font is better for this part (i.e., by commenting Roboto font in index.html). -->
-      <h1 style="font-family: unset;">Buy through <a target="_blank" rel="noopener noreferrer" href="https://gumroad.com/l/gDDIe">Gumroad</a></h1>
-      <a target="_blank" rel="noopener noreferrer" href="https://gumroad.com/l/gDDIe" mat-raised-button color="accent" style="margin-bottom: 16px;">Go to Gumroad</a>
-      <mat-divider [inset]="true"></mat-divider>
-      <h3 style="font-family: unset; margin-top: 8px; margin-bottom: 0">Already bought a license?</h3>
-      <mat-form-field fxFlexAlign="start" style="width: 100%; min-width: 40ch">
-        <input matInput placeholder="Enter license key here" minlength="35" maxlength="35">
-        <mat-hint>Example: XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX</mat-hint>
-      </mat-form-field>
-    </mat-card>
-  </div>
-  <div fxFlex="5vw"></div>
-</div>
+<ng-container [ngSwitch]="appInitService.appInitStatus">
+  <ng-container *ngSwitchCase="AppInitStatus.Succeeded">
+    <div fxLayout="column">
+      <div fxFlex="5vw"></div>
+      <div fxLayoutAlign="center">
+        <mat-card fxLayout="column" fxLayoutAlign="start center">
+
+          <ng-container *ngIf="licenseKeyService.stateSubject.value.kind === LicenseKeyStateKind.NotEntered">
+            <!-- TODO: The default font is better for this part (i.e., by commenting Roboto font in index.html). -->
+            <h1 style="font-family: unset;">Buy through <a target="_blank" rel="noopener noreferrer" href="https://gumroad.com/l/gDDIe">Gumroad</a></h1>
+            <a target="_blank" rel="noopener noreferrer" href="https://gumroad.com/l/gDDIe" mat-raised-button color="accent" style="margin-bottom: 16px;">Go to Gumroad</a>
+            <mat-divider [inset]="true"></mat-divider>
+            <h3 style="font-family: unset; margin-top: 8px; margin-bottom: 0">Already bought a license?</h3>
+            <mat-form-field fxFlexAlign="start" style="width: 100%; min-width: 40ch; margin-bottom: 8px">
+              <input matInput placeholder="Enter license key here" minlength="35" maxlength="35" #licenseKeyInput>
+              <mat-hint>Example: XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX</mat-hint>
+            </mat-form-field>
+            <div fxFlexAlign="start" fxLayout="row wrap">
+              <button fxFlexAlign="start" mat-stroked-button color="primary" (click)="enterLicenseKey(licenseKeyInput.value)">Use license key</button>
+              <mat-progress-spinner *ngIf="verifyingLicenseKey"></mat-progress-spinner>
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="licenseKeyService.stateSubject.value.kind === LicenseKeyStateKind.Entered">
+            <!-- TODO: The default font is better for this part (i.e., by commenting Roboto font in index.html). -->
+            <ng-container *ngIf="licenseKeyService.haveTwoDaysPassed(asEntered(licenseKeyService.stateSubject.value))">
+              <h3 fxFlexAlign="start" style="font-family: unset; margin-bottom: 0">Couldn't verify license key and more than 2 days have passed.</h3>
+              <h3 fxFlexAlign="start" style="font-family: unset;">Please, make sure to enter a correct license key, or contact Hossam El-Deen if you think something is not right.</h3>
+            </ng-container>
+            <ng-container *ngIf="!licenseKeyService.haveTwoDaysPassed(asEntered(licenseKeyService.stateSubject.value))">
+              <h3 fxFlexAlign="start" style="font-family: unset; margin-bottom: 0">License key is still being verified.</h3>
+              <h3 fxFlexAlign="start" style="font-family: unset;">It takes two days to verify since you've entered the license key.</h3>
+            </ng-container>
+            <h3 fxFlexAlign="start" style="font-family: unset;">License key: {{asVerified(licenseKeyService.stateSubject.value).licenseKey}}</h3>
+            <h3 fxFlexAlign="start" style="font-family: unset;">Product page on <a target="_blank" rel="noopener noreferrer" href="https://gumroad.com/l/gDDIe">Gumroad</a></h3>
+            <a target="_blank" rel="noopener noreferrer" href="https://gumroad.com/l/gDDIe" fxFlexAlign="start" mat-raised-button color="accent" style="margin-bottom: 16px;">Go to Gumroad</a>
+            <mat-divider [inset]="true"></mat-divider>
+            <h3 style="font-family: unset; margin-top: 8px; margin-bottom: 0">Want to use another license key?</h3>
+            <mat-form-field fxFlexAlign="start" style="width: 100%; min-width: 40ch; margin-bottom: 8px">
+              <input matInput placeholder="Enter license key here" minlength="35" maxlength="35" #licenseKeyInput>
+              <mat-hint>Example: XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX</mat-hint>
+            </mat-form-field>
+            <div fxLayout="row wrap">
+              <button fxFlexAlign="start" mat-stroked-button color="primary" (click)="enterLicenseKey(licenseKeyInput.value)">Use license key</button>
+              <mat-progress-spinner *ngIf="verifyingLicenseKey"></mat-progress-spinner>
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="licenseKeyService.stateSubject.value.kind === LicenseKeyStateKind.Verified">
+            <!-- TODO: The default font is better for this part (i.e., by commenting Roboto font in index.html). -->
+            <h1 style="font-family: unset;">Thank you for buying!</h1>
+            <h3 fxFlexAlign="start" style="font-family: unset;">License key: {{asVerified(licenseKeyService.stateSubject.value).licenseKey}}</h3>
+            <h3 fxFlexAlign="start" style="font-family: unset;">Product page on <a target="_blank" rel="noopener noreferrer" href="https://gumroad.com/l/gDDIe">Gumroad</a></h3>
+            <a target="_blank" rel="noopener noreferrer" href="https://gumroad.com/l/gDDIe" fxFlexAlign="start" mat-raised-button color="accent" style="margin-bottom: 16px;">Go to Gumroad</a>
+            <mat-divider [inset]="true"></mat-divider>
+            <h3 style="font-family: unset; margin-top: 8px; margin-bottom: 0">Want to use another license key?</h3>
+            <mat-form-field fxFlexAlign="start" style="width: 100%; min-width: 40ch; margin-bottom: 8px">
+              <input matInput placeholder="Enter license key here" minlength="35" maxlength="35" #licenseKeyInput>
+              <mat-hint>Example: XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX</mat-hint>
+            </mat-form-field>
+            <div fxLayout="row wrap">
+              <button fxFlexAlign="start" mat-stroked-button color="primary" (click)="enterLicenseKey(licenseKeyInput.value)">Use license key</button>
+              <mat-progress-spinner *ngIf="verifyingLicenseKey"></mat-progress-spinner>
+            </div>
+          </ng-container>
+        </mat-card>
+      </div>
+      <div fxFlex="5vw"></div>
+    </div>
+  </ng-container>
+  <app-app-init *ngSwitchDefault>
+  </app-app-init>
+</ng-container>

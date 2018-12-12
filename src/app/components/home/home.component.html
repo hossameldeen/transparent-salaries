@@ -16,6 +16,11 @@
           </div>
         </mat-card>
       </div>
+      <div fxFlexAlign="center" style="margin-top: 8px; color: #ff4081; line-height: 24px; border: 1px solid; border-radius: 4px; padding: 0 15px;" class="mat-body-strong" *ngIf="licenseKeyService.isTrial(licenseKeyService.stateSubject.value)">
+        <div fxLayout="column" fxLayoutAlign="start center">
+          <span>Kindly, use Transparent Salaries for evaluation purposes only. For continued use, <a routerLink="/buy">buy</a> or <a routerLink="/buy">enter license key</a>.</span>
+        </div>
+      </div>
       <div fxFlex="5vw"></div>
     </div>
   </ng-container>

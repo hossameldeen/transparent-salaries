@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {ProfileService, ProfileStateKind} from 'src/app/services/profile.service';
 import {Router} from '@angular/router';
 import {UtilService} from 'src/app/services/util.service';
+import {LicenseKeyService} from 'src/app/services/license-key.service';
 
 @Component({
   selector: 'app-home',
@@ -13,6 +14,7 @@ export class HomeComponent {
 
   constructor(
     readonly profileService: ProfileService,
+    readonly licenseKeyService: LicenseKeyService,
     private readonly router: Router
   ) { }
 

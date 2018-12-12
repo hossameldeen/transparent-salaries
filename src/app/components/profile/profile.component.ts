@@ -8,6 +8,7 @@ import {ProfileService, ProfileState, ProfileStateKind} from 'src/app/services/p
 import {Subscription} from 'rxjs';
 import {UtilService} from 'src/app/services/util.service';
 import {DomSanitizer} from '@angular/platform-browser';
+import {LicenseKeyService} from 'src/app/services/license-key.service';
 
 @Component({
   selector: 'app-profile',
@@ -34,6 +35,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     readonly sanitizer: DomSanitizer,
     readonly profileService: ProfileService,
     readonly utilService: UtilService,
+    readonly licenseKeyService: LicenseKeyService,
     private readonly dbService: DBService,
     private readonly progressBarService: ProgressBarService,
     private readonly snackBar: MatSnackBar

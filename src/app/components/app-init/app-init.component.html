@@ -2,7 +2,7 @@
   <div fxFlex="5vw"></div>
   <div fxLayoutAlign="center">
     <div fxLayout="column">
-      <ng-container [ngSwitch]="profileService.appInitStatus">
+      <ng-container [ngSwitch]="appInitService.appInitStatus">
         <ng-container *ngSwitchCase="AppInitStatus.Initializing">
           <mat-spinner></mat-spinner>
           <h1>Initializing...</h1>

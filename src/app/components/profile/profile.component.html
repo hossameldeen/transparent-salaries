@@ -1,4 +1,11 @@
-<div fxLayout="column">
+<div fxLayout="column" style="margin-left: 8px; margin-right: 8px">
+
+  <div fxFlexAlign="center" style="margin-top: 8px; color: #ff4081; line-height: 24px; border: 1px solid; border-radius: 4px; padding: 0 15px;" class="mat-body-strong" *ngIf="licenseKeyService.isTrial(licenseKeyService.stateSubject.value)">
+    <div fxLayout="column" fxLayoutAlign="start center">
+      <span>Kindly, use Transparent Salaries for evaluation purposes only. For continued use, <a routerLink="/buy">buy</a> or <a routerLink="/buy">enter license key</a>.</span>
+      <span>If you don't want to buy, you can access this profile's raw data <a target="_blank" rel="noopener noreferrer" [href]="sanitizer.bypassSecurityTrustUrl('beaker://library/'+profileDatArchive.url)">here</a>.</span>
+    </div>
+  </div>
 
   <div *ngIf="state.kind === StateKind.NotLoggedIn" fxFlexAlign="center" style="margin-top: 8px; color: #f44336; line-height: 24px; border: 1px solid; border-radius: 4px; padding: 0 15px;" class="mat-body-strong">
     <div fxLayout="column" fxLayoutAlign="start center">
@@ -77,7 +84,7 @@
         </ng-container>
 
         <div fxLayout="row" fxLayoutAlign="center">
-          <h3 fxFlexAlign="center" style="margin-bottom: 0;">(<a target="_blank" rel="noopener noreferrer" [href]="sanitizer.bypassSecurityTrustUrl(profileDatArchive.url)">{{utilService.shortenedDatUrl(profileDatArchive.url)}}</a>)</h3>
+          <h3 fxFlexAlign="center" style="margin-bottom: 0;">(<a target="_blank" rel="noopener noreferrer" [href]="sanitizer.bypassSecurityTrustUrl('beaker://library/'+profileDatArchive.url)">{{utilService.shortenedDatUrl(profileDatArchive.url)}}</a>)</h3>
         </div>
       </mat-card>
       <div style="height: 8px"></div>

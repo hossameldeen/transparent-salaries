@@ -7,6 +7,7 @@ import {DBService} from 'src/app/services/db.service';
 import {Subscription} from 'rxjs';
 import {UtilService} from 'src/app/services/util.service';
 import {MatSnackBar} from '@angular/material';
+import {LicenseKeyService, LicenseKeyStateKind} from 'src/app/services/license-key.service';
 
 @Component({
   selector: 'app-root',
@@ -17,10 +18,13 @@ export class AppComponent implements OnDestroy {
   ProfileStateKind = ProfileStateKind;
   displayNameWatchClose: null | (() => void);
   displayNameState: { kind: "loading" } | { kind: "loaded", displayName: string } | { kind: "errored", err: any }; // Not worth making as separate classes & enums
+  showBuyNow: boolean;
   stateSubjectSubscription: Subscription;
+  licenseKeyStateSubjectSubscription: Subscription;
   showProgressBarSubjectSubscription: Subscription;
 
   constructor(
+    licenseKeyService: LicenseKeyService,
     readonly sanitizer: DomSanitizer,
     private readonly dbService: DBService,
     readonly profileService: ProfileService,
@@ -34,6 +38,8 @@ export class AppComponent implements OnDestroy {
     // The setTimeout is to make it async because Subject's next() is sync. The order will be preserved.
     // See: https://stackoverflow.com/questions/53244909/execution-order-of-multiple-settimeout-without-delays-in-angular/53244931#comment93375277_53244931
     this.showProgressBarSubjectSubscription = progressBarService.showProgressBarSubject.subscribe(showProgressBar => setTimeout(() => this.showProgressBar = showProgressBar))
+    this.showBuyNow = true
+    this.licenseKeyStateSubjectSubscription = licenseKeyService.stateSubject.subscribe(licenseKeyState => setTimeout(() => this.showBuyNow = licenseKeyState.kind === LicenseKeyStateKind.NotEntered))
   }
 
   loadedCast(displayNameState): { kind: "loaded", displayName: string } {
@@ -85,5 +91,6 @@ export class AppComponent implements OnDestroy {
   ngOnDestroy() {
     this.stateSubjectSubscription.unsubscribe()
     this.showProgressBarSubjectSubscription.unsubscribe()
+    this.licenseKeyStateSubjectSubscription.unsubscribe()
   }
 }
