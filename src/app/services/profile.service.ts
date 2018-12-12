@@ -16,7 +16,6 @@ import {MigrationService} from './migration.service';
 export class ProfileService {
 
   stateSubject: BehaviorSubject<ProfileState>;
-  appInitStatus: AppInitStatus;
 
   constructor(
     private readonly migrationService: MigrationService,
@@ -28,9 +27,6 @@ export class ProfileService {
       this.stateSubject = new BehaviorSubject<ProfileState>({ kind: ProfileStateKind.ProfileSelected, datArchive: new DatArchive(profileUrl) })
     else
       this.stateSubject = new BehaviorSubject<ProfileState>({ kind: ProfileStateKind.ProfileNotSelected })
-
-    this.appInitStatus = AppInitStatus.Initializing
-    this.init()
   }
 
   async createProfile() {
@@ -77,18 +73,11 @@ export class ProfileService {
   async init(): Promise<void> {
     switch(this.stateSubject.value.kind) {
       case ProfileStateKind.ProfileNotSelected:
-        this.appInitStatus = AppInitStatus.Succeeded
         break;
       case ProfileStateKind.ProfileSelected:
         try {
           this.progressBarService.pushLoading()
-          this.appInitStatus = AppInitStatus.Initializing
           await this.migrationService.migrateDB(this.stateSubject.value.datArchive)
-          this.appInitStatus = AppInitStatus.Succeeded
-        }
-        catch(e) {
-          this.appInitStatus = AppInitStatus.Failed
-          throw e
         }
         finally {
           this.progressBarService.popLoading()
@@ -132,5 +121,3 @@ export class ProfileSelected {
     readonly kind: ProfileStateKind.ProfileSelected = ProfileStateKind.ProfileSelected
   ) { }
 }
-
-export enum AppInitStatus { Succeeded, Initializing, Failed }

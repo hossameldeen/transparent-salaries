@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {AppInitStatus, ProfileService} from 'src/app/services/profile.service';
+import {AppInitService, AppInitStatus} from 'src/app/services/app-init.service';
 
 @Component({
   selector: 'app-home-page-dont-use-selector-check-readme',
@@ -9,6 +9,6 @@ export class HomePageComponent {
 
   AppInitStatus = AppInitStatus;  // To be available in the html
 
-  constructor(readonly profileService: ProfileService) { }
+  constructor(readonly appInitService: AppInitService) { }
 }
 

@@ -1,5 +1,4 @@
-<ng-container [ngSwitch]="profileService.appInitStatus">
-  <ng-container
+<ng-container [ngSwitch]="appInitService.appInitStatus">
   <ng-container *ngSwitchCase="AppInitStatus.Succeeded">
     <app-home></app-home>
   </ng-container>

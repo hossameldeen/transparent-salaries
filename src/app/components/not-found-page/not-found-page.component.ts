@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {AppInitStatus, ProfileService} from 'src/app/services/profile.service';
+import {AppInitStatus, AppInitService} from 'src/app/services/app-init.service';
 
 @Component({
   selector: 'app-not-found-page-dont-use-selector-check-readme',
@@ -9,6 +9,6 @@ export class NotFoundPageComponent {
 
   AppInitStatus = AppInitStatus; // To be available in the html
 
-  constructor(readonly profileService: ProfileService) { }
+  constructor(readonly appInitService: AppInitService) { }
 }
 

@@ -2,7 +2,22 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouteReuseStrategy, RouterModule, Routes } from '@angular/router';
-import { MatButtonModule, MatCardModule, MatTabsModule, MatInputModule, MatFormFieldModule, MatToolbarModule, MatTableModule, MatIconModule, MatTooltipModule, MatDividerModule, MatSnackBarModule, MatProgressBarModule, MatProgressSpinnerModule, MatListModule } from '@angular/material';
+import {
+  MatButtonModule,
+  MatCardModule,
+  MatTabsModule,
+  MatInputModule,
+  MatFormFieldModule,
+  MatToolbarModule,
+  MatTableModule,
+  MatIconModule,
+  MatTooltipModule,
+  MatDividerModule,
+  MatSnackBarModule,
+  MatProgressBarModule,
+  MatProgressSpinnerModule,
+  MatListModule
+} from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { AppComponent } from './components/app/app.component';
@@ -17,10 +32,13 @@ import { TrusteesComponent } from './components/trustees/trustees.component';
 import { SalaryFormComponent } from './components/salary-form/salary-form.component';
 import { DisableRouteReuseStrategy } from './misc/disable-route-reuse-strategy';
 import { CreditsComponent } from './components/credits/credits.component';
+import { BuyComponent } from './components/buy/buy.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
   { path: 'credits', component: CreditsComponent }, // Not making a `CreditsPageComponent` because it'd be trivial
+  { path: 'buy', component: BuyComponent }, // Not making a `BuyPageComponent` because it'd be trivial
+  { path: 'license-key', component: BuyComponent }, // Not making a `BuyPageComponent` because it'd be trivial
   { path: 'profile/:datPK', component: ProfilePageComponent },
   { path: '**', component: NotFoundPageComponent } // TODO: is `pathMatch: 'full'` needed?
 ]
@@ -37,7 +55,8 @@ const routes: Routes = [
     AppInitComponent,
     TrusteesComponent,
     SalaryFormComponent,
-    CreditsComponent
+    CreditsComponent,
+    BuyComponent
   ],
   imports: [
     BrowserModule,

@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {AppInitStatus, ProfileService} from 'src/app/services/profile.service';
+import {AppInitService, AppInitStatus} from 'src/app/services/app-init.service';
 
 @Component({
   selector: 'app-profile-page-dont-use-selector-check-readme',
@@ -12,7 +12,7 @@ export class ProfilePageComponent {
   AppInitStatus = AppInitStatus;  // To be available in the html
 
   constructor(
-    readonly profileService: ProfileService,
+    readonly appInitService: AppInitService,
     route: ActivatedRoute
   ) {
     const datPK = route.snapshot.paramMap.get('datPK')
