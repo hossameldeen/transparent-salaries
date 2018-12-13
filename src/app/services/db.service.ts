@@ -31,12 +31,19 @@ export class DBService {
   ) { }
 
   /**
-   * Will JSON.stringify(...) on whatever jsonStringifiable is sent.
-   *
    * Mainly used for adding a row. There's a tiny, _tiny_ probability of overriding a row due to uuid collision.
+   *
+   * Update: Will make the name: `zzzzz-zzzz...-timestampbase36-uuid`. Reasons:
+   * (1) I want to sort (desc) files by their creation time. See: https://github.com/beakerbrowser/beaker/issues/959
+   * (2) To be backward compatible, I'll just prepend `zzzz-zzzz...` to make files with timestamp come after files without.
+   * (3) Will append uuid just in case there's a collision in timestamp.
    */
   async putRow<T>(datArchive: DatArchive, tableName: string, jsonStringifiable: T, encode: (T) => string): Promise<DBRow<T>> {
-    return await this.putRow2(datArchive, tableName, jsonStringifiable, uuid(), encode)
+    // That's the uuid format
+    const prefix = `${'z'.repeat(8)}-${'z'.repeat(4)}-${'z'.repeat(4)}-${'z'.repeat(4)}-${'z'.repeat(12)}`
+    const timestamp = (new Date()).getTime().toString(36).padStart(10, '0')
+    const postfix = uuid()
+    return await this.putRow2(datArchive, tableName, jsonStringifiable, `${prefix}-${timestamp}-${postfix}`, encode)
   }
 
   /**
