@@ -35,7 +35,7 @@ export class SalariesComponent implements OnInit {
     this.progressBarService.pushLoading()
 
     try {
-      const salariesOrFailures = await this.dbService.readAllRows<Salary>(this.profileDatArchive, 'salaries', decodeSalary)
+      const salariesOrFailures = (await this.dbService.readAllRows<Salary>(this.profileDatArchive, 'salaries', decodeSalary)).entries
 
       const succeeded: Array<DBRow<Salary>> = []
       let atLeastOneFailed = false

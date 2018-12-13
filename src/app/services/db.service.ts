@@ -37,6 +37,8 @@ export class DBService {
    * (1) I want to sort (desc) files by their creation time. See: https://github.com/beakerbrowser/beaker/issues/959
    * (2) To be backward compatible, I'll just prepend `zzzz-zzzz...` to make files with timestamp come after files without.
    * (3) Will append uuid just in case there's a collision in timestamp.
+   *
+   * Credits for timestamp base36 idea: https://github.com/nathan7/monotonic-timestamp-base36/blob/master/index.js
    */
   async putRow<T>(datArchive: DatArchive, tableName: string, jsonStringifiable: T, encode: (T) => string): Promise<DBRow<T>> {
     // That's the uuid format
@@ -64,20 +66,24 @@ export class DBService {
     return await datArchive.unlink(this.wp(tableName + "/" + uuid + ".json"))
   }
 
-  async getRowsUuids(datArchive: DatArchive, tableName: string): Promise<Array<string>> {
+  async getRowsUuids(datArchive: DatArchive, tableName: string, opts?: { reverse?: boolean, start?: number, count?: number }): Promise<{ entries: Array<string>, totalCount: number }> {
     const filesNames = await datArchive.readdir(this.wp(tableName))
-    // thanks to https://stackoverflow.com/a/45165923/6690391
-    const uuids = filesNames.map(fileName => fileName.slice(0, -5))
-    return uuids
+    const uuids = filesNames.map(fileName => fileName.slice(0, -5)) // thanks to https://stackoverflow.com/a/45165923/6690391
+    const sortedUuids = opts && opts.reverse ? uuids.sort().reverse() : uuids.sort()
+
+    const start = opts && opts.start ? opts.start : 0
+    const end = opts && opts.count ? start + opts.count : filesNames.length
+
+    return { entries: sortedUuids.slice(start, end), totalCount: filesNames.length }
   }
 
-  async readAllRows<T>(datArchive: DatArchive, tableName: string, decode: (string) => T): Promise<Array<{ status: "succeeded", row: DBRow<T> } | { status: "failed", err: any }>> {
-    const rowsUuids = await this.getRowsUuids(datArchive, tableName)
-    const rowsPromises = rowsUuids.map(rowUuid => this.readRow<T>(datArchive, tableName, rowUuid, decode))
+  async readAllRows<T>(datArchive: DatArchive, tableName: string, decode: (string) => T, opts?: { reverse?: boolean, start?: number, count?: number }): Promise<{ entries: Array<{ status: "succeeded", row: DBRow<T> } | { status: "failed", err: any }>, totalCount: number }> {
+    const rowsUuids = await this.getRowsUuids(datArchive, tableName, opts)
+    const rowsPromises = rowsUuids.entries.map(rowUuid => this.readRow<T>(datArchive, tableName, rowUuid, decode))
     // thanks to https://stackoverflow.com/a/31424853/6690391
     // Needed to add the type parameter to `then` because ts would just infer the type to be {status: string, ..} | {status: string, ..} instead of {status: "succeeded", ..} | ...
     const rowPromisesNeverFail = rowsPromises.map(p => p.then<{ status: "succeeded", row: DBRow<T> }, { status: "failed", err: any }>(row => ({ status: "succeeded", row: row }), err => ({ status: "failed", err: err })))
-    return await Promise.all(rowPromisesNeverFail)
+    return { entries: await Promise.all(rowPromisesNeverFail), totalCount: rowsUuids.totalCount }
   }
 
   /**

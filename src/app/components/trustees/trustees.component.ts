@@ -38,7 +38,7 @@ export class TrusteesComponent implements OnInit {
     this.progressBarService.pushLoading()
 
     try {
-      const trusteesOrFailures = await this.dbService.readAllRows<Trustee>(this.profileDatArchive, 'trustees', decodeTrustee)
+      const trusteesOrFailures = (await this.dbService.readAllRows<Trustee>(this.profileDatArchive, 'trustees', decodeTrustee)).entries
 
       let atLeastOneFailed = false
       for (const ret of trusteesOrFailures) {

@@ -155,7 +155,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.progressBarService.pushLoading()
 
     try {
-      const trusteesOrFailures = await this.dbService.readAllRows<Trustee>(loggedInAndNotOwnerState.loggedInDatArchive, 'trustees', decodeTrustee)
+      const trusteesOrFailures = (await this.dbService.readAllRows<Trustee>(loggedInAndNotOwnerState.loggedInDatArchive, 'trustees', decodeTrustee)).entries
 
       // Check that state hasn't changed while you were doing the request
       if (loggedInAndNotOwnerState !== this.state)
