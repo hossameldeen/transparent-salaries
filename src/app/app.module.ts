@@ -16,7 +16,8 @@ import {
   MatSnackBarModule,
   MatProgressBarModule,
   MatProgressSpinnerModule,
-  MatListModule
+  MatListModule,
+  MatCheckboxModule
 } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
@@ -76,6 +77,7 @@ const routes: Routes = [
     MatProgressBarModule,
     MatProgressSpinnerModule,
     MatListModule,
+    MatCheckboxModule,
     RouterModule.forRoot(routes)
   ],
   providers: [

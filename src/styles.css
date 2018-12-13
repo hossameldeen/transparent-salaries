@@ -15,3 +15,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;  }
 .mat-stroked-button:not([disabled]) {
   border-color: unset;
 }
+
+/*
+ * A workaround :(. See: https://github.com/angular/material2/issues/8416#issuecomment-344339346
+ */
+.mat-checkbox-layout {
+  white-space: normal !important;
+}
