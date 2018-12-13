@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card style="padding-bottom: 8px">
   <mat-card-title>Anonymized Salaries</mat-card-title>
   <mat-card-subtitle style="margin-bottom: 8px;">Salaries of other people. Net monthly: salary after taxes, ... etc</mat-card-subtitle>
   <mat-divider></mat-divider>
@@ -18,7 +18,7 @@
     <mat-divider *ngIf="salariesDBRows.length > 0"></mat-divider>
   </ng-container>
 
-  <ng-container *ngFor="let salaryDBRow of salariesDBRows; let last = last; let index = index;">
+  <ng-container *ngFor="let salaryDBRow of salariesDBRows; let index = index;">
     <div style="height: 8px"></div>
     <div *ngIf="salaryDBRow.editingState === EditingState.NotEditing || salaryDBRow.editingState === EditingState.DeleteRequestSent" fxLayout="row">
       <div>
@@ -51,7 +51,11 @@
         <button fxFlex mat-raised-button color="warn" (click)="cancelEdit(salaryDBRow)" [disabled]="salaryDBRow.editingState === EditingState.EditRequestSent">Cancel</button>
       </div>
     </div>
-    <div *ngIf="!last" style="height: 8px"></div>
-    <mat-divider *ngIf="!last"></mat-divider>
+    <div style="height: 8px"></div>
+    <mat-divider></mat-divider>
   </ng-container>
+  <div style="height: 8px"></div>
+  <div fxLayout="column">
+    <button mat-button color="primary"><span class="mat-h2">Load more salaries</span></button>
+  </div>
 </mat-card>
