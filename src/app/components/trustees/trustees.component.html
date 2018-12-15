@@ -18,8 +18,8 @@
   </ng-container>
 
   <div fxLayout fxLayoutAlign="start center" *ngFor="let trustee of trustees; let index = index;">
-    <!-- TODO: yes, not so clean to make a navigation list like this, and possible not accessible. But that's the
-           TODO: only way I found to get the layout I wanted. If this website grows, I must change it. -->
+    <!-- TODO: yes, not so clean to make a navigation list like this, and possibly not accessible. But that's the
+         TODO: only way I found to get the layout I wanted. If this website grows, I must change it. -->
     <mat-nav-list fxFlex>
       <mat-list-item>
         <a matLine routerLink="/profile/{{trustee.dbRow.dbRowData.datUrl.slice(6)}}">
@@ -37,6 +37,12 @@
     </mat-nav-list>
     <button *ngIf="isOwner" mat-icon-button color="accent" matTooltip="Untrust" (click)="removeTrustee(trustee, index)" [disabled]="trustee.removing">
       <mat-icon>clear</mat-icon>
+    </button>
+  </div>
+  <div *ngIf="nextStart !== lastTotalCount" style="height: 8px"></div>
+  <div fxLayout="column">
+    <button *ngIf="nextStart !== lastTotalCount" mat-button color="accent" (click)="loadMoreTrustees()" [disabled]="loadingTrustees" fxLayout="row">
+      <span class="mat-h2" fxFlexAlign="start">Load more trustees</span>
     </button>
   </div>
 </mat-card>

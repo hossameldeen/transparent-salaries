@@ -30,8 +30,8 @@ export class SalariesComponent implements OnInit {
     private readonly snackBar: MatSnackBar
   ) {
     this.salariesDBRows = []
-    this.nextStart = 0;
-    this.lastTotalCount = 1  // any number > 0 to have the button
+    this.nextStart = 0
+    this.lastTotalCount = 0
     this.loadingSalaries = false
     this.persistingNewSalary = false
   }
