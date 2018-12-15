@@ -56,6 +56,9 @@
   </ng-container>
   <div style="height: 8px"></div>
   <div fxLayout="column">
-    <button mat-button color="primary"><span class="mat-h2">Load more salaries</span></button>
+    <button *ngIf="nextStart !== lastTotalCount" mat-button color="primary" (click)="loadMoreSalaries()" [disabled]="loadingSalaries">
+      <span class="mat-h2">Load more salaries</span>
+    </button>
+    <span *ngIf="nextStart === lastTotalCount" class="mat-h3" fxFlexAlign="center" style="margin-bottom: 0">No more salaries to show.</span>
   </div>
 </mat-card>
