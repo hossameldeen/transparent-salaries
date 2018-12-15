@@ -18,6 +18,9 @@ export class SalariesComponent implements OnInit {
   @Input() profileDatArchive: DatArchive;
   @Input() isOwner: boolean;
   salariesDBRows: Array<{ dbRow: DBRow<Salary>, editingState: EditingState }>;  // That's a bad name because it's not just salaryDBRow.
+  nextStart: number;
+  lastTotalCount: number;
+  loadingSalaries: boolean;
   persistingNewSalary: boolean;
 
   constructor(
@@ -27,27 +30,38 @@ export class SalariesComponent implements OnInit {
     private readonly snackBar: MatSnackBar
   ) {
     this.salariesDBRows = []
+    this.nextStart = 0
+    this.lastTotalCount = 0
+    this.loadingSalaries = false
     this.persistingNewSalary = false
   }
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit() {
+    this.loadMoreSalaries() // Note: It's a fire-and-forget
+  }
+
+  async loadMoreSalaries(): Promise<void> {
 
     this.progressBarService.pushLoading()
+    this.loadingSalaries = true
 
     try {
-      const salariesOrFailures = await this.dbService.readAllRows<Salary>(this.profileDatArchive, 'salaries', decodeSalary)
+      const { entries, totalCount } = (await this.dbService.readAllRows<Salary>(this.profileDatArchive, 'salaries', decodeSalary,
+        { reverse: true, start: this.nextStart, count: 10 }))
+
+      this.nextStart = this.nextStart + entries.length
+      this.lastTotalCount = totalCount
 
       const succeeded: Array<DBRow<Salary>> = []
       let atLeastOneFailed = false
-      for (const salaryOrFailure of salariesOrFailures) {
+      for (const salaryOrFailure of entries) {
         if (salaryOrFailure.status === 'succeeded')
           succeeded.push(salaryOrFailure.row)
         else
           atLeastOneFailed = true
       }
 
-      this.salariesDBRows = succeeded.map(salaryDBRow => ({ dbRow: salaryDBRow, editingState: EditingState.NotEditing }))
-      this.salariesDBRows.sort((a, b) => this.compareSalaries(a.dbRow.dbRowData, b.dbRow.dbRowData))
+      this.salariesDBRows = this.salariesDBRows.concat(succeeded.map(salaryDBRow => ({ dbRow: salaryDBRow, editingState: EditingState.NotEditing })))
 
       if (atLeastOneFailed)
         this.snackBar.open("Couldn't retrieve some salaries from the profile. That's all I know :(", "Dismiss")
@@ -57,6 +71,7 @@ export class SalariesComponent implements OnInit {
     }
     finally {
       this.progressBarService.popLoading()
+      this.loadingSalaries = false
     }
   }
 
@@ -130,19 +145,6 @@ export class SalariesComponent implements OnInit {
     finally {
       this.progressBarService.popLoading()
     }
-  }
-
-  /**
-   * TODO: sort by creationDate when you add it isA
-   */
-  private compareSalaries(a: Salary, b: Salary): number {
-    const aCreatedAt = parseInt(a.createdAt), bCreatedAt = parseInt(b.createdAt)
-    if (aCreatedAt < bCreatedAt)
-      return 1
-    if (aCreatedAt > bCreatedAt)
-      return -1
-    return 0  // Actually, in C++ this would blow up because it must mean a === b. But according to JS docs, I think it means either
-              // "don't change the relative order", or in some browsers, undefined/don't-care relative order.
   }
 }
 

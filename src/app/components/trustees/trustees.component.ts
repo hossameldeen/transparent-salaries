@@ -18,6 +18,9 @@ export class TrusteesComponent implements OnInit {
   @Input() isOwner: boolean;
 
   trustees: Array<TrusteeEntry>;
+  nextStart: number;
+  lastTotalCount: number;
+  loadingTrustees: boolean;
   persistingNewTrustee: boolean;
 
   constructor(
@@ -27,21 +30,29 @@ export class TrusteesComponent implements OnInit {
     private readonly snackBar: MatSnackBar
   ) {
     this.trustees = []
+    this.nextStart = 0
+    this.lastTotalCount = 0
+    this.loadingTrustees = false
   }
 
   async ngOnInit() {
     // Note: waiting wouldn't really make a difference.
-    await this.retrieveTrustees()
+    await this.loadMoreTrustees()
   }
 
-  private async retrieveTrustees(): Promise<void> {
+  private async loadMoreTrustees(): Promise<void> {
     this.progressBarService.pushLoading()
+    this.loadingTrustees = true
 
     try {
-      const trusteesOrFailures = await this.dbService.readAllRows<Trustee>(this.profileDatArchive, 'trustees', decodeTrustee)
+      const  { entries, totalCount } = (await this.dbService.readAllRows<Trustee>(this.profileDatArchive, 'trustees', decodeTrustee,
+        { reverse: true, start: this.nextStart, count: 10 }))
+
+      this.nextStart = this.nextStart + entries.length
+      this.lastTotalCount = totalCount
 
       let atLeastOneFailed = false
-      for (const ret of trusteesOrFailures) {
+      for (const ret of entries) {
         if (ret.status === "succeeded") {
           const trusteeObject: TrusteeEntry = { dbRow: ret.row, removing: false, displayNameState: { kind: "loading"} } // making it like that to use closures with mutability. Yuck!
 
@@ -67,6 +78,7 @@ export class TrusteesComponent implements OnInit {
     }
     finally {
       this.progressBarService.popLoading()
+      this.loadingTrustees = false
     }
   }
 

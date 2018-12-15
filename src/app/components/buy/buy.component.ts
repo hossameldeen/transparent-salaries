@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import {Entered, LicenseKeyService, LicenseKeyState, LicenseKeyStateKind, NotEntered, Verified} from 'src/app/services/license-key.service';
 import {AppInitService, AppInitStatus} from 'src/app/services/app-init.service';
+import {ProgressBarService} from 'src/app/services/progress-bar.service';
 
 @Component({
   selector: 'app-buy',
@@ -15,16 +16,19 @@ export class BuyComponent {
 
   constructor(
     readonly licenseKeyService: LicenseKeyService,
-    readonly appInitService: AppInitService
+    readonly appInitService: AppInitService,
+    readonly progressBarService: ProgressBarService
   ) { }
 
   async enterLicenseKey(licenseKey: string) {
     this.verifyingLicenseKey = true
+    this.progressBarService.pushLoading()
     try {
       await this.licenseKeyService.enterLicenseKey(licenseKey)
     }
     finally {
       this.verifyingLicenseKey = false
+      this.progressBarService.popLoading()
     }
   }
 
