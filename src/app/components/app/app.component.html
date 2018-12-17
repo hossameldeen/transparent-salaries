@@ -5,8 +5,14 @@
       <span>Transparent Salaries</span>
     </a>
     <div fxFlex="1vw"></div>
-    <a mat-raised-button routerLink="{{showBuyNow ? '/buy' : '/license-key'}}">
-      <span>{{showBuyNow ? 'Buy now!' : 'License key'}}</span>
+    <a *ngIf="showBuyNow" mat-raised-button routerLink="/buy">
+      <span>Buy now!</span>
+    </a>
+    <a *ngIf="!showBuyNow" mat-button routerLink="/license-key">
+      <span>License key</span>
+    </a>
+    <a mat-button routerLink="/support">
+      <span>Support</span>
     </a>
     <a mat-button routerLink="/credits">
       <span>Credits</span>
