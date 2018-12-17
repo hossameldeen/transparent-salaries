@@ -118,6 +118,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
     return <NotLoggedIn>state;
   }
 
+  tsl(trustedState: { kind: "loading"} | { kind: "loaded", isTrusted: false } | { kind: "loaded", isTrusted: true, trusteeUuid: string }): { kind: 'loaded', isTrusted: boolean } {
+    return <{ kind: 'loaded', isTrusted: boolean }>trustedState;
+  }
+
   private async retrieveDisplayName(): Promise<void> {
     this.progressBarService.pushLoading()
     try {

@@ -14,7 +14,7 @@
     </div>
   </div>
 
-  <div *ngIf="state.kind === StateKind.LoggedInAndNotOwner && liano(state).isTrustedState.kind === 'loaded' && !liano(state).isTrustedState.isTrusted" fxFlexAlign="center" style="margin-top: 8px; color: #f44336; line-height: 24px; border: 1px solid; border-radius: 4px; padding: 0 15px;" class="mat-body-strong">
+  <div *ngIf="state.kind === StateKind.LoggedInAndNotOwner && liano(state).isTrustedState.kind === 'loaded' && !tsl(liano(state).isTrustedState).isTrusted" fxFlexAlign="center" style="margin-top: 8px; color: #f44336; line-height: 24px; border: 1px solid; border-radius: 4px; padding: 0 15px;" class="mat-body-strong">
     <div fxLayout="column" fxLayoutAlign="start center">
       <span>Warning: You haven't trusted this person. You don't know if these salaries are true.</span>
       <span>Add to your trustees if you trust this person.</span>
