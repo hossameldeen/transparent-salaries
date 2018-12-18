@@ -45,7 +45,7 @@ export class ProfileService {
       await this.selectAndMigrate(profile)
     }
     catch (e) {
-      this.snackBarService.openQueued("Couldn't initialize your profile. That's all I know :(", "Dismiss")
+      this.snackBarService.openQueuedSupportDismiss("Couldn't initialize your profile. That's all I know :(")
     }
   }
 
@@ -65,8 +65,7 @@ export class ProfileService {
       await this.selectAndMigrate(profile)
     }
     catch (e) {
-      this.snackBarService.openQueued(`*Probably*, the archive you've selected isn't a valid Transparent-Salaries profile. Are you sure you've used it as a profile before? If you haven't created a profile, you can create a new one!`,
-        'Dismiss')
+      this.snackBarService.openQueuedSupportDismiss(`*Probably*, the archive you've selected isn't a valid Transparent-Salaries profile. Are you sure you've used it as a profile before? If you haven't created a profile, you can create a new one!`)
     }
   }
 

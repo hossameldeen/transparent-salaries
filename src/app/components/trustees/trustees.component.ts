@@ -71,10 +71,10 @@ export class TrusteesComponent implements OnInit {
         }
       }
       if (atLeastOneFailed)
-        this.snackBarService.openQueued("Couldn't retrieve some trustees from the profile. That's all I know :(", "Dismiss")
+        this.snackBarService.openQueuedSupportDismiss("Couldn't retrieve some trustees from the profile. That's all I know :(")
     }
     catch(e) {
-      this.snackBarService.openQueued("Couldn't retrieve trustees from the profile. That's all I know :(", "Dismiss")
+      this.snackBarService.openQueuedSupportDismiss("Couldn't retrieve trustees from the profile. That's all I know :(")
     }
     finally {
       this.progressBarService.popLoading()
@@ -86,7 +86,7 @@ export class TrusteesComponent implements OnInit {
     if (datUrl.startsWith('dat://')) {
       datUrl = datUrl.substring(3 + 1 + 2)
       if (datUrl.length < 64) {
-        this.snackBarService.openQueued(`The url you wrote is too short. It should start with "dat://" (without the quotes) followed by 64 characters. Perhaps you didn't paste all characters?`, "Dismiss")
+        this.snackBarService.openQueuedSupportDismiss(`The url you wrote is too short. It should start with "dat://" (without the quotes) followed by 64 characters. Perhaps you didn't paste all characters?`)
         return
       }
       datUrl = `dat://${datUrl.substring(0, 64)}`
@@ -97,12 +97,12 @@ export class TrusteesComponent implements OnInit {
     else {
       const profileIndex = datUrl.indexOf('profile/')
       if (profileIndex === -1) {
-        this.snackBarService.openQueued('Failed to add trustee. Your input should start with "dat://" (without the quotes) followed by 64 characters.', "Dismiss")
+        this.snackBarService.openQueuedSupportDismiss('Failed to add trustee. Your input should start with "dat://" (without the quotes) followed by 64 characters.')
         return
       }
       datUrl = datUrl.substring(profileIndex + 7 + 1)
       if (datUrl.length < 64) {
-        this.snackBarService.openQueued(`The url you wrote is too short. The profile identifier (the part after dat:// or profile/) must be 64 characters. Perhaps you didn't paste all characters?`, "Dismiss")
+        this.snackBarService.openQueuedSupportDismiss(`The url you wrote is too short. The profile identifier (the part after dat:// or profile/) must be 64 characters. Perhaps you didn't paste all characters?`)
         return
       }
       datUrl = `dat://${datUrl.substring(0, 64)}`
@@ -127,7 +127,7 @@ export class TrusteesComponent implements OnInit {
         })
     }
     catch (e) {
-      this.snackBarService.openQueued("Couldn't add new trustee for some reason :(", "Dismiss")
+      this.snackBarService.openQueuedSupportDismiss("Couldn't add new trustee for some reason :(")
     }
     finally {
       this.persistingNewTrustee = false
@@ -152,7 +152,7 @@ export class TrusteesComponent implements OnInit {
       this.trustees.splice(trusteeEntryIndex, 1)
     }
     catch (e) {
-      this.snackBarService.openQueued("Couldn't untrust the trustee for some reason :(", "Dismiss")
+      this.snackBarService.openQueuedSupportDismiss("Couldn't untrust the trustee for some reason :(")
       trusteeEntry.removing = false
     }
     finally {

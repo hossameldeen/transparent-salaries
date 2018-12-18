@@ -131,7 +131,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
     catch(e) {
       this.displayNameState = { kind: "errored", err: e }
-      this.snackBarService.openQueued("Couldn't retrieve display name", "Dismiss")
+      this.snackBarService.openQueuedSupportDismiss("Couldn't retrieve display name")
     }
     finally {
       this.progressBarService.popLoading()
@@ -184,10 +184,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.state = new LoggedInAndNotOwner(loggedInAndNotOwnerState.loggedInDatArchive, { kind: "loaded", isTrusted: false })
 
       if (atLeastOneFailed)
-        this.snackBarService.openQueued("Couldn't retrieve some trustees from the profile. That's all I know :(", "Dismiss")
+        this.snackBarService.openQueuedSupportDismiss("Couldn't retrieve some trustees from the profile. That's all I know :(")
     }
     catch(e) {
-      this.snackBarService.openQueued("Couldn't retrieve trustees from the profile. That's all I know :(", "Dismiss")
+      this.snackBarService.openQueuedSupportDismiss("Couldn't retrieve trustees from the profile. That's all I know :(")
     }
     finally {
       this.progressBarService.popLoading()

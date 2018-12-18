@@ -27,7 +27,7 @@
               <!-- TODO: The default font is better for this part (i.e., by commenting Roboto font in index.html). -->
               <ng-container *ngIf="licenseKeyService.haveTwoDaysPassed(asEntered(licenseKeyService.stateSubject.value))">
                 <h3 fxFlexAlign="start" style="font-family: unset; margin-bottom: 0">Couldn't verify license key and more than 2 days have passed.</h3>
-                <h3 fxFlexAlign="start" style="font-family: unset;">Please, make sure to enter a correct license key, or contact Hossam El-Deen if you think something is not right.</h3>
+                <h3 fxFlexAlign="start" style="font-family: unset;">Please, make sure to enter a correct license key, or <a routerLink="/support">contact Support</a> if you think something is not right.</h3>
               </ng-container>
               <ng-container *ngIf="!licenseKeyService.haveTwoDaysPassed(asEntered(licenseKeyService.stateSubject.value))">
                 <h3 fxFlexAlign="start" style="font-family: unset; margin-bottom: 0">License key is still being verified.</h3>

@@ -64,10 +64,10 @@ export class SalariesComponent implements OnInit {
       this.salariesDBRows = this.salariesDBRows.concat(succeeded.map(salaryDBRow => ({ dbRow: salaryDBRow, editingState: EditingState.NotEditing })))
 
       if (atLeastOneFailed)
-        this.snackBarService.openQueued("Couldn't retrieve some salaries from the profile. That's all I know :(", "Dismiss")
+        this.snackBarService.openQueuedSupportDismiss("Couldn't retrieve some salaries from the profile. That's all I know :(")
     }
     catch(e) {
-      this.snackBarService.openQueued("Couldn't retrieve salaries from the profile. That's all I know :(", "Dismiss")
+      this.snackBarService.openQueuedSupportDismiss("Couldn't retrieve salaries from the profile. That's all I know :(")
     }
     finally {
       this.progressBarService.popLoading()
@@ -87,7 +87,7 @@ export class SalariesComponent implements OnInit {
       newSalaryFormComponent.salary = new Salary(this.utilService.getCurrentMonth(), "", "", "", "", "", Date.now().toString())
     }
     catch (e) {
-      this.snackBarService.openQueued("Couldn't add new salary for some reason :(", "Dismiss")
+      this.snackBarService.openQueuedSupportDismiss("Couldn't add new salary for some reason :(")
     }
     finally {
       this.persistingNewSalary = false
@@ -114,7 +114,7 @@ export class SalariesComponent implements OnInit {
       salaryDBRow.editingState = EditingState.NotEditing
     }
     catch (e) {
-      this.snackBarService.openQueued("Couldn't update the salary for some reason :(", "Dismiss")
+      this.snackBarService.openQueuedSupportDismiss("Couldn't update the salary for some reason :(")
       salaryDBRow.editingState = EditingState.UserEditing
     }
     finally {
@@ -139,7 +139,7 @@ export class SalariesComponent implements OnInit {
       this.salariesDBRows.splice(salaryDBRowIndex, 1)
     }
     catch (e) {
-      this.snackBarService.openQueued("Couldn't delete the salary for some reason :(", "Dismiss")
+      this.snackBarService.openQueuedSupportDismiss("Couldn't delete the salary for some reason :(")
       salaryDBRow.editingState = EditingState.NotEditing
     }
     finally {

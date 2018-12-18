@@ -38,17 +38,17 @@ export class LicenseKeyService {
           try {
             await hashesArchive.stat(`/version-0/${(new SHA3(512)).update(this.stateSubject.value.licenseKey).digest('hex')}`)
             this.updateLicenseKeyState(new Verified(this.stateSubject.value.licenseKey))
-            this.snackBarService.openQueued("License key has been verified. Thank you for buying!", "Dismiss")
+            this.snackBarService.openQueued("License key has been verified. Thank you for buying!")
           }
           catch (e) {
             if (this.haveTwoDaysPassed(this.stateSubject.value)) {
-              this.snackBarService.openQueued("Couldn't verify license key and more than 2 days have passed. Please, make sure to enter a correct license key, or contact Hossam El-Deen if you think something is not right.", "Dismiss")
+              this.snackBarService.openQueuedSupportDismiss("Couldn't verify license key and more than 2 days have passed. Please, make sure to enter a correct license key, or use go to Support if you think something is not right.")
             }
           }
         }
         catch (e) {
           if (this.haveTwoDaysPassed(this.stateSubject.value)) {
-            this.snackBarService.openQueued("Failed to verify license key. Couldn't access dat://77ee6848c4e2d3335ba6c8ad918f9b40b9a04126059078b1e1ab390766a4dce8", 'Dismiss')
+            this.snackBarService.openQueuedSupportDismiss("Failed to verify license key. Couldn't access dat://77ee6848c4e2d3335ba6c8ad918f9b40b9a04126059078b1e1ab390766a4dce8")
           }
         }
         finally {
@@ -80,7 +80,7 @@ export class LicenseKeyService {
       }
     }
     catch (e) {
-      this.snackBarService.openQueued("Failed to verify. Couldn't access dat://77ee6848c4e2d3335ba6c8ad918f9b40b9a04126059078b1e1ab390766a4dce8", 'Dismiss')
+      this.snackBarService.openQueuedSupportDismiss("Failed to verify. Couldn't access dat://77ee6848c4e2d3335ba6c8ad918f9b40b9a04126059078b1e1ab390766a4dce8")
       this.updateLicenseKeyState(new Entered(licenseKey, (new Date()).getTime().toString()))
       return { kind: "not-verified" }
     }

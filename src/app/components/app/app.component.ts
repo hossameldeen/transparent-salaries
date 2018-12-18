@@ -81,7 +81,7 @@ export class AppComponent implements OnDestroy {
     }
     catch(e) {
       this.displayNameState = { kind: "errored", err: e }
-      this.snackBarService.openQueued("Couldn't retrieve display name", "Dismiss")
+      this.snackBarService.openQueuedSupportDismiss("Couldn't retrieve display name")
     }
     finally {
       this.progressBarService.popLoading()
