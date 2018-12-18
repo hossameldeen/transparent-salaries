@@ -35,6 +35,7 @@ import { DisableRouteReuseStrategy } from './misc/disable-route-reuse-strategy';
 import { CreditsComponent } from './components/credits/credits.component';
 import { BuyComponent } from './components/buy/buy.component';
 import { SupportComponent } from './components/support/support.component';
+import { SnackBarSupportDismissComponent } from './services/snack-bar.service';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -60,7 +61,11 @@ const routes: Routes = [
     SalaryFormComponent,
     CreditsComponent,
     BuyComponent,
-    SupportComponent
+    SupportComponent,
+    SnackBarSupportDismissComponent
+  ],
+  entryComponents: [
+    SnackBarSupportDismissComponent
   ],
   imports: [
     BrowserModule,
