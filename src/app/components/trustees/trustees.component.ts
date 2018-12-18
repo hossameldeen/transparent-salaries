@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Trustee, encode as encodeTrustee, decode as decodeTrustee } from 'src/app/models/trustee.model';
 import { DBService } from 'src/app/services/db.service';
 import { ProgressBarService } from 'src/app/services/progress-bar.service';
-import { MatSnackBar } from '@angular/material';
+import { SnackBarService } from 'src/app/services/snack-bar.service';
 import { Profile, encode as encodeProfile, decode as decodeProfile } from 'src/app/models/profile.model';
 import { UtilService } from 'src/app/services/util.service';
 import { DBRow } from 'src/app/models/db-row.model';
@@ -27,7 +27,7 @@ export class TrusteesComponent implements OnInit {
     readonly utilService: UtilService,
     private readonly dbService: DBService,
     private readonly progressBarService: ProgressBarService,
-    private readonly snackBar: MatSnackBar
+    private readonly snackBarService: SnackBarService
   ) {
     this.trustees = []
     this.nextStart = 0
@@ -71,10 +71,10 @@ export class TrusteesComponent implements OnInit {
         }
       }
       if (atLeastOneFailed)
-        this.snackBar.open("Couldn't retrieve some trustees from the profile. That's all I know :(", "Dismiss")
+        this.snackBarService.openQueued("Couldn't retrieve some trustees from the profile. That's all I know :(", "Dismiss")
     }
     catch(e) {
-      this.snackBar.open("Couldn't retrieve trustees from the profile. That's all I know :(", "Dismiss")
+      this.snackBarService.openQueued("Couldn't retrieve trustees from the profile. That's all I know :(", "Dismiss")
     }
     finally {
       this.progressBarService.popLoading()
@@ -86,7 +86,7 @@ export class TrusteesComponent implements OnInit {
     if (datUrl.startsWith('dat://')) {
       datUrl = datUrl.substring(3 + 1 + 2)
       if (datUrl.length < 64) {
-        this.snackBar.open(`The url you wrote is too short. It should start with "dat://" (without the quotes) followed by 64 characters. Perhaps you didn't paste all characters?`, "Dismiss")
+        this.snackBarService.openQueued(`The url you wrote is too short. It should start with "dat://" (without the quotes) followed by 64 characters. Perhaps you didn't paste all characters?`, "Dismiss")
         return
       }
       datUrl = `dat://${datUrl.substring(0, 64)}`
@@ -97,12 +97,12 @@ export class TrusteesComponent implements OnInit {
     else {
       const profileIndex = datUrl.indexOf('profile/')
       if (profileIndex === -1) {
-        this.snackBar.open('Failed to add trustee. Your input should start with "dat://" (without the quotes) followed by 64 characters.', "Dismiss")
+        this.snackBarService.openQueued('Failed to add trustee. Your input should start with "dat://" (without the quotes) followed by 64 characters.', "Dismiss")
         return
       }
       datUrl = datUrl.substring(profileIndex + 7 + 1)
       if (datUrl.length < 64) {
-        this.snackBar.open(`The url you wrote is too short. The profile identifier (the part after dat:// or profile/) must be 64 characters. Perhaps you didn't paste all characters?`, "Dismiss")
+        this.snackBarService.openQueued(`The url you wrote is too short. The profile identifier (the part after dat:// or profile/) must be 64 characters. Perhaps you didn't paste all characters?`, "Dismiss")
         return
       }
       datUrl = `dat://${datUrl.substring(0, 64)}`
@@ -127,7 +127,7 @@ export class TrusteesComponent implements OnInit {
         })
     }
     catch (e) {
-      this.snackBar.open("Couldn't add new trustee for some reason :(", "Dismiss")
+      this.snackBarService.openQueued("Couldn't add new trustee for some reason :(", "Dismiss")
     }
     finally {
       this.persistingNewTrustee = false
@@ -152,7 +152,7 @@ export class TrusteesComponent implements OnInit {
       this.trustees.splice(trusteeEntryIndex, 1)
     }
     catch (e) {
-      this.snackBar.open("Couldn't untrust the trustee for some reason :(", "Dismiss")
+      this.snackBarService.openQueued("Couldn't untrust the trustee for some reason :(", "Dismiss")
       trusteeEntry.removing = false
     }
     finally {

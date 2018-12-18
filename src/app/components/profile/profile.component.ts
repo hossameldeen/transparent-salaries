@@ -1,7 +1,7 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DBService} from 'src/app/services/db.service';
 import {ProgressBarService} from 'src/app/services/progress-bar.service';
-import {MatFormField, MatSnackBar} from '@angular/material';
+import {MatFormField} from '@angular/material';
 import {Trustee, encode as encodeTrustee, decode as decodeTrustee} from 'src/app/models/trustee.model';
 import {Profile, encode as encodeProfile, decode as decodeProfile} from 'src/app/models/profile.model';
 import {ProfileService, ProfileState, ProfileStateKind} from 'src/app/services/profile.service';
@@ -9,6 +9,7 @@ import {Subscription} from 'rxjs';
 import {UtilService} from 'src/app/services/util.service';
 import {DomSanitizer} from '@angular/platform-browser';
 import {LicenseKeyService} from 'src/app/services/license-key.service';
+import {SnackBarService} from 'src/app/services/snack-bar.service';
 
 @Component({
   selector: 'app-profile',
@@ -38,7 +39,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     readonly licenseKeyService: LicenseKeyService,
     private readonly dbService: DBService,
     private readonly progressBarService: ProgressBarService,
-    private readonly snackBar: MatSnackBar
+    private readonly snackBarService: SnackBarService
   ) {
     this.displayNameState = { kind: "loading" }
   }
@@ -130,7 +131,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
     catch(e) {
       this.displayNameState = { kind: "errored", err: e }
-      this.snackBar.open("Couldn't retrieve display name", "Dismiss")
+      this.snackBarService.openQueued("Couldn't retrieve display name", "Dismiss")
     }
     finally {
       this.progressBarService.popLoading()
@@ -183,10 +184,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.state = new LoggedInAndNotOwner(loggedInAndNotOwnerState.loggedInDatArchive, { kind: "loaded", isTrusted: false })
 
       if (atLeastOneFailed)
-        this.snackBar.open("Couldn't retrieve some trustees from the profile. That's all I know :(", "Dismiss")
+        this.snackBarService.openQueued("Couldn't retrieve some trustees from the profile. That's all I know :(", "Dismiss")
     }
     catch(e) {
-      this.snackBar.open("Couldn't retrieve trustees from the profile. That's all I know :(", "Dismiss")
+      this.snackBarService.openQueued("Couldn't retrieve trustees from the profile. That's all I know :(", "Dismiss")
     }
     finally {
       this.progressBarService.popLoading()

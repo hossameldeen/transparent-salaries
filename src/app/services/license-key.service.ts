@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
 import {ProgressBarService} from './progress-bar.service';
 import { SHA3 } from 'sha3';
-import {MatSnackBar} from '@angular/material';
+import { SnackBarService } from 'src/app/services/snack-bar.service';
 import {UtilService} from './util.service';
 
 @Injectable({
@@ -17,7 +17,7 @@ export class LicenseKeyService {
 
   constructor(
     private readonly progressBarService: ProgressBarService,
-    private readonly snackBar: MatSnackBar
+    private readonly snackBarService: SnackBarService
   ) {
     // Don't need to remove listener because this service's lifetime spans the whole application
     window.addEventListener('storage', ev => {
@@ -38,17 +38,17 @@ export class LicenseKeyService {
           try {
             await hashesArchive.stat(`/version-0/${(new SHA3(512)).update(this.stateSubject.value.licenseKey).digest('hex')}`)
             this.updateLicenseKeyState(new Verified(this.stateSubject.value.licenseKey))
-            this.snackBar.open("License key has been verified. Thank you for buying!", "Dismiss")
+            this.snackBarService.openQueued("License key has been verified. Thank you for buying!", "Dismiss")
           }
           catch (e) {
             if (this.haveTwoDaysPassed(this.stateSubject.value)) {
-              this.snackBar.open("Couldn't verify license key and more than 2 days have passed. Please, make sure to enter a correct license key, or contact Hossam El-Deen if you think something is not right.", "Dismiss")
+              this.snackBarService.openQueued("Couldn't verify license key and more than 2 days have passed. Please, make sure to enter a correct license key, or contact Hossam El-Deen if you think something is not right.", "Dismiss")
             }
           }
         }
         catch (e) {
           if (this.haveTwoDaysPassed(this.stateSubject.value)) {
-            this.snackBar.open("Failed to verify license key. Couldn't access dat://77ee6848c4e2d3335ba6c8ad918f9b40b9a04126059078b1e1ab390766a4dce8", 'Dismiss')
+            this.snackBarService.openQueued("Failed to verify license key. Couldn't access dat://77ee6848c4e2d3335ba6c8ad918f9b40b9a04126059078b1e1ab390766a4dce8", 'Dismiss')
           }
         }
         finally {
@@ -80,7 +80,7 @@ export class LicenseKeyService {
       }
     }
     catch (e) {
-      this.snackBar.open("Failed to verify. Couldn't access dat://77ee6848c4e2d3335ba6c8ad918f9b40b9a04126059078b1e1ab390766a4dce8", 'Dismiss')
+      this.snackBarService.openQueued("Failed to verify. Couldn't access dat://77ee6848c4e2d3335ba6c8ad918f9b40b9a04126059078b1e1ab390766a4dce8", 'Dismiss')
       this.updateLicenseKeyState(new Entered(licenseKey, (new Date()).getTime().toString()))
       return { kind: "not-verified" }
     }
