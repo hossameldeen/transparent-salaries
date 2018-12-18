@@ -6,7 +6,7 @@ import {Profile, encode as encodeProfile, decode as decodeProfile} from 'src/app
 import {DBService} from 'src/app/services/db.service';
 import {Subscription} from 'rxjs';
 import {UtilService} from 'src/app/services/util.service';
-import {MatSnackBar} from '@angular/material';
+import { SnackBarService } from 'src/app/services/snack-bar.service';
 import {LicenseKeyService, LicenseKeyStateKind} from 'src/app/services/license-key.service';
 
 @Component({
@@ -29,7 +29,7 @@ export class AppComponent implements OnDestroy {
     private readonly dbService: DBService,
     readonly profileService: ProfileService,
     private readonly progressBarService: ProgressBarService,
-    private readonly snackBar: MatSnackBar
+    private readonly snackBarService: SnackBarService
   ) {
     this.displayNameState = { kind: "loading" }
     this.displayNameWatchClose = null
@@ -81,7 +81,7 @@ export class AppComponent implements OnDestroy {
     }
     catch(e) {
       this.displayNameState = { kind: "errored", err: e }
-      this.snackBar.open("Couldn't retrieve display name", "Dismiss")
+      this.snackBarService.openQueuedSupportDismiss("Couldn't retrieve display name")
     }
     finally {
       this.progressBarService.popLoading()

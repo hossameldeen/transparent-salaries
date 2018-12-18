@@ -3,7 +3,7 @@ import { Salary, encode as encodeSalary, decode as decodeSalary } from 'src/app/
 import { DBRow } from 'src/app/models/db-row.model';
 import { DBService } from 'src/app/services/db.service';
 import { ProgressBarService } from 'src/app/services/progress-bar.service';
-import { MatSnackBar } from '@angular/material';
+import { SnackBarService } from 'src/app/services/snack-bar.service';
 import { UtilService } from 'src/app/services/util.service';
 import { SalaryFormComponent } from 'src/app/components/salary-form/salary-form.component';
 
@@ -27,7 +27,7 @@ export class SalariesComponent implements OnInit {
     private readonly utilService: UtilService,
     private readonly dbService: DBService,
     private readonly progressBarService: ProgressBarService,
-    private readonly snackBar: MatSnackBar
+    private readonly snackBarService: SnackBarService
   ) {
     this.salariesDBRows = []
     this.nextStart = 0
@@ -64,10 +64,10 @@ export class SalariesComponent implements OnInit {
       this.salariesDBRows = this.salariesDBRows.concat(succeeded.map(salaryDBRow => ({ dbRow: salaryDBRow, editingState: EditingState.NotEditing })))
 
       if (atLeastOneFailed)
-        this.snackBar.open("Couldn't retrieve some salaries from the profile. That's all I know :(", "Dismiss")
+        this.snackBarService.openQueuedSupportDismiss("Couldn't retrieve some salaries from the profile. That's all I know :(")
     }
     catch(e) {
-      this.snackBar.open("Couldn't retrieve salaries from the profile. That's all I know :(", "Dismiss")
+      this.snackBarService.openQueuedSupportDismiss("Couldn't retrieve salaries from the profile. That's all I know :(")
     }
     finally {
       this.progressBarService.popLoading()
@@ -87,7 +87,7 @@ export class SalariesComponent implements OnInit {
       newSalaryFormComponent.salary = new Salary(this.utilService.getCurrentMonth(), "", "", "", "", "", Date.now().toString())
     }
     catch (e) {
-      this.snackBar.open("Couldn't add new salary for some reason :(", "Dismiss")
+      this.snackBarService.openQueuedSupportDismiss("Couldn't add new salary for some reason :(")
     }
     finally {
       this.persistingNewSalary = false
@@ -114,7 +114,7 @@ export class SalariesComponent implements OnInit {
       salaryDBRow.editingState = EditingState.NotEditing
     }
     catch (e) {
-      this.snackBar.open("Couldn't update the salary for some reason :(", "Dismiss")
+      this.snackBarService.openQueuedSupportDismiss("Couldn't update the salary for some reason :(")
       salaryDBRow.editingState = EditingState.UserEditing
     }
     finally {
@@ -139,7 +139,7 @@ export class SalariesComponent implements OnInit {
       this.salariesDBRows.splice(salaryDBRowIndex, 1)
     }
     catch (e) {
-      this.snackBar.open("Couldn't delete the salary for some reason :(", "Dismiss")
+      this.snackBarService.openQueuedSupportDismiss("Couldn't delete the salary for some reason :(")
       salaryDBRow.editingState = EditingState.NotEditing
     }
     finally {
