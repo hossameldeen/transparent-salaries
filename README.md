@@ -6,20 +6,24 @@ A social network for sharing salaries, anonymously.
 
 A [Beaker Browser](https://beakerbrowser.com/) website where each user:
 
-- **Posts <u>anonymized</u> salaries known to them**, e.g., of people from their network, after taking their permission.
+- **Posts _anonymized_ salaries known to them**, e.g., of people from their network, after taking their permission.
 - **Specifies other users they trust** to be honest and write true salaries.
 
 ### Copyright disclaimer
 
 This is _not_ a freemium project! Although the code is posted on GitHub, it's copyrighted and all rights are reserved. See [License](#License) for more details.
 
+### [Homepage: Transparent Salaries on Gumroad](https://gumroad.com/l/gDDIe)
+
+### [Transparent Salaries](dat://07d5ccd35fbdd7c1d2e936f152cb858fa74df824cbf613c7b008e3587a4fa138) (Works only on [Beaker Browser](https://beakerbrowser.com/))
+
 ## How to use
 
 - Buy a copy through [Gumroad](https://gumroad.com/l/gDDIe) (`https://gumroad.com/l/gDDIe`).
 - Open [Transparent Salaries](dat://07d5ccd35fbdd7c1d2e936f152cb858fa74df824cbf613c7b008e3587a4fa138) in [Beaker Browser](https://beakerbrowser.com/). (`dat://07d5ccd35fbdd7c1d2e936f152cb858fa74df824cbf613c7b008e3587a4fa138`).
-- You've bought a copy from the source code as well, so feel free to read and use the source code :-)
+- When you **buy a copy**, **you get** both the **compiled website** and the **source code**. So, feel free to read and use the source code as well :-)
 
-You can use the website or read the code for free for evaluation purposes only.
+You can **use the website** or **read the code** for **free** for **evaluation purposes only**.
 
 ## Support
 
@@ -39,7 +43,7 @@ So, long story short: **Contributions are welcome!** And sorry for possibly expl
 
 A big-picture on work status can be found in [Project: Board](https://github.com/hossameldeen/transparent-salaries/projects/2). The [other projects](https://github.com/hossameldeen/transparent-salaries/projects) are grouping of related issues.
 
-Contributions are welcome on all issues. `Contribution-welcome-*` labels are for extra encouragement and for issues ready to be worked on.
+**Contributions** are **welcome** on **all issues**. `Contribution-welcome-*` labels are for **extra encouragement** and for issues **ready to be worked on**.
 
 ### Documentation
 
