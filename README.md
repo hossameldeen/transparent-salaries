@@ -9,7 +9,7 @@ A [Beaker Browser](https://beakerbrowser.com/) website where each user:
 - **Posts <u>anonymized</u> salaries known to them**, e.g., of people from their network, after taking their permission.
 - **Specifies other users they trust** to be honest and write true salaries.
 
-## Copyright Disclaimer
+### Copyright disclaimer
 
 This is _not_ a freemium project! Although the code is posted on GitHub, it's copyrighted and all rights are reserved. See [License](#License) for more details.
 
