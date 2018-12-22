@@ -36,5 +36,10 @@
       </ng-container>
     </ng-container>
   </mat-toolbar>
+  <div fxFlexAlign="center" style="margin: 8px; color: #ff4081; line-height: 24px; border: 1px solid; border-radius: 4px; padding: 0 15px;" class="mat-body-strong" *ngIf="!isBeakerBrowser()">
+    <div fxLayout="column" fxLayoutAlign="start center">
+      <span>Sorry, Transparent Salaries works only in <a target="_blank" rel="noopener noreferrer" href="https://beakerbrowser.com/">Beaker Browser</a>.</span>
+    </div>
+  </div>
   <router-outlet></router-outlet>
 </div>

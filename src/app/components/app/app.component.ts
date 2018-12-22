@@ -88,6 +88,10 @@ export class AppComponent implements OnDestroy {
     }
   }
 
+  isBeakerBrowser() {
+    return typeof DatArchive !== 'undefined'
+  }
+
   ngOnDestroy() {
     this.stateSubjectSubscription.unsubscribe()
     this.showProgressBarSubjectSubscription.unsubscribe()
