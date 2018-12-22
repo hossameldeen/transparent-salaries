@@ -1,88 +1,58 @@
 # Transparent Salaries
 
-A Beaker-browser website for sharing salaries.
+A social network for sharing salaries, anonymously.
 
-## Processes
+![Screenshot of a (perhaps-dummy) Transparent-Salaries profile](./screenshot.png)
 
-### Development setup
+A [Beaker Browser](https://beakerbrowser.com/) website where each user:
 
-- Install [Yarn](https://yarnpkg.com).
-- Install [Beaker Browser](https://beakerbrowser.com/).
-- Install [WebStorm](https://www.jetbrains.com/webstorm/). Yup, costs money. You could [VSCode](https://code.visualstudio.com/) if you want. I'm just using basic [Angular](https://angular.io/) stuff.
-- In WebStorm: `Checkout from Version Control` the project (or `Open` if you've already cloned it).
-- In WebStorm: View menu -> Tool Windows -> mark Version Control.
-- In WebStorm: Disable TSLint (TODO: re-enable it one day isA).
-- Run `yarn install`.
+- **Posts _anonymized_ salaries known to them**, e.g., of people from their network, after taking their permission.
+- **Specifies other users they trust** to be honest and write true salaries.
 
-### Auto-reload
+### Copyright disclaimer
 
-- In the project root, run `yarn run start`.
-- In Beaker Browser, open `localhost:4200`
+This is _not_ a freemium project! Although the code is posted on GitHub, it's copyrighted and all rights are reserved. See [License](#License) for more details.
 
-Note: I used to `yarn run build --watch --delete-output-path=false --output-path=<some-beaker-project-path>` because I'd thought `DatArchive` wasn't available to http pages.
+### [Homepage: Transparent Salaries on Gumroad](https://gumroad.com/l/gDDIe)
 
-### Deploy
+### [Transparent Salaries](dat://07d5ccd35fbdd7c1d2e936f152cb858fa74df824cbf613c7b008e3587a4fa138) (Works only on [Beaker Browser](https://beakerbrowser.com/))
 
-#### Preqrequisites if deploying under a new dat
+## How to use
 
-**Project setup:**
-- Create a new project.
-- Make sure `dat.json`'s main content:
-```
-{
-  "title": "Transparent Salaries",
-  "fallback_page": "/index.html"
-}
-```
-**Public-key migration:**
-- Let public key of the newly-created dat be `pub_key`.
-- Let `MigrationService.PUB_KEY` be `old_pub_key`.
-- In WebStorm, Ctrl+Shift+R `old_pub_key` -> `pub_key`. (not the words `pub_key`, I mean the values).
-- Run ``grep -ir --exclude-dir=node_modules `old_pub_key` `` to make sure there're no missing instances for any reason. (Credit: [SO answer](https://stackoverflow.com/a/49251979/6690391)).
+- Buy a copy through [Gumroad](https://gumroad.com/l/gDDIe) (`https://gumroad.com/l/gDDIe`).
+- Open [Transparent Salaries](dat://07d5ccd35fbdd7c1d2e936f152cb858fa74df824cbf613c7b008e3587a4fa138) in [Beaker Browser](https://beakerbrowser.com/). (`dat://07d5ccd35fbdd7c1d2e936f152cb858fa74df824cbf613c7b008e3587a4fa138`).
+- When you **buy a copy**, **you get** both the **compiled website** and the **source code**. So, feel free to read and use the source code as well :-)
 
-#### Steps
+You can **use the website** or **read the code** for **free** for **evaluation purposes only**.
 
-- Go through the checklist below.
-- In the project root, run `yarn install`.
-- In the project root, run `yarn run build --prod`. **Don't forget the `--prod`!**
-- Make sure preview mode is on on your website.
-- Delete all old files except `dat.json` and `dat.ignore`.
-- Copy-paste all files.
-- Test.
-- Publish.
+## Support
 
-#### Checklist
+Search in [the existing issues](https://github.com/hossameldeen/transparent-salaries/issues?utf8=%E2%9C%93&q=) or open a [new one](https://github.com/hossameldeen/transparent-salaries/issues/new).
 
-- Check 3rd-party licenses. (See Process: Check licenses).
-- Make sure all credits are respected if they are not licenseable. E.g., fair-use design inspiration.
+Although it's called _issues_, feel free to use it for **questions**, **feature requests**, or **any other feedback**.
 
-### Check licenses
+## Contributing
 
-- Run `yarn run legally > legally-output` (because the output is so big for terminal buffer).
-- If there're copyleft licenses (e.g., _GPL_), Ctrl+F and see if the packages are licensed under other licenses.
-- If there're packages without licenses, put the code below in a file `temp.js`. run it, and check each package manually:
-```javascript
-const legally = require('legally');
+Part of me is not comfortable taking someone's labour for free. Another part is eager to cooperate.
 
-var done = (function wait () { if (!done) setTimeout(wait, 1000) })();
+In a perfect world, I'd set up a way for paying money to contributors; I even have a scheme in mind. However, since paying money is cumbersome on the Internet and since Transparent Salaries's future is still uncertain, for now there's no such method.
 
-(async () => {
-  const licenses = await legally();
-  for (packageName in licenses) {
-    const lo = licenses[packageName];
-    if (lo.package.length === 0 && lo.copying.length === 0 && lo.readme.length === 0)
-      console.log(packageName, lo);
-  }
-  done = true;
-})();
-```
+So, long story short: **Contributions are welcome!** And sorry for possibly exploiting you :(
 
-## Code Structure
+### Work organization
 
-You're, obviously, using [Angular Framework](https://angular.io/). You're also using [Angular Material](https://material.angular.io) and [Angular Flex-layout](https://github.com/angular/flex-layout/wiki/Declarative-API-Overview).
+A big-picture on work status can be found in [Project: Board](https://github.com/hossameldeen/transparent-salaries/projects/2). The [other projects](https://github.com/hossameldeen/transparent-salaries/projects) are grouping of related issues.
 
-- The code structure is pretty much by-file-type. For now, one module, with `components`, `models`, `services`, and `typings` directories.
+**Contributions** are **welcome** on **all issues**. `Contribution-welcome-*` labels are for **extra encouragement** and for issues **ready to be worked on**.
 
-- Components are either meant as generic components or top-level page/routing components. The latter should only be used in `routes`. Their name end with `-page` and `Page`, and its `selector` could have more words as a reminder it shouldn't be used that way.
+### Documentation
 
-- Only page components should access the url.
+There isn't much documentation. I'm using [Angular Framework](https://angular.io/) with [Angular Material](https://material.angular.io) and [Angular Flex-layout](https://github.com/angular/flex-layout/wiki/Declarative-API-Overview). Any documentation can be founder under [docs/](./docs/)
+
+## License
+
+Copyright (C) 2018 Hossam El-Deen - All Rights Reserved.
+
+It's an adhoc license that tries to be sane. Please, [check it out](./LICENSE).
+
+Feel free to open an issue if you have any comments.
