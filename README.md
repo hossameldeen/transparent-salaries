@@ -15,12 +15,12 @@ This is _not_ a freemium project! Although the code is posted on GitHub, it's co
 
 ### [Homepage: Transparent Salaries on Gumroad](https://gumroad.com/l/gDDIe)
 
-### [Transparent Salaries](dat://07d5ccd35fbdd7c1d2e936f152cb858fa74df824cbf613c7b008e3587a4fa138) (Works only on [Beaker Browser](https://beakerbrowser.com/))
+### [Transparent Salaries](https://transparent-salaries.hashbase.io) (Works only on [Beaker Browser](https://beakerbrowser.com/))
 
 ## How to use
 
 - Buy a copy through [Gumroad](https://gumroad.com/l/gDDIe) (`https://gumroad.com/l/gDDIe`).
-- Open [Transparent Salaries](dat://07d5ccd35fbdd7c1d2e936f152cb858fa74df824cbf613c7b008e3587a4fa138) in [Beaker Browser](https://beakerbrowser.com/). (`dat://07d5ccd35fbdd7c1d2e936f152cb858fa74df824cbf613c7b008e3587a4fa138`).
+- Open [Transparent Salaries](https://transparent-salaries.hashbase.io) in [Beaker Browser](https://beakerbrowser.com/). (`https://transparent-salaries.hashbase.io`).
 - When you **buy a copy**, **you get** both the **compiled website** and the **source code**. So, feel free to read and use the source code as well :-)
 
 You can **use the website** or **read the code** for **free** for **evaluation purposes only**.
