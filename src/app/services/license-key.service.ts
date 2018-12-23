@@ -38,7 +38,7 @@ export class LicenseKeyService {
           try {
             await hashesArchive.stat(`/version-0/${(new SHA3(512)).update(this.stateSubject.value.licenseKey).digest('hex')}`)
             this.updateLicenseKeyState(new Verified(this.stateSubject.value.licenseKey))
-            this.snackBarService.openQueued("License key has been verified. Thank you for buying!")
+            this.snackBarService.openQueued("License key has been verified. Thank you for buying!", "Dismiss")
           }
           catch (e) {
             if (this.haveTwoDaysPassed(this.stateSubject.value)) {
