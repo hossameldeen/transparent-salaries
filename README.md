@@ -1,6 +1,6 @@
 # Transparent Salaries
 
-A social network for sharing salaries, anonymously.
+A social network for sharing _anonymized_ salaries.
 
 ![Screenshot of a (perhaps-dummy) Transparent-Salaries profile](./screenshot.png)
 
